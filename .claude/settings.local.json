@@ -4,7 +4,9 @@
       "Bash(mkdir:*)",
       "WebFetch(domain:doc.babylonjs.com)",
       "WebFetch(domain:github.com)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Skill(feature-planner)",
+      "Bash(bun:*)"
     ]
   }
 }

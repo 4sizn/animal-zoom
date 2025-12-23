@@ -2,9 +2,13 @@
  * ParticipantManager - Multi-Canvas Management for Babylon.js
  * Manages multiple participants, each with their own canvas and 3D scene
  * Based on design-specification.md section 8.4
+ *
+ * Updated to use ResourceLoader and SceneBuilder for character/room management
  */
 
 import * as BABYLON from '@babylonjs/core';
+import { ResourceLoader } from '../resources/ResourceLoader';
+import { SceneBuilder } from './SceneBuilder';
 
 export interface Participant {
   id: string;
@@ -18,21 +22,35 @@ export interface Participant {
 }
 
 export class ParticipantManager {
-  private engine: BABYLON.Engine;
+  private engine: BABYLON.Engine | BABYLON.NullEngine;
   private participants: Map<string, Participant> = new Map();
   private gridContainer: HTMLElement | null;
   private participantCountElement: HTMLElement | null;
+  private resourceLoader: ResourceLoader;
 
-  constructor(primaryCanvas: HTMLCanvasElement) {
-    // Single engine instance for all scenes
-    this.engine = new BABYLON.Engine(primaryCanvas, true, {
-      preserveDrawingBuffer: true,
-      stencil: true,
-      powerPreference: 'high-performance',
-    });
+  constructor(
+    primaryCanvas: HTMLCanvasElement,
+    resourceLoader: ResourceLoader,
+    engine?: BABYLON.Engine | BABYLON.NullEngine
+  ) {
+    // Use provided engine for testing, or create new one
+    if (engine) {
+      this.engine = engine;
+    } else {
+      // Single engine instance for all scenes
+      this.engine = new BABYLON.Engine(primaryCanvas, true, {
+        preserveDrawingBuffer: true,
+        stencil: true,
+        powerPreference: 'high-performance',
+      });
+    }
 
+    this.resourceLoader = resourceLoader;
     this.gridContainer = document.querySelector('.participant-grid');
     this.participantCountElement = document.getElementById('participant-count');
+
+    // Initialize participant count display
+    this.updateParticipantCount();
 
     this.startRenderLoop();
     this.setupResizeHandler();
@@ -40,8 +58,9 @@ export class ParticipantManager {
 
   /**
    * Add a new participant to the meeting
+   * Now uses ResourceLoader and SceneBuilder for character/room setup
    */
-  addParticipant(id: string, name: string): Participant {
+  async addParticipant(id: string, name: string): Promise<Participant> {
     // Create canvas element
     const canvas = document.createElement('canvas');
     canvas.id = `canvas-${id}`;
@@ -68,8 +87,8 @@ export class ParticipantManager {
       cameraOff: false,
     };
 
-    // Load character model (placeholder for now)
-    this.loadCharacterModel(participant);
+    // Load character model using ResourceLoader and SceneBuilder
+    await this.loadCharacterModel(participant);
 
     // Store participant
     this.participants.set(id, participant);
@@ -171,12 +190,36 @@ export class ParticipantManager {
   }
 
   /**
-   * Load character model (placeholder implementation)
+   * Load character model using ResourceLoader and SceneBuilder
    */
   private async loadCharacterModel(participant: Participant): Promise<void> {
     try {
-      // For now, create a simple placeholder character
-      // In production, this would load actual character models
+      // Load participant config (uses cache or loads from storage)
+      const config = await this.resourceLoader.loadParticipantConfig(participant.id);
+
+      // Build character using SceneBuilder
+      const characterResult = SceneBuilder.buildCharacter(
+        participant.scene,
+        config.character
+      );
+
+      participant.character = characterResult.mesh;
+
+      // Position character at chest level
+      if (!config.character.serializedData?.mesh?.position) {
+        participant.character.position.y = 1.2;
+      }
+
+      // Add simple animation for visual feedback
+      participant.scene.registerBeforeRender(() => {
+        if (participant.character && !participant.character.isDisposed()) {
+          participant.character.rotation.y += 0.005;
+        }
+      });
+    } catch (error) {
+      console.error(`Failed to load character for ${participant.name}:`, error);
+
+      // Fallback: Create a simple placeholder
       const sphere = BABYLON.MeshBuilder.CreateSphere(
         `character-${participant.id}`,
         { diameter: 1, segments: 32 },
@@ -185,23 +228,10 @@ export class ParticipantManager {
       sphere.position.y = 1.2;
 
       const material = new BABYLON.StandardMaterial(`mat-${participant.id}`, participant.scene);
-      material.diffuseColor = new BABYLON.Color3(
-        Math.random(),
-        Math.random(),
-        Math.random()
-      );
+      material.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5); // Gray fallback
       sphere.material = material;
 
       participant.character = sphere;
-
-      // Add simple animation
-      participant.scene.registerBeforeRender(() => {
-        if (sphere && !sphere.isDisposed()) {
-          sphere.rotation.y += 0.005;
-        }
-      });
-    } catch (error) {
-      console.error(`Failed to load character for ${participant.name}:`, error);
     }
   }
 

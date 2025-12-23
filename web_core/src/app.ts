@@ -7,12 +7,20 @@
 import ParticipantManager from './scene/ParticipantManager';
 import ControlBar from './components/ControlBar';
 import JoinScreen from './components/JoinScreen';
+import { ResourceLoader } from './resources/ResourceLoader';
+import { ResourceStorage } from './resources/ResourceStorage';
+import { EditMyAnimal } from './editors/EditMyAnimal';
+import { EditMyRoom } from './editors/EditMyRoom';
 import './styles/main.css';
 
 class App {
   private participantManager?: ParticipantManager;
   private controlBar?: ControlBar;
   private appContainer: HTMLElement | null;
+  private storage?: ResourceStorage;
+  private loader?: ResourceLoader;
+  private currentEditor?: EditMyAnimal | EditMyRoom;
+  private readonly localUserId = 'local-user'; // Current user's ID
 
   // Test participant names from concept images
   private testParticipantNames = [
@@ -60,7 +68,9 @@ class App {
 
     // Initialize ParticipantManager with a primary canvas
     const primaryCanvas = document.createElement('canvas');
-    this.participantManager = new ParticipantManager(primaryCanvas);
+    this.storage = new ResourceStorage();
+    this.loader = new ResourceLoader(this.storage);
+    this.participantManager = new ParticipantManager(primaryCanvas, this.loader);
 
     console.log('🎬 ParticipantManager initialized');
 
@@ -84,6 +94,14 @@ class App {
           this.leaveMeeting();
         }
       },
+      onEditCharacter: () => {
+        console.log('🎨 Edit character clicked');
+        this.openEditCharacter();
+      },
+      onEditRoom: () => {
+        console.log('🏠 Edit room clicked');
+        this.openEditRoom();
+      },
     });
 
     // Set initial control bar state from join screen options
@@ -106,9 +124,9 @@ class App {
     console.log('👥 Adding test participants...');
 
     this.testParticipantNames.forEach((name, index) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         if (this.participantManager) {
-          const participant = this.participantManager.addParticipant(
+          const participant = await this.participantManager.addParticipant(
             `participant-${index}`,
             name
           );
@@ -163,6 +181,163 @@ class App {
 
     // Reload page (in a real app, you'd navigate elsewhere)
     window.location.reload();
+  }
+
+  /**
+   * Open character editor
+   */
+  private openEditCharacter(): void {
+    if (!this.loader) return;
+
+    // Hide main app
+    if (this.appContainer) {
+      this.appContainer.classList.add('hidden');
+    }
+
+    // Create editor container
+    const editorContainer = document.createElement('div');
+    editorContainer.id = 'editor-container';
+    editorContainer.className = 'editor-container';
+    document.body.appendChild(editorContainer);
+
+    // Create canvas for editor
+    const editorCanvas = document.createElement('canvas');
+    editorCanvas.className = 'editor-canvas';
+    editorContainer.appendChild(editorCanvas);
+
+    // Create editor
+    this.currentEditor = new EditMyAnimal(
+      editorCanvas,
+      this.loader,
+      this.localUserId,
+      undefined,
+      {
+        onSave: (config) => {
+          console.log('✅ Character saved:', config);
+          this.closeEditor();
+        },
+        onCancel: () => {
+          console.log('❌ Character edit cancelled');
+          this.closeEditor();
+        },
+      }
+    );
+
+    // Load character
+    this.currentEditor.loadCharacter().catch((error) => {
+      console.error('Failed to load character:', error);
+    });
+
+    // Add UI controls
+    this.addEditorUI('Edit My Character');
+  }
+
+  /**
+   * Open room editor
+   */
+  private openEditRoom(): void {
+    if (!this.loader) return;
+
+    // Hide main app
+    if (this.appContainer) {
+      this.appContainer.classList.add('hidden');
+    }
+
+    // Create editor container
+    const editorContainer = document.createElement('div');
+    editorContainer.id = 'editor-container';
+    editorContainer.className = 'editor-container';
+    document.body.appendChild(editorContainer);
+
+    // Create canvas for editor
+    const editorCanvas = document.createElement('canvas');
+    editorCanvas.className = 'editor-canvas';
+    editorContainer.appendChild(editorCanvas);
+
+    // Create editor
+    this.currentEditor = new EditMyRoom(
+      editorCanvas,
+      this.loader,
+      this.localUserId,
+      undefined,
+      {
+        onSave: (config) => {
+          console.log('✅ Room saved:', config);
+          this.closeEditor();
+        },
+        onCancel: () => {
+          console.log('❌ Room edit cancelled');
+          this.closeEditor();
+        },
+      }
+    );
+
+    // Load room
+    this.currentEditor.loadRoom().catch((error) => {
+      console.error('Failed to load room:', error);
+    });
+
+    // Add UI controls
+    this.addEditorUI('Edit My Room');
+  }
+
+  /**
+   * Add UI controls to editor
+   */
+  private addEditorUI(title: string): void {
+    const editorContainer = document.getElementById('editor-container');
+    if (!editorContainer) return;
+
+    // Create UI panel
+    const uiPanel = document.createElement('div');
+    uiPanel.className = 'editor-ui-panel';
+    uiPanel.innerHTML = `
+      <h2>${title}</h2>
+      <div class="editor-buttons">
+        <button id="editor-save-btn" class="editor-btn editor-btn-primary">Save</button>
+        <button id="editor-cancel-btn" class="editor-btn editor-btn-secondary">Cancel</button>
+      </div>
+    `;
+    editorContainer.appendChild(uiPanel);
+
+    // Add event listeners
+    document.getElementById('editor-save-btn')?.addEventListener('click', () => {
+      if (this.currentEditor) {
+        this.currentEditor.save();
+      }
+    });
+
+    document.getElementById('editor-cancel-btn')?.addEventListener('click', () => {
+      if (this.currentEditor) {
+        this.currentEditor.cancel();
+      }
+    });
+  }
+
+  /**
+   * Close editor and return to main app
+   */
+  private closeEditor(): void {
+    // Dispose editor
+    if (this.currentEditor) {
+      this.currentEditor.dispose();
+      this.currentEditor = undefined;
+    }
+
+    // Remove editor container
+    const editorContainer = document.getElementById('editor-container');
+    if (editorContainer) {
+      editorContainer.remove();
+    }
+
+    // Show main app
+    if (this.appContainer) {
+      this.appContainer.classList.remove('hidden');
+    }
+
+    // Reload participants to show updated character/room
+    // (In a real app, you might want to only reload the local participant)
+    console.log('🔄 Editor closed, returning to main view');
   }
 }
 

@@ -8,6 +8,8 @@ export interface ControlBarCallbacks {
   onCameraToggle?: (isCameraOff: boolean) => void;
   onShare?: () => void;
   onLeave?: () => void;
+  onEditCharacter?: () => void;
+  onEditRoom?: () => void;
 }
 
 export class ControlBar {
@@ -15,6 +17,8 @@ export class ControlBar {
   private cameraButton: HTMLButtonElement | null;
   private shareButton: HTMLButtonElement | null;
   private leaveButton: HTMLButtonElement | null;
+  private editCharacterButton: HTMLButtonElement | null;
+  private editRoomButton: HTMLButtonElement | null;
 
   private isMuted: boolean = false;
   private isCameraOff: boolean = false;
@@ -29,6 +33,8 @@ export class ControlBar {
     this.cameraButton = document.querySelector('[data-action="camera"]') as HTMLButtonElement;
     this.shareButton = document.querySelector('[data-action="share"]') as HTMLButtonElement;
     this.leaveButton = document.querySelector('[data-action="leave"]') as HTMLButtonElement;
+    this.editCharacterButton = document.querySelector('[data-action="edit-character"]') as HTMLButtonElement;
+    this.editRoomButton = document.querySelector('[data-action="edit-room"]') as HTMLButtonElement;
 
     this.setupEventListeners();
   }
@@ -55,6 +61,16 @@ export class ControlBar {
     // Leave button
     this.leaveButton?.addEventListener('click', () => {
       this.handleLeave();
+    });
+
+    // Edit character button
+    this.editCharacterButton?.addEventListener('click', () => {
+      this.handleEditCharacter();
+    });
+
+    // Edit room button
+    this.editRoomButton?.addEventListener('click', () => {
+      this.handleEditRoom();
     });
   }
 
@@ -104,6 +120,24 @@ export class ControlBar {
       if (confirm('Are you sure you want to leave the meeting?')) {
         window.location.reload();
       }
+    }
+  }
+
+  /**
+   * Handle edit character button click
+   */
+  handleEditCharacter(): void {
+    if (this.callbacks.onEditCharacter) {
+      this.callbacks.onEditCharacter();
+    }
+  }
+
+  /**
+   * Handle edit room button click
+   */
+  handleEditRoom(): void {
+    if (this.callbacks.onEditRoom) {
+      this.callbacks.onEditRoom();
     }
   }
 

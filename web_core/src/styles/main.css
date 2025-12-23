@@ -144,12 +144,97 @@ canvas {
 }
 
 /* ============================================
+   EDITOR STYLES
+   ============================================ */
+
+.editor-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.editor-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.editor-ui-panel {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px 30px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 1001;
+}
+
+.editor-ui-panel h2 {
+  margin: 0 0 20px 0;
+  color: var(--text-primary);
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.editor-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.editor-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-primary);
+}
+
+.editor-btn-primary {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.editor-btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.editor-btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.editor-btn-secondary:hover {
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+
+.editor-btn:active {
+  transform: translateY(0);
+}
+
+/* ============================================
    PRINT STYLES
    ============================================ */
 
 @media print {
   .control-bar,
-  .join-screen {
+  .join-screen,
+  .editor-container {
     display: none !important;
   }
 }
