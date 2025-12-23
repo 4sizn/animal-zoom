@@ -1,0 +1,359 @@
+/* Join Screen Styles */
+/* Pre-join screen with camera preview */
+
+/* ============================================
+   JOIN SCREEN CONTAINER
+   ============================================ */
+
+.join-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.join-screen.hidden {
+  display: none;
+}
+
+/* ============================================
+   JOIN PREVIEW CONTAINER
+   ============================================ */
+
+.join-preview-container {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+  background: var(--bg-camera-off);
+  border-radius: var(--radius-join-preview);
+  overflow: hidden;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-default);
+}
+
+/* ============================================
+   PREVIEW CANVAS
+   ============================================ */
+
+.join-preview-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* ============================================
+   CAMERA OFF OVERLAY
+   ============================================ */
+
+.camera-off-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-camera-off);
+  flex-direction: column;
+  gap: 16px;
+}
+
+.camera-off-overlay.hidden {
+  display: none;
+}
+
+/* Camera Off Icon (Optional) */
+.camera-off-icon {
+  width: 64px;
+  height: 64px;
+  fill: var(--text-secondary);
+  opacity: 0.5;
+}
+
+/* Camera Off Text */
+.camera-off-text {
+  font-family: var(--font-primary);
+  font-size: var(--font-camera-off);
+  font-weight: var(--font-weight-camera-off);
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   JOIN PREVIEW CONTROLS
+   ============================================ */
+
+.join-preview-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  z-index: var(--z-overlay);
+}
+
+/* ============================================
+   JOIN CONTROL BUTTONS (Circular)
+   ============================================ */
+
+.join-control-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-circular);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-default);
+  background: var(--btn-secondary-bg);
+  color: var(--text-primary);
+}
+
+.join-control-btn:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-hover);
+}
+
+.join-control-btn:active {
+  transform: scale(1.05);
+}
+
+/* Danger State (Red - Muted/Camera Off) */
+.join-control-danger {
+  background: var(--btn-danger-bg);
+}
+
+.join-control-danger:hover {
+  background: var(--accent-red-hover);
+}
+
+/* Active State (Green - Unmuted/Camera On) */
+.join-control-btn.active {
+  background: var(--accent-green);
+}
+
+.join-control-btn.active:hover {
+  background: var(--accent-green-hover);
+}
+
+/* ============================================
+   JOIN CONTROL ICONS
+   ============================================ */
+
+.join-control-icon {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+/* ============================================
+   JOIN BUTTON
+   ============================================ */
+
+.join-btn {
+  min-width: 240px;
+  padding: 16px 48px;
+  font-family: var(--font-primary);
+  font-size: var(--font-join-button);
+  font-weight: var(--font-weight-join-button);
+  color: var(--btn-primary-text);
+  background: var(--btn-primary-bg);
+  border: none;
+  border-radius: var(--radius-join-button);
+  cursor: pointer;
+  transition: var(--transition-default);
+  box-shadow: var(--shadow-join-button);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.join-btn:hover {
+  background: var(--accent-green-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-join-button-hover);
+}
+
+.join-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-join-button);
+}
+
+.join-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ============================================
+   OPTIONAL: MEETING INFO
+   ============================================ */
+
+.join-meeting-info {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.join-meeting-title {
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.join-meeting-subtitle {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+/* Tablet: 768px - 1279px */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .join-screen {
+    padding: 32px;
+  }
+
+  .join-preview-container {
+    max-width: 560px;
+    margin-bottom: 28px;
+  }
+
+  .join-control-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .join-control-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .join-btn {
+    min-width: 220px;
+    padding: 14px 40px;
+    font-size: 16px;
+  }
+}
+
+/* Mobile: <768px */
+@media (max-width: 767px) {
+  .join-screen {
+    padding: 24px 16px;
+  }
+
+  .join-preview-container {
+    max-width: 100%;
+    margin-bottom: 24px;
+    border-radius: 8px;
+  }
+
+  .join-preview-controls {
+    bottom: 16px;
+    gap: 12px;
+  }
+
+  .join-control-btn {
+    width: 48px;
+    height: 48px;
+  }
+
+  .join-control-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .camera-off-text {
+    font-size: 16px;
+  }
+
+  .camera-off-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .join-btn {
+    min-width: 200px;
+    width: 100%;
+    max-width: 280px;
+    padding: 14px 32px;
+    font-size: 16px;
+  }
+
+  .join-meeting-title {
+    font-size: 20px;
+  }
+
+  .join-meeting-subtitle {
+    font-size: 13px;
+  }
+}
+
+/* Very Small Mobile: <480px */
+@media (max-width: 480px) {
+  .join-screen {
+    padding: 20px 12px;
+  }
+
+  .join-preview-container {
+    margin-bottom: 20px;
+  }
+
+  .join-control-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .join-control-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .join-btn {
+    font-size: 15px;
+    padding: 12px 28px;
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.join-screen {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.join-preview-container {
+  animation: fadeIn 0.5s ease-out 0.1s backwards;
+}
+
+.join-btn {
+  animation: fadeIn 0.5s ease-out 0.2s backwards;
+}

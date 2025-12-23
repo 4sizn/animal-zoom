@@ -1,0 +1,276 @@
+/* Control Bar Styles */
+/* Bottom control bar with meeting controls */
+
+/* ============================================
+   CONTROL BAR CONTAINER
+   ============================================ */
+
+.control-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--control-bar-height);
+  background: var(--bg-control-bar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+  z-index: var(--z-control-bar);
+  box-sizing: border-box;
+}
+
+/* ============================================
+   CONTROL BAR SECTIONS
+   ============================================ */
+
+.control-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.control-bar-center {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* ============================================
+   PARTICIPANT COUNT
+   ============================================ */
+
+.participant-count {
+  font-family: var(--font-primary);
+  font-size: var(--font-participant-count);
+  font-weight: var(--font-weight-participant-count);
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+/* ============================================
+   CONTROL BUTTONS
+   ============================================ */
+
+.control-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--btn-secondary-bg);
+  border: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: var(--transition-default);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  min-width: 72px;
+}
+
+.control-btn:hover {
+  background: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+/* Danger State (Red buttons - Mute/Camera/Leave) */
+.control-btn-danger {
+  background: var(--btn-danger-bg);
+}
+
+.control-btn-danger:hover {
+  background: var(--accent-red-hover);
+}
+
+/* Active State (Green - When unmuted/camera on) */
+.control-btn.active {
+  background: var(--accent-green);
+}
+
+.control-btn.active:hover {
+  background: var(--accent-green-hover);
+}
+
+/* Disabled State */
+.control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================
+   CONTROL BUTTON ELEMENTS
+   ============================================ */
+
+.control-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.control-label {
+  font-size: var(--font-control-label);
+  font-weight: var(--font-weight-control);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* ============================================
+   SPECIFIC BUTTON STYLES
+   ============================================ */
+
+/* Leave Button */
+.control-btn[data-action="leave"] {
+  background: var(--btn-danger-bg);
+}
+
+.control-btn[data-action="leave"]:hover {
+  background: var(--accent-red-hover);
+}
+
+/* Share Button */
+.control-btn[data-action="share"] {
+  background: var(--btn-secondary-bg);
+}
+
+.control-btn[data-action="share"]:hover {
+  background: var(--border-hover);
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+/* Tablet: 768px - 1279px */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .control-bar {
+    height: var(--control-bar-height-mobile);
+    padding: 0 16px;
+  }
+
+  .control-btn {
+    padding: 8px 12px;
+    min-width: 64px;
+    gap: 4px;
+  }
+
+  .control-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .control-label {
+    font-size: 11px;
+  }
+
+  .control-bar-center {
+    gap: 12px;
+  }
+}
+
+/* Mobile: <768px */
+@media (max-width: 767px) {
+  .control-bar {
+    height: var(--control-bar-height-mobile);
+    padding: 0 12px;
+  }
+
+  .control-bar-left,
+  .control-bar-right {
+    flex: 0;
+  }
+
+  .control-bar-center {
+    gap: 8px;
+  }
+
+  .control-btn {
+    padding: 8px;
+    min-width: 48px;
+    gap: 4px;
+  }
+
+  .control-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .control-label {
+    font-size: 10px;
+  }
+
+  .participant-count {
+    font-size: 11px;
+  }
+
+  /* Hide labels on very small screens */
+  @media (max-width: 480px) {
+    .control-label {
+      display: none;
+    }
+
+    .control-btn {
+      min-width: 44px;
+      padding: 10px;
+    }
+  }
+}
+
+/* ============================================
+   ICON ONLY MODE (Mobile portrait)
+   ============================================ */
+
+.control-bar.icon-only .control-label {
+  display: none;
+}
+
+.control-bar.icon-only .control-btn {
+  min-width: 48px;
+  padding: 12px;
+}
+
+/* ============================================
+   ADDITIONAL CONTROLS (Settings, More)
+   ============================================ */
+
+.control-btn-icon-only {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: var(--btn-secondary-bg);
+  border: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: var(--transition-default);
+  color: var(--text-primary);
+}
+
+.control-btn-icon-only:hover {
+  background: var(--border-hover);
+  transform: scale(1.05);
+}
+
+.control-btn-icon-only svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}

@@ -1,0 +1,147 @@
+/* Design System Variables - Animal Zoom */
+/* Based on design-specification.md */
+
+:root {
+  /* ============================================
+     LAYOUT & SPACING
+     ============================================ */
+
+  /* Grid Gaps */
+  --grid-gap-large: 12px;
+  --grid-gap-medium: 8px;
+  --grid-gap-small: 6px;
+
+  /* Grid Padding */
+  --grid-padding-large: 20px;
+  --grid-padding-medium: 12px;
+  --grid-padding-small: 8px;
+
+  /* Control Bar */
+  --control-bar-height: 80px;
+  --control-bar-height-mobile: 64px;
+
+  /* ============================================
+     COLOR SYSTEM
+     ============================================ */
+
+  /* Background Colors */
+  --bg-primary: #1a1a1a;
+  --bg-canvas-cell: #2a2624;
+  --bg-control-bar: #1f1f1f;
+  --bg-camera-off: #1c1c1c;
+
+  /* Accent Colors */
+  --accent-red: #d84a48;
+  --accent-red-hover: #e65654;
+  --accent-green: #8b9f7c;
+  --accent-green-hover: #9bb088;
+
+  /* Border & Outline Colors */
+  --border-default: #3a3a3a;
+  --border-hover: #4a4a4a;
+  --border-active-speaker: #8b9f7c;
+  --border-width-default: 2px;
+  --border-width-active: 3px;
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8b8;
+  --text-disabled: #666666;
+
+  /* Overlay Colors */
+  --overlay-dark: rgba(0, 0, 0, 0.6);
+  --overlay-medium: rgba(0, 0, 0, 0.4);
+  --overlay-light: rgba(0, 0, 0, 0.2);
+
+  /* Button Colors */
+  --btn-primary-bg: #8b9f7c;
+  --btn-primary-text: #ffffff;
+  --btn-danger-bg: #d84a48;
+  --btn-danger-text: #ffffff;
+  --btn-secondary-bg: #3a3a3a;
+  --btn-secondary-text: #ffffff;
+
+  /* Icon Colors */
+  --icon-default: #e8e8e8;
+  --icon-active: #8b9f7c;
+  --icon-danger: #d84a48;
+  --icon-disabled: #666666;
+
+  /* Scene Colors (3D Rendering) */
+  --scene-ambient-light: #f5e6d3;
+  --scene-directional-light: #fff8e7;
+  --scene-wall-warm: #c4a57b;
+  --scene-wall-cool: #6a7a8a;
+  --scene-floor: #8b7355;
+
+  /* ============================================
+     TYPOGRAPHY
+     ============================================ */
+
+  /* Font Families */
+  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono',
+    'Courier New', monospace;
+
+  /* Participant Names */
+  --font-name-large: 16px;
+  --font-name-medium: 14px;
+  --font-name-small: 12px;
+  --font-weight-name: 600;
+
+  /* Camera Off State */
+  --font-camera-off: 18px;
+  --font-weight-camera-off: 500;
+
+  /* Control Bar */
+  --font-control-label: 13px;
+  --font-weight-control: 500;
+
+  /* Join Button */
+  --font-join-button: 18px;
+  --font-weight-join-button: 600;
+
+  /* Participant Count */
+  --font-participant-count: 12px;
+  --font-weight-participant-count: 400;
+
+  /* ============================================
+     BORDER RADIUS
+     ============================================ */
+
+  --radius-cell: 8px;
+  --radius-button: 8px;
+  --radius-join-button: 28px;
+  --radius-name-label: 4px;
+  --radius-join-preview: 12px;
+  --radius-circular: 50%;
+
+  /* ============================================
+     SHADOWS
+     ============================================ */
+
+  --shadow-default: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-active-speaker: 0 0 16px rgba(139, 159, 124, 0.4);
+  --shadow-active-speaker-pulse: 0 0 24px rgba(139, 159, 124, 0.6);
+  --shadow-join-button: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-join-button-hover: 0 6px 16px rgba(0, 0, 0, 0.4);
+
+  /* ============================================
+     TRANSITIONS
+     ============================================ */
+
+  --transition-default: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-grid: grid-template-columns 0.3s ease, grid-template-rows 0.3s ease;
+
+  /* ============================================
+     Z-INDEX
+     ============================================ */
+
+  --z-canvas: 1;
+  --z-overlay: 2;
+  --z-hover: 10;
+  --z-control-bar: 1000;
+  --z-modal: 2000;
+}

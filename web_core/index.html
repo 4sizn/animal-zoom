@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animal Zoom - 3D Video Conferencing</title>
+  <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body>
+  <!-- Join Screen (Initially visible) -->
+  <div id="join-screen" class="join-screen">
+    <div class="join-preview-container">
+      <canvas id="preview-canvas" class="join-preview-canvas"></canvas>
+
+      <div class="camera-off-overlay">
+        <svg class="camera-off-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 6.5L17 10.5V7C17 5.89543 16.1046 5 15 5H9L21 17V6.5Z" fill="currentColor"/>
+          <path d="M3.707 2.293L2.293 3.707L4.25 5.664C4.09 5.939 4 6.257 4 6.5V17.5C4 18.6046 4.89543 19.5 6 19.5H16.5L20.293 23.293L21.707 21.879L3.707 2.293Z" fill="currentColor"/>
+        </svg>
+        <p class="camera-off-text">Camera is off</p>
+      </div>
+
+      <div class="join-preview-controls">
+        <button class="join-control-btn join-control-danger" data-action="mute" aria-label="Mute microphone">
+          <svg class="join-control-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" fill="currentColor"/>
+            <path d="M17 11C17 13.76 14.76 16 12 16C9.24 16 7 13.76 7 11H5C5 14.53 7.61 17.43 11 17.92V21H13V17.92C16.39 17.43 19 14.53 19 11H17Z" fill="currentColor"/>
+          </svg>
+        </button>
+
+        <button class="join-control-btn join-control-danger" data-action="camera" aria-label="Turn off camera">
+          <svg class="join-control-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 10.5V7C17 5.89 16.1 5 15 5H6L17 16V10.5Z" fill="currentColor"/>
+            <path d="M20.5 7.25L17 10.5V16L20.5 19.25C20.8978 19.5833 21.5 19.2917 21.5 18.75V7.75C21.5 7.20833 20.8978 6.91667 20.5 7.25Z" fill="currentColor"/>
+            <path d="M1 1L23 23L21.5 24.5L0.5 3.5L1 1Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="join-btn" id="join-now-btn">Join now</button>
+  </div>
+
+  <!-- Main App Container (Initially hidden) -->
+  <div id="app" class="app-container">
+    <!-- Participant Grid (Dynamically populated) -->
+    <div class="participant-grid" data-grid-size="3x3">
+      <!-- Participant cells will be added dynamically by ParticipantManager -->
+    </div>
+
+    <!-- Control Bar -->
+    <div class="control-bar">
+      <div class="control-bar-left">
+        <span class="participant-count" id="participant-count">0 participants</span>
+      </div>
+
+      <div class="control-bar-center">
+        <button class="control-btn control-btn-danger" data-action="mute" aria-label="Mute">
+          <svg class="control-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" fill="currentColor"/>
+            <path d="M17 11C17 13.76 14.76 16 12 16C9.24 16 7 13.76 7 11H5C5 14.53 7.61 17.43 11 17.92V21H13V17.92C16.39 17.43 19 14.53 19 11H17Z" fill="currentColor"/>
+          </svg>
+          <span class="control-label">Mute</span>
+        </button>
+
+        <button class="control-btn control-btn-danger" data-action="camera" aria-label="Stop Video">
+          <svg class="control-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 10.5V7C17 5.89 16.1 5 15 5H5C3.9 5 3 5.89 3 7V17C3 18.1 3.9 19 5 19H15C16.1 19 17 18.1 17 17V13.5L21 17.5V6.5L17 10.5Z" fill="currentColor"/>
+          </svg>
+          <span class="control-label">Stop Video</span>
+        </button>
+
+        <button class="control-btn" data-action="share" aria-label="Share Screen">
+          <svg class="control-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12C9 11.76 8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5C21 3.34 19.66 2 18 2C16.34 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12C3 13.66 4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.35C15.11 18.56 15.08 18.78 15.08 19C15.08 20.61 16.39 21.92 18 21.92C19.61 21.92 20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08Z" fill="currentColor"/>
+          </svg>
+          <span class="control-label">Share</span>
+        </button>
+
+        <button class="control-btn control-btn-danger" data-action="leave" aria-label="Leave Meeting">
+          <svg class="control-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 13V11H7V8L2 12L7 16V13H16Z" fill="currentColor"/>
+            <path d="M20 3H11C9.9 3 9 3.9 9 5V9H11V5H20V19H11V15H9V19C9 20.1 9.9 21 11 21H20C21.1 21 22 20.1 22 19V5C22 3.9 21.1 3 20 3Z" fill="currentColor"/>
+          </svg>
+          <span class="control-label">Leave</span>
+        </button>
+      </div>
+
+      <div class="control-bar-right">
+        <!-- Settings, more options can be added here -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/app.ts"></script>
+</body>
+</html>

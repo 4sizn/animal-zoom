@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "WebFetch(domain:doc.babylonjs.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}

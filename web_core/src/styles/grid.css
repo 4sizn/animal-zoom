@@ -1,0 +1,296 @@
+/* Grid Layout System */
+/* Responsive CSS Grid for participant canvases */
+
+/* ============================================
+   APP CONTAINER
+   ============================================ */
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-primary);
+  display: none; /* Hidden initially, shown after join */
+}
+
+.app-container.active {
+  display: block;
+}
+
+/* ============================================
+   PARTICIPANT GRID
+   ============================================ */
+
+.participant-grid {
+  display: grid;
+  width: 100vw;
+  height: calc(100vh - var(--control-bar-height));
+  padding: var(--grid-padding-medium);
+  gap: var(--grid-gap-medium);
+  box-sizing: border-box;
+  transition: var(--transition-grid);
+}
+
+/* ============================================
+   GRID SIZE CONFIGURATIONS
+   ============================================ */
+
+/* Single Participant (1 participant) */
+.participant-grid[data-grid-size="1x1"] {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  padding: var(--grid-padding-large);
+  place-items: center;
+}
+
+.participant-grid[data-grid-size="1x1"] .participant-cell {
+  max-width: 1280px;
+  aspect-ratio: 16 / 9;
+}
+
+/* 2x2 Grid (2-4 participants) */
+.participant-grid[data-grid-size="2x2"] {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: var(--grid-gap-large);
+  padding: 16px;
+}
+
+/* 3x3 Grid (5-9 participants) */
+.participant-grid[data-grid-size="3x3"] {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: var(--grid-gap-medium);
+  padding: var(--grid-padding-medium);
+}
+
+/* 4x4 Grid (10-16 participants) */
+.participant-grid[data-grid-size="4x4"] {
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: var(--grid-gap-small);
+  padding: var(--grid-padding-small);
+}
+
+/* ============================================
+   PARTICIPANT CELL
+   ============================================ */
+
+.participant-cell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-canvas-cell);
+  border: var(--border-width-default) solid var(--border-default);
+  border-radius: var(--radius-cell);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition-default);
+}
+
+/* Hover State */
+.participant-cell:hover {
+  border-color: var(--border-hover);
+  transform: scale(1.02);
+  box-shadow: var(--shadow-hover);
+  z-index: var(--z-hover);
+}
+
+/* Active Speaker State */
+.participant-cell.active-speaker {
+  border: var(--border-width-active) solid var(--border-active-speaker);
+  box-shadow: var(--shadow-active-speaker);
+  animation: speaker-pulse 2s ease-in-out infinite;
+}
+
+@keyframes speaker-pulse {
+  0%,
+  100% {
+    box-shadow: var(--shadow-active-speaker);
+    border-color: var(--border-active-speaker);
+  }
+  50% {
+    box-shadow: var(--shadow-active-speaker-pulse);
+    border-color: var(--accent-green-hover);
+  }
+}
+
+/* Camera Off State */
+.participant-cell.camera-off {
+  background: var(--bg-camera-off);
+}
+
+.participant-cell.camera-off .participant-canvas {
+  display: none;
+}
+
+.participant-cell.camera-off::before {
+  content: 'Camera is off';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-camera-off);
+  font-weight: var(--font-weight-camera-off);
+  color: var(--text-secondary);
+  font-family: var(--font-primary);
+  text-align: center;
+  z-index: var(--z-overlay);
+}
+
+/* ============================================
+   CANVAS
+   ============================================ */
+
+.participant-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  z-index: var(--z-canvas);
+}
+
+/* ============================================
+   OVERLAY ELEMENTS
+   ============================================ */
+
+.participant-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  z-index: var(--z-overlay);
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+/* Name Label */
+.participant-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-name-medium);
+  font-weight: var(--font-weight-name);
+  color: var(--text-primary);
+  background: var(--overlay-dark);
+  padding: 4px 12px;
+  border-radius: var(--radius-name-label);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* Participant Indicators (Muted, etc.) */
+.participant-indicators {
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+/* Muted Indicator */
+.muted-indicator {
+  display: none;
+  width: 32px;
+  height: 32px;
+  background: var(--accent-red);
+  border-radius: var(--radius-circular);
+  align-items: center;
+  justify-content: center;
+}
+
+.participant-cell.muted .muted-indicator {
+  display: flex;
+}
+
+.muted-indicator svg {
+  width: 18px;
+  height: 18px;
+  fill: white;
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+/* Desktop Large: 1920px+ */
+@media (min-width: 1920px) {
+  .participant-grid {
+    padding: var(--grid-padding-large);
+  }
+
+  .participant-grid[data-grid-size="3x3"] {
+    gap: var(--grid-gap-large);
+  }
+
+  .participant-name {
+    font-size: var(--font-name-large);
+  }
+}
+
+/* Tablet: 768px - 1279px */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .participant-grid {
+    height: calc(100vh - var(--control-bar-height-mobile));
+  }
+
+  .participant-grid[data-grid-size="3x3"],
+  .participant-grid[data-grid-size="4x4"] {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  .participant-name {
+    font-size: var(--font-name-small);
+    padding: 3px 10px;
+  }
+
+  .muted-indicator {
+    width: 28px;
+    height: 28px;
+  }
+
+  .muted-indicator svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Mobile: <768px */
+@media (max-width: 767px) {
+  .participant-grid {
+    height: calc(100vh - var(--control-bar-height-mobile));
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 1fr !important;
+    padding: var(--grid-padding-small);
+  }
+
+  .participant-cell:hover {
+    transform: none;
+  }
+
+  .participant-name {
+    font-size: var(--font-name-small);
+    padding: 3px 8px;
+  }
+
+  .muted-indicator {
+    width: 24px;
+    height: 24px;
+  }
+
+  .muted-indicator svg {
+    width: 14px;
+    height: 14px;
+  }
+}
