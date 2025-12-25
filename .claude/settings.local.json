@@ -12,7 +12,20 @@
       "Bash(nvm install:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(tree:*)",
+      "Bash(lsof:*)",
+      "Bash(netstat:*)",
+      "Bash(docker-compose:*)",
+      "Bash(docker version:*)",
+      "Bash(sudo service docker:*)",
+      "Bash(whereis:*)",
+      "Bash(echo:*)",
+      "Bash(docker:*)",
+      "Bash(docker compose:*)",
+      "Bash(make ps:*)",
+      "Bash(make logs-api:*)",
+      "Bash(git add:*)"
     ]
   }
 }

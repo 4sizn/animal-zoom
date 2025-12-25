@@ -1,0 +1,5 @@
+# Temporary test file for PostgreSQL service validation
+# This file will be deleted after Phase 2 verification
+
+include:
+  - docker/docker-compose.services.yml
