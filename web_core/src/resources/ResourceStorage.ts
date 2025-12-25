@@ -6,11 +6,12 @@
  */
 
 import type { ParticipantResourceConfig } from "./ResourceConfig";
+import type { IResourceStorage } from "./IResourceStorage";
 
 /**
  * Manages storage and retrieval of participant resource configurations using LocalStorage.
  */
-export class ResourceStorage {
+export class ResourceStorage implements IResourceStorage {
   private readonly prefix = "animal-zoom:resource:";
 
   /**

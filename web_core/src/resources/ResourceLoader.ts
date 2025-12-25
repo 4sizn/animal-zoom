@@ -6,7 +6,7 @@
  */
 
 import type { ParticipantResourceConfig } from "./ResourceConfig";
-import type { ResourceStorage } from "./ResourceStorage";
+import type { IResourceStorage } from "./IResourceStorage";
 import { DefaultConfigs } from "./DefaultConfigs";
 
 /**
@@ -27,11 +27,11 @@ interface CacheEntry {
  * Uses LRU eviction strategy when cache is full.
  */
 export class ResourceLoader {
-  private storage: ResourceStorage;
+  private storage: IResourceStorage;
   private cache: Map<string, CacheEntry>;
   private maxCacheSize: number;
 
-  constructor(storage: ResourceStorage, options?: ResourceLoaderOptions) {
+  constructor(storage: IResourceStorage, options?: ResourceLoaderOptions) {
     this.storage = storage;
     this.cache = new Map();
     this.maxCacheSize = options?.maxCacheSize ?? 50;
@@ -118,9 +118,9 @@ export class ResourceLoader {
   /**
    * Get the underlying storage instance.
    * Useful for editors that need to save configs directly.
-   * @returns The ResourceStorage instance
+   * @returns The IResourceStorage instance
    */
-  getStorage(): ResourceStorage {
+  getStorage(): IResourceStorage {
     return this.storage;
   }
 

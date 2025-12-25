@@ -10,7 +10,8 @@
     "test": "bun test",
     "test:coverage": "bun test --coverage",
     "type-check": "tsc --noEmit",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "create-room": "bun run scripts/create-test-room.ts"
   },
   "dependencies": {
     "@babylonjs/core": "^7.37.1",
