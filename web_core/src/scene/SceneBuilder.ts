@@ -14,7 +14,10 @@ import {
   HemisphericLight,
   PointLight,
   MeshBuilder,
+  SceneLoader,
+  AbstractMesh,
 } from "@babylonjs/core";
+import "@babylonjs/loaders/glTF"; // Register GLB/GLTF loaders
 import type { CharacterConfig, RoomConfig } from "../resources/ResourceConfig";
 
 /**
@@ -39,16 +42,17 @@ export interface RoomBuildResult {
 export class SceneBuilder {
   /**
    * Builds a character mesh from configuration.
+   * Supports loading GLB/GLTF models from URLs (local or external).
    *
    * @param scene - The Babylon.js scene to add the character to
    * @param config - Character configuration with mesh data and customization
-   * @returns Character build result with mesh and optional accessories
+   * @returns Promise resolving to character build result with mesh and optional accessories
    * @throws Error if scene or config is invalid
    */
-  static buildCharacter(
+  static async buildCharacter(
     scene: Scene,
     config: CharacterConfig
-  ): CharacterBuildResult {
+  ): Promise<CharacterBuildResult> {
     if (!scene) {
       throw new Error("Invalid scene: scene is required");
     }
@@ -57,8 +61,91 @@ export class SceneBuilder {
       throw new Error("Invalid config: config is required");
     }
 
+    // Try loading from modelUrl if available
+    if (config.modelUrl) {
+      try {
+        console.log(`Loading character model from: ${config.modelUrl}`);
+
+        const result = await SceneLoader.ImportMeshAsync(
+          "", // Load all meshes
+          "", // Base URL (empty for absolute paths)
+          config.modelUrl,
+          scene
+        );
+
+        if (!result.meshes || result.meshes.length === 0) {
+          throw new Error("No meshes found in loaded model");
+        }
+
+        // Get root mesh (usually first mesh or a parent container)
+        let mesh: AbstractMesh = result.meshes[0];
+
+        // If first mesh is just a transform node, try to find actual geometry
+        if (result.meshes.length > 1 && !mesh.getTotalVertices()) {
+          mesh = result.meshes.find(m => m.getTotalVertices() > 0) || mesh;
+        }
+
+        // Normalize scale to ensure model is visible
+        // Calculate bounding box of all meshes BEFORE scaling
+        let boundingInfo = mesh.getHierarchyBoundingVectors(true);
+        const size = boundingInfo.max.subtract(boundingInfo.min);
+        const maxDimension = Math.max(size.x, size.y, size.z);
+
+        // Target size: approximately 2 units tall (same as default sphere diameter)
+        const targetSize = 2.0;
+        if (maxDimension > 0) {
+          const scaleFactor = targetSize / maxDimension;
+          mesh.scaling.scaleInPlace(scaleFactor);
+          console.log(`Normalized model scale: ${scaleFactor.toFixed(3)}x (original size: ${maxDimension.toFixed(2)})`);
+        }
+
+        // Recalculate bounding box after scaling
+        boundingInfo = mesh.getHierarchyBoundingVectors(true);
+        const center = boundingInfo.max.add(boundingInfo.min).scale(0.5);
+
+        // Center the model at origin by offsetting by its bounding box center
+        // This ensures the model's visual center is at (0, 0, 0)
+        mesh.position = center.negate();
+
+        console.log(`Model centered at origin (offset: ${center.toString()})`);
+
+        // Apply customization (colors) to all child meshes
+        if (config.customization?.colors) {
+          const colors = config.customization.colors;
+          result.meshes.forEach((m) => {
+            if (m instanceof Mesh && m.getTotalVertices() > 0) {
+              const material = new StandardMaterial(
+                `${m.name}_material`,
+                scene
+              );
+
+              // Apply primary color if available
+              if (colors.primary) {
+                const color = this.hexToColor3(colors.primary);
+                material.diffuseColor = color;
+              }
+
+              m.material = material;
+            }
+          });
+        }
+
+        console.log(`Successfully loaded model: ${result.meshes.length} meshes`);
+
+        return {
+          mesh: mesh as Mesh,
+          accessories: [],
+        };
+      } catch (error) {
+        console.error(`Failed to load model from ${config.modelUrl}:`, error);
+        console.log("Falling back to procedural sphere");
+        // Fall through to sphere fallback
+      }
+    }
+
+    // Fallback: Use serialized data or create default sphere
     if (!config.serializedData) {
-      throw new Error("Invalid config: serializedData is required");
+      throw new Error("Invalid config: either modelUrl or serializedData is required");
     }
 
     try {

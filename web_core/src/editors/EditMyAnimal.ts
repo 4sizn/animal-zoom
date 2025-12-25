@@ -126,7 +126,7 @@ export class EditMyAnimal extends EditorBase {
       );
 
       // Build character using SceneBuilder
-      const result = SceneBuilder.buildCharacter(
+      const result = await SceneBuilder.buildCharacter(
         this.scene,
         this.currentConfig.character
       );

@@ -198,7 +198,7 @@ export class ParticipantManager {
       const config = await this.resourceLoader.loadParticipantConfig(participant.id);
 
       // Build character using SceneBuilder
-      const characterResult = SceneBuilder.buildCharacter(
+      const characterResult = await SceneBuilder.buildCharacter(
         participant.scene,
         config.character
       );

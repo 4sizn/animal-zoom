@@ -13,7 +13,7 @@ describe("SceneBuilder", () => {
   });
 
   describe("buildCharacter", () => {
-    test("should build character from config", () => {
+    test("should build character from config", async () => {
       // Arrange: Create character config
       const config: CharacterConfig = {
         modelUrl: "https://example.com/model.glb",
@@ -32,7 +32,7 @@ describe("SceneBuilder", () => {
       };
 
       // Act: Build character
-      const result = SceneBuilder.buildCharacter(scene, config);
+      const result = await SceneBuilder.buildCharacter(scene, config);
 
       // Assert
       expect(result).toBeDefined();
@@ -40,7 +40,7 @@ describe("SceneBuilder", () => {
       expect(result.mesh.name).toBe("character");
     });
 
-    test("should apply customization colors", () => {
+    test("should apply customization colors", async () => {
       // Arrange
       const config: CharacterConfig = {
         modelUrl: "https://example.com/model.glb",
@@ -57,7 +57,7 @@ describe("SceneBuilder", () => {
       };
 
       // Act
-      const result = SceneBuilder.buildCharacter(scene, config);
+      const result = await SceneBuilder.buildCharacter(scene, config);
 
       // Assert
       expect(result).toBeDefined();
@@ -65,7 +65,7 @@ describe("SceneBuilder", () => {
       expect(result.mesh.material).toBeDefined();
     });
 
-    test("should position character correctly", () => {
+    test("should position character correctly", async () => {
       // Arrange
       const config: CharacterConfig = {
         modelUrl: "https://example.com/model.glb",
@@ -82,7 +82,7 @@ describe("SceneBuilder", () => {
       };
 
       // Act
-      const result = SceneBuilder.buildCharacter(scene, config);
+      const result = await SceneBuilder.buildCharacter(scene, config);
 
       // Assert
       expect(result.mesh.position.x).toBe(1);
@@ -93,21 +93,21 @@ describe("SceneBuilder", () => {
       expect(result.mesh.scaling.z).toBe(2);
     });
 
-    test("should handle missing serializedData", () => {
-      // Arrange
+    test("should handle missing serializedData", async () => {
+      // Arrange - Config with no serializedData and modelUrl that will fail to load
       const config: CharacterConfig = {
-        modelUrl: "https://example.com/model.glb",
+        modelUrl: "https://example.com/invalid.glb",
         serializedData: null,
         customization: {},
       };
 
-      // Act & Assert
-      expect(() => {
-        SceneBuilder.buildCharacter(scene, config);
-      }).toThrow();
+      // Act & Assert - Should throw because both modelUrl loading and serializedData fail
+      await expect(async () => {
+        await SceneBuilder.buildCharacter(scene, config);
+      }).toThrow("either modelUrl or serializedData is required");
     });
 
-    test("should create default sphere if mesh data is minimal", () => {
+    test("should create default sphere if mesh data is minimal", async () => {
       // Arrange: Minimal config
       const config: CharacterConfig = {
         modelUrl: "https://example.com/model.glb",
@@ -122,7 +122,7 @@ describe("SceneBuilder", () => {
       };
 
       // Act
-      const result = SceneBuilder.buildCharacter(scene, config);
+      const result = await SceneBuilder.buildCharacter(scene, config);
 
       // Assert
       expect(result).toBeDefined();
@@ -130,7 +130,7 @@ describe("SceneBuilder", () => {
       expect(result.mesh.name).toBe("character");
     });
 
-    test("should handle accessories in customization", () => {
+    test("should handle accessories in customization", async () => {
       // Arrange
       const config: CharacterConfig = {
         modelUrl: "https://example.com/model.glb",
@@ -143,7 +143,7 @@ describe("SceneBuilder", () => {
       };
 
       // Act
-      const result = SceneBuilder.buildCharacter(scene, config);
+      const result = await SceneBuilder.buildCharacter(scene, config);
 
       // Assert
       expect(result).toBeDefined();
@@ -346,7 +346,7 @@ describe("SceneBuilder", () => {
   });
 
   describe("integration", () => {
-    test("should build complete scene with character and room", () => {
+    test("should build complete scene with character and room", async () => {
       // Arrange
       const characterConfig: CharacterConfig = {
         modelUrl: "https://example.com/model.glb",
@@ -365,7 +365,7 @@ describe("SceneBuilder", () => {
       };
 
       // Act
-      const character = SceneBuilder.buildCharacter(scene, characterConfig);
+      const character = await SceneBuilder.buildCharacter(scene, characterConfig);
       const room = SceneBuilder.buildRoom(scene, roomConfig);
 
       // Assert
@@ -375,7 +375,7 @@ describe("SceneBuilder", () => {
       expect(scene.lights.length).toBeGreaterThan(0);
     });
 
-    test("should handle multiple characters in scene", () => {
+    test("should handle multiple characters in scene", async () => {
       // Arrange
       const config1: CharacterConfig = {
         modelUrl: "https://example.com/model1.glb",
@@ -394,8 +394,8 @@ describe("SceneBuilder", () => {
       };
 
       // Act
-      const char1 = SceneBuilder.buildCharacter(scene, config1);
-      const char2 = SceneBuilder.buildCharacter(scene, config2);
+      const char1 = await SceneBuilder.buildCharacter(scene, config1);
+      const char2 = await SceneBuilder.buildCharacter(scene, config2);
 
       // Assert
       expect(char1.mesh.name).toBe("character1");
@@ -405,33 +405,33 @@ describe("SceneBuilder", () => {
   });
 
   describe("error handling", () => {
-    test("should throw error for invalid scene", () => {
+    test("should throw error for invalid scene", async () => {
       const config: CharacterConfig = {
         modelUrl: "https://example.com/model.glb",
         serializedData: { mesh: { name: "test" } },
         customization: {},
       };
 
-      expect(() => {
-        SceneBuilder.buildCharacter(null as any, config);
-      }).toThrow();
+      await expect(async () => {
+        await SceneBuilder.buildCharacter(null as any, config);
+      }).toThrow("Invalid scene");
     });
 
-    test("should throw error for null config", () => {
-      expect(() => {
-        SceneBuilder.buildCharacter(scene, null as any);
-      }).toThrow();
+    test("should throw error for null config", async () => {
+      await expect(async () => {
+        await SceneBuilder.buildCharacter(scene, null as any);
+      }).toThrow("Invalid config");
     });
 
-    test("should provide helpful error messages", () => {
+    test("should provide helpful error messages", async () => {
       const config: CharacterConfig = {
-        modelUrl: "https://example.com/model.glb",
+        modelUrl: "https://example.com/invalid.glb",
         serializedData: null,
         customization: {},
       };
 
       try {
-        SceneBuilder.buildCharacter(scene, config);
+        await SceneBuilder.buildCharacter(scene, config);
         expect(true).toBe(false); // Should not reach here
       } catch (error: any) {
         expect(error.message).toBeDefined();

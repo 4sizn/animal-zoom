@@ -26,7 +26,7 @@ export class DefaultConfigs {
       participantId,
       timestamp: Date.now(),
       character: {
-        modelUrl: "https://example.com/default-character.glb",
+        modelUrl: "/models/characters/sample.glb", // Local sample GLB file
         serializedData: {
           mesh: {
             name: "character",
@@ -131,7 +131,7 @@ export class DefaultConfigs {
       participantId,
       timestamp: Date.now(),
       character: {
-        modelUrl: "https://example.com/default-character.glb",
+        modelUrl: "/models/characters/sample.glb", // Local sample GLB file
         serializedData: {
           mesh: {
             name: "character",

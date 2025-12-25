@@ -1,0 +1,100 @@
+import { plainToInstance } from 'class-transformer';
+import {
+  IsEnum,
+  IsNumber,
+  IsString,
+  validateSync,
+  IsOptional,
+} from 'class-validator';
+
+enum Environment {
+  Development = 'development',
+  Production = 'production',
+  Test = 'test',
+}
+
+/**
+ * Environment variables validation schema
+ */
+class EnvironmentVariables {
+  @IsEnum(Environment)
+  NODE_ENV: Environment;
+
+  @IsNumber()
+  PORT: number;
+
+  @IsString()
+  API_PREFIX: string;
+
+  @IsString()
+  DB_HOST: string;
+
+  @IsNumber()
+  DB_PORT: number;
+
+  @IsString()
+  DB_USERNAME: string;
+
+  @IsString()
+  DB_PASSWORD: string;
+
+  @IsString()
+  DB_DATABASE: string;
+
+  @IsString()
+  JWT_SECRET: string;
+
+  @IsString()
+  JWT_EXPIRES_IN: string;
+
+  @IsString()
+  GUEST_TOKEN_EXPIRES_IN: string;
+
+  @IsNumber()
+  WS_PORT: number;
+
+  @IsString()
+  @IsOptional()
+  RESOURCE_SERVER_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  S3_BUCKET?: string;
+
+  @IsString()
+  @IsOptional()
+  S3_REGION?: string;
+
+  @IsString()
+  @IsOptional()
+  S3_ACCESS_KEY_ID?: string;
+
+  @IsString()
+  @IsOptional()
+  S3_SECRET_ACCESS_KEY?: string;
+
+  @IsNumber()
+  MAX_PARTICIPANTS_PER_ROOM: number;
+
+  @IsNumber()
+  ROOM_IDLE_TIMEOUT_MINUTES: number;
+}
+
+/**
+ * Validates environment variables
+ */
+export function validate(config: Record<string, unknown>) {
+  const validatedConfig = plainToInstance(EnvironmentVariables, config, {
+    enableImplicitConversion: true,
+  });
+
+  const errors = validateSync(validatedConfig, {
+    skipMissingProperties: false,
+  });
+
+  if (errors.length > 0) {
+    throw new Error(errors.toString());
+  }
+
+  return validatedConfig;
+}

@@ -9,7 +9,9 @@
       "Bash(bun:*)",
       "Bash(source ~/.nvm/nvm.sh)",
       "Bash(nvm use:*)",
-      "Bash(nvm install:*)"
+      "Bash(nvm install:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)"
     ]
   }
 }
