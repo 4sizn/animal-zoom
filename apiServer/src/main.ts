@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { WsJwtAdapter } from './gateway/ws-jwt.adapter';
+import { AppModule } from './app.module.js';
+import { WsJwtAdapter } from './gateway/ws-jwt.adapter.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {

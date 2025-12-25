@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AvatarService } from './avatar.service';
-import { AvatarController } from './avatar.controller';
-import { DatabaseModule } from '../database/database.module';
-import { GatewayModule } from '../gateway/gateway.module';
+import { AvatarService } from './avatar.service.js';
+import { AvatarController } from './avatar.controller.js';
+import { DatabaseModule } from '../database/database.module.js';
+import { GatewayModule } from '../gateway/gateway.module.js';
 
 @Module({
   imports: [DatabaseModule, GatewayModule],

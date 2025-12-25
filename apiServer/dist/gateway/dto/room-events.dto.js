@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,64 +7,58 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SyncStateDto = exports.ChatMessageDto = exports.LeaveRoomEventDto = exports.JoinRoomEventDto = void 0;
-const class_validator_1 = require("class-validator");
-class JoinRoomEventDto {
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+export class JoinRoomEventDto {
     roomCode;
 }
-exports.JoinRoomEventDto = JoinRoomEventDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    IsString(),
+    IsNotEmpty(),
     __metadata("design:type", String)
 ], JoinRoomEventDto.prototype, "roomCode", void 0);
-class LeaveRoomEventDto {
+export class LeaveRoomEventDto {
     roomCode;
 }
-exports.LeaveRoomEventDto = LeaveRoomEventDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    IsString(),
+    IsNotEmpty(),
     __metadata("design:type", String)
 ], LeaveRoomEventDto.prototype, "roomCode", void 0);
-class ChatMessageDto {
+export class ChatMessageDto {
     roomCode;
     message;
 }
-exports.ChatMessageDto = ChatMessageDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    IsString(),
+    IsNotEmpty(),
     __metadata("design:type", String)
 ], ChatMessageDto.prototype, "roomCode", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    IsString(),
+    IsNotEmpty(),
     __metadata("design:type", String)
 ], ChatMessageDto.prototype, "message", void 0);
-class SyncStateDto {
+export class SyncStateDto {
     roomCode;
     position;
     rotation;
     avatarState;
 }
-exports.SyncStateDto = SyncStateDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    IsString(),
+    IsNotEmpty(),
     __metadata("design:type", String)
 ], SyncStateDto.prototype, "roomCode", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
+    IsOptional(),
     __metadata("design:type", Object)
 ], SyncStateDto.prototype, "position", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
+    IsOptional(),
     __metadata("design:type", Object)
 ], SyncStateDto.prototype, "rotation", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
+    IsOptional(),
     __metadata("design:type", Object)
 ], SyncStateDto.prototype, "avatarState", void 0);
 //# sourceMappingURL=room-events.dto.js.map

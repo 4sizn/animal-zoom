@@ -12,8 +12,8 @@ import {
   FileTypeValidator,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ResourceService, ModelResource } from './resource.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ResourceService, ModelResource } from './resource.service.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 
 @Controller('resources')
 @UseGuards(JwtAuthGuard)

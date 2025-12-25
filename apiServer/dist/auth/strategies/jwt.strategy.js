@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,14 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtStrategy = void 0;
-const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
-const passport_1 = require("@nestjs/passport");
-const passport_jwt_1 = require("passport-jwt");
-const database_service_1 = require("../../database/database.service");
-let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { DatabaseService } from '../../database/database.service.js';
+let JwtStrategy = class JwtStrategy extends PassportStrategy(Strategy) {
     configService;
     db;
     constructor(configService, db) {
@@ -24,7 +21,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
             throw new Error('JWT_SECRET is not defined');
         }
         super({
-            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
             secretOrKey: secret,
         });
@@ -38,16 +35,16 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
             .where('id', '=', payload.sub)
             .executeTakeFirst();
         if (!user) {
-            throw new common_1.UnauthorizedException('User not found');
+            throw new UnauthorizedException('User not found');
         }
         const { password: _password, ...userWithoutPassword } = user;
         return userWithoutPassword;
     }
 };
-exports.JwtStrategy = JwtStrategy;
-exports.JwtStrategy = JwtStrategy = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService,
-        database_service_1.DatabaseService])
+JwtStrategy = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [ConfigService,
+        DatabaseService])
 ], JwtStrategy);
+export { JwtStrategy };
 //# sourceMappingURL=jwt.strategy.js.map

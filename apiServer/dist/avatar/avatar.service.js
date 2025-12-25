@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,10 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AvatarService = void 0;
-const common_1 = require("@nestjs/common");
-const database_service_1 = require("../database/database.service");
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service.js';
 let AvatarService = class AvatarService {
     db;
     constructor(db) {
@@ -24,7 +21,7 @@ let AvatarService = class AvatarService {
             .where('id', '=', userId)
             .executeTakeFirst();
         if (!user) {
-            throw new common_1.NotFoundException('User not found');
+            throw new NotFoundException('User not found');
         }
         const defaultConfig = {
             modelUrl: null,
@@ -60,9 +57,9 @@ let AvatarService = class AvatarService {
         return this.getMyAvatar(userId);
     }
 };
-exports.AvatarService = AvatarService;
-exports.AvatarService = AvatarService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [database_service_1.DatabaseService])
+AvatarService = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [DatabaseService])
 ], AvatarService);
+export { AvatarService };
 //# sourceMappingURL=avatar.service.js.map

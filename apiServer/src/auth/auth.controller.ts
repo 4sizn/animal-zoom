@@ -12,11 +12,11 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto, CreateGuestDto } from './dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CurrentUser } from './decorators/current-user.decorator';
-import { User } from '../database/schema';
+import { AuthService } from './auth.service.js';
+import { RegisterDto, LoginDto, CreateGuestDto } from './dto/index.js';
+import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
+import { CurrentUser } from './decorators/current-user.decorator.js';
+import { User } from '../database/schema/index.js';
 
 @Controller('auth')
 @ApiTags('auth')

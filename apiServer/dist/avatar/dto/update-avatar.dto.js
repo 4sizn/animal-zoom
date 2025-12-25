@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,40 +7,37 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateAvatarDto = void 0;
-const class_validator_1 = require("class-validator");
-class UpdateAvatarDto {
+import { IsOptional, IsString, Matches, IsArray } from 'class-validator';
+export class UpdateAvatarDto {
     modelUrl;
     primaryColor;
     secondaryColor;
     accessories;
 }
-exports.UpdateAvatarDto = UpdateAvatarDto;
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
+    IsOptional(),
+    IsString(),
     __metadata("design:type", String)
 ], UpdateAvatarDto.prototype, "modelUrl", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^#[0-9A-Fa-f]{6}$/, {
+    IsOptional(),
+    IsString(),
+    Matches(/^#[0-9A-Fa-f]{6}$/, {
         message: 'Primary color must be a valid hex color (e.g., #ff0000)',
     }),
     __metadata("design:type", String)
 ], UpdateAvatarDto.prototype, "primaryColor", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^#[0-9A-Fa-f]{6}$/, {
+    IsOptional(),
+    IsString(),
+    Matches(/^#[0-9A-Fa-f]{6}$/, {
         message: 'Secondary color must be a valid hex color (e.g., #00ff00)',
     }),
     __metadata("design:type", String)
 ], UpdateAvatarDto.prototype, "secondaryColor", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsArray)(),
+    IsOptional(),
+    IsArray(),
     __metadata("design:type", Array)
 ], UpdateAvatarDto.prototype, "accessories", void 0);
 //# sourceMappingURL=update-avatar.dto.js.map

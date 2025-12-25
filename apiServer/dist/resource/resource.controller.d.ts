@@ -1,4 +1,4 @@
-import { ResourceService, ModelResource } from './resource.service';
+import { ResourceService, ModelResource } from './resource.service.js';
 export declare class ResourceController {
     private resourceService;
     constructor(resourceService: ResourceService);

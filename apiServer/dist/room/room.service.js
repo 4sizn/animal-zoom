@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,11 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoomService = void 0;
-const common_1 = require("@nestjs/common");
-const database_service_1 = require("../database/database.service");
-const room_code_util_1 = require("./room-code.util");
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException, } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service.js';
+import { generateRoomCode } from './room-code.util.js';
 let RoomService = class RoomService {
     db;
     constructor(db) {
@@ -22,7 +19,7 @@ let RoomService = class RoomService {
         let roomCode;
         let codeExists = true;
         while (codeExists) {
-            roomCode = (0, room_code_util_1.generateRoomCode)();
+            roomCode = generateRoomCode();
             const existing = await this.db.db
                 .selectFrom('rooms')
                 .select('id')
@@ -66,7 +63,7 @@ let RoomService = class RoomService {
             .where('status', '=', 'active')
             .executeTakeFirst();
         if (!room) {
-            throw new common_1.NotFoundException('Room not found');
+            throw new NotFoundException('Room not found');
         }
         const participants = await this.db.db
             .selectFrom('room_participants')
@@ -103,10 +100,10 @@ let RoomService = class RoomService {
             .where('status', '=', 'active')
             .executeTakeFirst();
         if (!room) {
-            throw new common_1.NotFoundException('Room not found');
+            throw new NotFoundException('Room not found');
         }
         if (room.currentParticipants >= room.maxParticipants) {
-            throw new common_1.BadRequestException('Room is full');
+            throw new BadRequestException('Room is full');
         }
         const existingParticipant = await this.db.db
             .selectFrom('room_participants')
@@ -153,7 +150,7 @@ let RoomService = class RoomService {
             .where('code', '=', roomCode)
             .executeTakeFirst();
         if (!room) {
-            throw new common_1.NotFoundException('Room not found');
+            throw new NotFoundException('Room not found');
         }
         const participant = await this.db.db
             .selectFrom('room_participants')
@@ -163,7 +160,7 @@ let RoomService = class RoomService {
             .where('isActive', '=', true)
             .executeTakeFirst();
         if (!participant) {
-            throw new common_1.NotFoundException('You are not in this room');
+            throw new NotFoundException('You are not in this room');
         }
         await this.db.db
             .updateTable('room_participants')
@@ -205,7 +202,7 @@ let RoomService = class RoomService {
             .where('code', '=', roomCode)
             .executeTakeFirst();
         if (!room) {
-            throw new common_1.NotFoundException('Room not found');
+            throw new NotFoundException('Room not found');
         }
         const participant = await this.db.db
             .selectFrom('room_participants')
@@ -214,7 +211,7 @@ let RoomService = class RoomService {
             .where('roomId', '=', room.id)
             .executeTakeFirst();
         if (!participant || participant.role !== 'host') {
-            throw new common_1.ForbiddenException('Only the host can delete the room');
+            throw new ForbiddenException('Only the host can delete the room');
         }
         await this.db.db
             .updateTable('room_participants')
@@ -242,7 +239,7 @@ let RoomService = class RoomService {
             .where('status', '=', 'active')
             .executeTakeFirst();
         if (!room) {
-            throw new common_1.NotFoundException('Room not found');
+            throw new NotFoundException('Room not found');
         }
         const participants = await this.db.db
             .selectFrom('room_participants')
@@ -268,9 +265,9 @@ let RoomService = class RoomService {
         }));
     }
 };
-exports.RoomService = RoomService;
-exports.RoomService = RoomService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [database_service_1.DatabaseService])
+RoomService = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [DatabaseService])
 ], RoomService);
+export { RoomService };
 //# sourceMappingURL=room.service.js.map

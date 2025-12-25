@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,11 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoomConfigService = void 0;
-const common_1 = require("@nestjs/common");
-const database_service_1 = require("../database/database.service");
-const update_room_config_dto_1 = require("./dto/update-room-config.dto");
+import { Injectable, NotFoundException, ForbiddenException, } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service.js';
+import { LightingPreset, } from './dto/update-room-config.dto.js';
 let RoomConfigService = class RoomConfigService {
     db;
     constructor(db) {
@@ -26,10 +23,10 @@ let RoomConfigService = class RoomConfigService {
             .where('status', '=', 'active')
             .executeTakeFirst();
         if (!room) {
-            throw new common_1.NotFoundException('Room not found');
+            throw new NotFoundException('Room not found');
         }
         const defaultConfig = {
-            lightingPreset: update_room_config_dto_1.LightingPreset.DEFAULT,
+            lightingPreset: LightingPreset.DEFAULT,
             floorColor: '#8B4513',
             wallColor: '#ffffff',
             furniture: [],
@@ -51,7 +48,7 @@ let RoomConfigService = class RoomConfigService {
             .where('status', '=', 'active')
             .executeTakeFirst();
         if (!room) {
-            throw new common_1.NotFoundException('Room not found');
+            throw new NotFoundException('Room not found');
         }
         const participant = await this.db.db
             .selectFrom('room_participants')
@@ -61,7 +58,7 @@ let RoomConfigService = class RoomConfigService {
             .where('isActive', '=', true)
             .executeTakeFirst();
         if (!participant || participant.role !== 'host') {
-            throw new common_1.ForbiddenException('Only the host can update room config');
+            throw new ForbiddenException('Only the host can update room config');
         }
         const currentConfig = await this.getRoomConfig(roomCode);
         const newConfig = {
@@ -79,9 +76,9 @@ let RoomConfigService = class RoomConfigService {
         return newConfig;
     }
 };
-exports.RoomConfigService = RoomConfigService;
-exports.RoomConfigService = RoomConfigService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [database_service_1.DatabaseService])
+RoomConfigService = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [DatabaseService])
 ], RoomConfigService);
+export { RoomConfigService };
 //# sourceMappingURL=room-config.service.js.map

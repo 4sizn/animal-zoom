@@ -1,4 +1,4 @@
-import { validate } from '../validation.schema';
+import { validate } from '../validation.schema.js';
 
 describe('Environment Validation Schema', () => {
   const validConfig = {

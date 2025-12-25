@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ResourceService } from './resource.service';
-import { ResourceController } from './resource.controller';
-import { S3Service } from './s3.service';
-import { DatabaseModule } from '../database/database.module';
+import { ResourceService } from './resource.service.js';
+import { ResourceController } from './resource.controller.js';
+import { S3Service } from './s3.service.js';
+import { DatabaseModule } from '../database/database.module.js';
 
 @Module({
   imports: [DatabaseModule],

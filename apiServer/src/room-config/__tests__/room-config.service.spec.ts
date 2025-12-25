@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { RoomConfigService } from '../room-config.service';
-import { DatabaseService } from '../../database/database.service';
+import { RoomConfigService } from '../room-config.service.js';
+import { DatabaseService } from '../../database/database.service.js';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
-import { LightingPreset } from '../dto/update-room-config.dto';
+import { LightingPreset } from '../dto/update-room-config.dto.js';
 
 describe('RoomConfigService', () => {
   let service: RoomConfigService;

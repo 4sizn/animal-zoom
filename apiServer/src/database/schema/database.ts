@@ -1,6 +1,6 @@
-import { UsersTable } from './users';
-import { RoomsTable } from './rooms';
-import { RoomParticipantsTable } from './room-participants';
+import { UsersTable } from './users.js';
+import { RoomsTable } from './rooms.js';
+import { RoomParticipantsTable } from './room-participants.js';
 
 /**
  * Database schema interface for Kysely

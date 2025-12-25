@@ -7,12 +7,12 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { RoomConfigService } from './room-config.service';
-import { UpdateRoomConfigDto, RoomConfig } from './dto/update-room-config.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { User } from '../database/schema/users';
-import { RoomGateway } from '../gateway/room.gateway';
+import { RoomConfigService } from './room-config.service.js';
+import { UpdateRoomConfigDto, RoomConfig } from './dto/update-room-config.dto.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import { User } from '../database/schema/users.js';
+import { RoomGateway } from '../gateway/room.gateway.js';
 
 @Controller('room-configs')
 @UseGuards(JwtAuthGuard)

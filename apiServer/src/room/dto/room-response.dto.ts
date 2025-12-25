@@ -1,4 +1,4 @@
-import { Room } from '../../database/schema';
+import { Room } from '../../database/schema/index.js';
 
 export class RoomResponseDto {
   room: Room;

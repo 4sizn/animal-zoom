@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { ResourceService } from '../resource.service';
-import { S3Service } from '../s3.service';
+import { ResourceService } from '../resource.service.js';
+import { S3Service } from '../s3.service.js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('ResourceService', () => {

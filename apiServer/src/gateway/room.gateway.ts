@@ -9,13 +9,13 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
-import { RoomService } from '../room/room.service';
+import { RoomService } from '../room/room.service.js';
 import {
   JoinRoomEventDto,
   LeaveRoomEventDto,
   ChatMessageDto,
   SyncStateDto,
-} from './dto/room-events.dto';
+} from './dto/room-events.dto.js';
 
 @WebSocketGateway({
   cors: {

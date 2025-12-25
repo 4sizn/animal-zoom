@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,17 +7,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateGuestDto = void 0;
-const class_validator_1 = require("class-validator");
-class CreateGuestDto {
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+export class CreateGuestDto {
     displayName;
 }
-exports.CreateGuestDto = CreateGuestDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.MinLength)(2),
+    IsString(),
+    IsNotEmpty(),
+    MinLength(2),
     __metadata("design:type", String)
 ], CreateGuestDto.prototype, "displayName", void 0);
 //# sourceMappingURL=guest.dto.js.map

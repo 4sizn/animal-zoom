@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { User } from '../../database/schema';
+import { User } from '../../database/schema/index.js';
 
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): Omit<User, 'password'> => {

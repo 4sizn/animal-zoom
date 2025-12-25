@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { Strategy } from 'passport-jwt';
-import { DatabaseService } from '../../database/database.service';
+import { DatabaseService } from '../../database/database.service.js';
 export interface JwtPayload {
     sub: string;
     username: string;
@@ -15,7 +15,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
     constructor(configService: ConfigService, db: DatabaseService);
     validate(payload: JwtPayload): Promise<{
         id: string;
-        type: import("../../database/schema").UserType;
+        type: import("../../database/schema/users.js").UserType;
         username: string | null;
         email: string | null;
         displayName: string | null;

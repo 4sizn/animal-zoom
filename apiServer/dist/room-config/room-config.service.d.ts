@@ -1,5 +1,5 @@
-import { DatabaseService } from '../database/database.service';
-import { UpdateRoomConfigDto, RoomConfig } from './dto/update-room-config.dto';
+import { DatabaseService } from '../database/database.service.js';
+import { UpdateRoomConfigDto, RoomConfig } from './dto/update-room-config.dto.js';
 export declare class RoomConfigService {
     private db;
     constructor(db: DatabaseService);

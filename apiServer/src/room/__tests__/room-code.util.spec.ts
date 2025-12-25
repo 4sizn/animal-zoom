@@ -1,4 +1,4 @@
-import { generateRoomCode, isValidRoomCode } from '../room-code.util';
+import { generateRoomCode, isValidRoomCode } from '../room-code.util.js';
 
 describe('Room Code Utilities', () => {
   describe('generateRoomCode', () => {

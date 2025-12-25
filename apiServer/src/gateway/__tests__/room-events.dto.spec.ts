@@ -4,7 +4,7 @@ import {
   JoinRoomEventDto,
   ChatMessageDto,
   SyncStateDto,
-} from '../dto/room-events.dto';
+} from '../dto/room-events.dto.js';
 
 describe('Room Events DTOs', () => {
   describe('JoinRoomEventDto', () => {

@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -12,17 +11,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var RoomGateway_1;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoomGateway = void 0;
-const websockets_1 = require("@nestjs/websockets");
-const socket_io_1 = require("socket.io");
-const common_1 = require("@nestjs/common");
-const room_service_1 = require("../room/room.service");
-const room_events_dto_1 = require("./dto/room-events.dto");
+import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket, } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { Logger } from '@nestjs/common';
+import { RoomService } from '../room/room.service.js';
+import { JoinRoomEventDto, LeaveRoomEventDto, ChatMessageDto, SyncStateDto, } from './dto/room-events.dto.js';
 let RoomGateway = RoomGateway_1 = class RoomGateway {
     roomService;
     server;
-    logger = new common_1.Logger(RoomGateway_1.name);
+    logger = new Logger(RoomGateway_1.name);
     userRooms = new Map();
     constructor(roomService) {
         this.roomService = roomService;
@@ -187,61 +184,61 @@ let RoomGateway = RoomGateway_1 = class RoomGateway {
         this.logger.log(`Room config updated for room ${roomCode}`);
     }
 };
-exports.RoomGateway = RoomGateway;
 __decorate([
-    (0, websockets_1.WebSocketServer)(),
-    __metadata("design:type", socket_io_1.Server)
+    WebSocketServer(),
+    __metadata("design:type", Server)
 ], RoomGateway.prototype, "server", void 0);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('room:join'),
-    __param(0, (0, websockets_1.MessageBody)()),
-    __param(1, (0, websockets_1.ConnectedSocket)()),
+    SubscribeMessage('room:join'),
+    __param(0, MessageBody()),
+    __param(1, ConnectedSocket()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [room_events_dto_1.JoinRoomEventDto,
-        socket_io_1.Socket]),
+    __metadata("design:paramtypes", [JoinRoomEventDto,
+        Socket]),
     __metadata("design:returntype", Promise)
 ], RoomGateway.prototype, "handleJoinRoom", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('room:leave'),
-    __param(0, (0, websockets_1.MessageBody)()),
-    __param(1, (0, websockets_1.ConnectedSocket)()),
+    SubscribeMessage('room:leave'),
+    __param(0, MessageBody()),
+    __param(1, ConnectedSocket()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [room_events_dto_1.LeaveRoomEventDto,
-        socket_io_1.Socket]),
+    __metadata("design:paramtypes", [LeaveRoomEventDto,
+        Socket]),
     __metadata("design:returntype", Promise)
 ], RoomGateway.prototype, "handleLeaveRoom", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('chat:message'),
-    __param(0, (0, websockets_1.MessageBody)()),
-    __param(1, (0, websockets_1.ConnectedSocket)()),
+    SubscribeMessage('chat:message'),
+    __param(0, MessageBody()),
+    __param(1, ConnectedSocket()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [room_events_dto_1.ChatMessageDto,
-        socket_io_1.Socket]),
+    __metadata("design:paramtypes", [ChatMessageDto,
+        Socket]),
     __metadata("design:returntype", void 0)
 ], RoomGateway.prototype, "handleChatMessage", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('state:sync'),
-    __param(0, (0, websockets_1.MessageBody)()),
-    __param(1, (0, websockets_1.ConnectedSocket)()),
+    SubscribeMessage('state:sync'),
+    __param(0, MessageBody()),
+    __param(1, ConnectedSocket()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [room_events_dto_1.SyncStateDto,
-        socket_io_1.Socket]),
+    __metadata("design:paramtypes", [SyncStateDto,
+        Socket]),
     __metadata("design:returntype", void 0)
 ], RoomGateway.prototype, "handleStateSync", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('room:getParticipants'),
-    __param(0, (0, websockets_1.MessageBody)()),
+    SubscribeMessage('room:getParticipants'),
+    __param(0, MessageBody()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], RoomGateway.prototype, "handleGetParticipants", null);
-exports.RoomGateway = RoomGateway = RoomGateway_1 = __decorate([
-    (0, websockets_1.WebSocketGateway)({
+RoomGateway = RoomGateway_1 = __decorate([
+    WebSocketGateway({
         cors: {
             origin: '*',
             credentials: true,
         },
     }),
-    __metadata("design:paramtypes", [room_service_1.RoomService])
+    __metadata("design:paramtypes", [RoomService])
 ], RoomGateway);
+export { RoomGateway };
 //# sourceMappingURL=room.gateway.js.map

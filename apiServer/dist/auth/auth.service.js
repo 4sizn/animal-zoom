@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,13 +7,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthService = void 0;
-const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
-const config_1 = require("@nestjs/config");
-const database_service_1 = require("../database/database.service");
-const password_service_1 = require("./password.service");
+import { Injectable, ConflictException, UnauthorizedException, } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { DatabaseService } from '../database/database.service.js';
+import { PasswordService } from './password.service.js';
 let AuthService = class AuthService {
     db;
     jwtService;
@@ -33,7 +30,7 @@ let AuthService = class AuthService {
             .where((eb) => eb.or([eb('username', '=', dto.username), eb('email', '=', dto.email)]))
             .executeTakeFirst();
         if (existingUser) {
-            throw new common_1.ConflictException('Username or email already exists');
+            throw new ConflictException('Username or email already exists');
         }
         const hashedPassword = await this.passwordService.hash(dto.password);
         const user = await this.db.db
@@ -62,11 +59,11 @@ let AuthService = class AuthService {
             .where('username', '=', dto.username)
             .executeTakeFirst();
         if (!user || !user.password) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
+            throw new UnauthorizedException('Invalid credentials');
         }
         const isPasswordValid = await this.passwordService.compare(dto.password, user.password);
         if (!isPasswordValid) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
+            throw new UnauthorizedException('Invalid credentials');
         }
         const accessToken = this.generateToken(user.id, user.username, user.type);
         const { password: _password, ...userWithoutPassword } = user;
@@ -106,7 +103,7 @@ let AuthService = class AuthService {
             .where('id', '=', userId)
             .executeTakeFirst();
         if (!user) {
-            throw new common_1.UnauthorizedException('User not found');
+            throw new UnauthorizedException('User not found');
         }
         const { password: _password, ...userWithoutPassword } = user;
         return userWithoutPassword;
@@ -120,12 +117,12 @@ let AuthService = class AuthService {
         return this.jwtService.sign(payload);
     }
 };
-exports.AuthService = AuthService;
-exports.AuthService = AuthService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [database_service_1.DatabaseService,
-        jwt_1.JwtService,
-        password_service_1.PasswordService,
-        config_1.ConfigService])
+AuthService = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [DatabaseService,
+        JwtService,
+        PasswordService,
+        ConfigService])
 ], AuthService);
+export { AuthService };
 //# sourceMappingURL=auth.service.js.map

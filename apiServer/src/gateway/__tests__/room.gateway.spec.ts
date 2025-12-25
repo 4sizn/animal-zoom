@@ -5,8 +5,8 @@
 /* eslint-disable @typescript-eslint/await-thenable */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { RoomGateway } from '../room.gateway';
-import { RoomService } from '../../room/room.service';
+import { RoomGateway } from '../room.gateway.js';
+import { RoomService } from '../../room/room.service.js';
 import { Socket } from 'socket.io';
 
 describe('RoomGateway', () => {

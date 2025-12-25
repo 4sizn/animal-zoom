@@ -1,4 +1,4 @@
-import { User, NewUser, UserUpdate, UserType } from '../users';
+import { User, NewUser, UserUpdate, UserType } from '../users.js';
 
 describe('User Schema Types', () => {
   it('should define UserType enum', () => {

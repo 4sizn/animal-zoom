@@ -3,12 +3,12 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
+import { DatabaseService } from '../database/database.service.js';
 import {
   UpdateRoomConfigDto,
   RoomConfig,
   LightingPreset,
-} from './dto/update-room-config.dto';
+} from './dto/update-room-config.dto.js';
 
 @Injectable()
 export class RoomConfigService {

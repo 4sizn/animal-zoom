@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { AvatarService } from '../avatar.service';
-import { DatabaseService } from '../../database/database.service';
+import { AvatarService } from '../avatar.service.js';
+import { DatabaseService } from '../../database/database.service.js';
 import { NotFoundException } from '@nestjs/common';
 
 describe('AvatarService', () => {

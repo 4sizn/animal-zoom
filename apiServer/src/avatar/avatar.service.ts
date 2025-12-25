@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
-import { UpdateAvatarDto, AvatarConfig } from './dto/update-avatar.dto';
+import { DatabaseService } from '../database/database.service.js';
+import { UpdateAvatarDto, AvatarConfig } from './dto/update-avatar.dto.js';
 
 @Injectable()
 export class AvatarService {

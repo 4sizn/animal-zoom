@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,36 +7,33 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.RegisterDto = void 0;
-const class_validator_1 = require("class-validator");
-class RegisterDto {
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+export class RegisterDto {
     username;
     email;
     password;
     displayName;
 }
-exports.RegisterDto = RegisterDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.MinLength)(3),
+    IsString(),
+    IsNotEmpty(),
+    MinLength(3),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "username", void 0);
 __decorate([
-    (0, class_validator_1.IsEmail)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    IsEmail(),
+    IsNotEmpty(),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "email", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.MinLength)(6),
+    IsString(),
+    IsNotEmpty(),
+    MinLength(6),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "password", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    IsString(),
+    IsNotEmpty(),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "displayName", void 0);
 //# sourceMappingURL=register.dto.js.map

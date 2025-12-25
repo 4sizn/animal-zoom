@@ -1,7 +1,7 @@
-import { RoomConfigService } from './room-config.service';
-import { UpdateRoomConfigDto, RoomConfig } from './dto/update-room-config.dto';
-import { User } from '../database/schema/users';
-import { RoomGateway } from '../gateway/room.gateway';
+import { RoomConfigService } from './room-config.service.js';
+import { UpdateRoomConfigDto, RoomConfig } from './dto/update-room-config.dto.js';
+import { User } from '../database/schema/users.js';
+import { RoomGateway } from '../gateway/room.gateway.js';
 export declare class RoomConfigController {
     private roomConfigService;
     private roomGateway;

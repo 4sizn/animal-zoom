@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import databaseConfig from './config/database.config';
-import { validate } from './config/validation.schema';
-import { DatabaseModule } from './database/database.module';
-import { AuthModule } from './auth/auth.module';
-import { RoomModule } from './room/room.module';
-import { GatewayModule } from './gateway/gateway.module';
-import { AvatarModule } from './avatar/avatar.module';
-import { RoomConfigModule } from './room-config/room-config.module';
-import { ResourceModule } from './resource/resource.module';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
+import databaseConfig from './config/database.config.js';
+import { validate } from './config/validation.schema.js';
+import { DatabaseModule } from './database/database.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { RoomModule } from './room/room.module.js';
+import { GatewayModule } from './gateway/gateway.module.js';
+import { AvatarModule } from './avatar/avatar.module.js';
+import { RoomConfigModule } from './room-config/room-config.module.js';
+import { ResourceModule } from './resource/resource.module.js';
 
 @Module({
   imports: [

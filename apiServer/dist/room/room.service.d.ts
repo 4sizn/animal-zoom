@@ -1,5 +1,5 @@
-import { DatabaseService } from '../database/database.service';
-import { CreateRoomDto, RoomResponseDto, RoomWithParticipantsDto } from './dto';
+import { DatabaseService } from '../database/database.service.js';
+import { CreateRoomDto, RoomResponseDto, RoomWithParticipantsDto } from './dto/index.js';
 export declare class RoomService {
     private db;
     constructor(db: DatabaseService);
@@ -12,7 +12,7 @@ export declare class RoomService {
         id: string;
         userId: string;
         displayName: string;
-        role: import("../database/schema").ParticipantRole;
+        role: import("../database/schema/room-participants.js").ParticipantRole;
         isActive: boolean;
         joinedAt: Date | null;
     }[]>;

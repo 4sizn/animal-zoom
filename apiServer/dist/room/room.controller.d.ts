@@ -1,12 +1,12 @@
-import { RoomService } from './room.service';
-import { CreateRoomDto } from './dto';
-import { User } from '../database/schema';
+import { RoomService } from './room.service.js';
+import { CreateRoomDto } from './dto/index.js';
+import { User } from '../database/schema/index.js';
 export declare class RoomController {
     private roomService;
     constructor(roomService: RoomService);
-    createRoom(user: Omit<User, 'password'>, dto: CreateRoomDto): Promise<import("./dto").RoomResponseDto>;
-    getRoomByCode(roomCode: string): Promise<import("./dto").RoomWithParticipantsDto>;
-    joinRoom(user: Omit<User, 'password'>, roomCode: string): Promise<import("./dto").RoomResponseDto>;
+    createRoom(user: Omit<User, 'password'>, dto: CreateRoomDto): Promise<import("./dto/room-response.dto.js").RoomResponseDto>;
+    getRoomByCode(roomCode: string): Promise<import("./dto/room-response.dto.js").RoomWithParticipantsDto>;
+    joinRoom(user: Omit<User, 'password'>, roomCode: string): Promise<import("./dto/room-response.dto.js").RoomResponseDto>;
     leaveRoom(user: Omit<User, 'password'>, roomCode: string): Promise<{
         message: string;
     }>;
@@ -17,7 +17,7 @@ export declare class RoomController {
         id: string;
         userId: string;
         displayName: string;
-        role: import("../database/schema").ParticipantRole;
+        role: import("../database/schema/room-participants.js").ParticipantRole;
         isActive: boolean;
         joinedAt: Date | null;
     }[]>;

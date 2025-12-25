@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,11 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ResourceService = void 0;
-const common_1 = require("@nestjs/common");
-const s3_service_1 = require("./s3.service");
-const uuid_1 = require("uuid");
+import { Injectable, BadRequestException, NotFoundException, } from '@nestjs/common';
+import { S3Service } from './s3.service.js';
+import { v4 as uuidv4 } from 'uuid';
 let ResourceService = class ResourceService {
     s3Service;
     modelPrefix = 'models/';
@@ -26,16 +23,16 @@ let ResourceService = class ResourceService {
     }
     validateFile(file) {
         if (file.size > this.maxFileSize) {
-            throw new common_1.BadRequestException(`File size exceeds maximum allowed size of ${this.maxFileSize / (1024 * 1024)}MB`);
+            throw new BadRequestException(`File size exceeds maximum allowed size of ${this.maxFileSize / (1024 * 1024)}MB`);
         }
         const isGlbFile = file.originalname.toLowerCase().endsWith('.glb') ||
             file.mimetype === 'model/gltf-binary';
         if (!isGlbFile) {
-            throw new common_1.BadRequestException('Only GLB (glTF Binary) files are allowed');
+            throw new BadRequestException('Only GLB (glTF Binary) files are allowed');
         }
         if (!this.allowedMimeTypes.includes(file.mimetype)) {
             if (!file.originalname.toLowerCase().endsWith('.glb')) {
-                throw new common_1.BadRequestException(`Invalid file type. Allowed types: ${this.allowedMimeTypes.join(', ')}`);
+                throw new BadRequestException(`Invalid file type. Allowed types: ${this.allowedMimeTypes.join(', ')}`);
             }
         }
     }
@@ -55,14 +52,14 @@ let ResourceService = class ResourceService {
         const models = await this.getAvailableModels();
         const model = models.find((m) => m.id === id);
         if (!model) {
-            throw new common_1.NotFoundException(`Model with id ${id} not found`);
+            throw new NotFoundException(`Model with id ${id} not found`);
         }
         const key = `${this.modelPrefix}${id}.glb`;
         return this.s3Service.generateSignedUrl(key, 3600);
     }
     async uploadModel(file) {
         this.validateFile(file);
-        const id = (0, uuid_1.v4)();
+        const id = uuidv4();
         const key = `${this.modelPrefix}${id}.glb`;
         const result = await this.s3Service.uploadFile(file, key);
         return {
@@ -79,7 +76,7 @@ let ResourceService = class ResourceService {
             await this.s3Service.deleteFile(key);
         }
         catch (_error) {
-            throw new common_1.NotFoundException(`Model with id ${id} not found`);
+            throw new NotFoundException(`Model with id ${id} not found`);
         }
     }
     extractModelId(key) {
@@ -96,9 +93,9 @@ let ResourceService = class ResourceService {
         return `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
     }
 };
-exports.ResourceService = ResourceService;
-exports.ResourceService = ResourceService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [s3_service_1.S3Service])
+ResourceService = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [S3Service])
 ], ResourceService);
+export { ResourceService };
 //# sourceMappingURL=resource.service.js.map

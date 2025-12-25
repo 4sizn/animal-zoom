@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { DatabaseService } from '../database/database.service';
-import { PasswordService } from './password.service';
-import { RegisterDto, LoginDto, CreateGuestDto, AuthResponseDto } from './dto';
+import { DatabaseService } from '../database/database.service.js';
+import { PasswordService } from './password.service.js';
+import { RegisterDto, LoginDto, CreateGuestDto, AuthResponseDto } from './dto/index.js';
 export declare class AuthService {
     private db;
     private jwtService;
@@ -14,7 +14,7 @@ export declare class AuthService {
     createGuest(dto: CreateGuestDto): Promise<AuthResponseDto>;
     me(userId: string): Promise<{
         id: string;
-        type: import("../database/schema").UserType;
+        type: import("../database/schema/users.js").UserType;
         username: string | null;
         email: string | null;
         displayName: string | null;

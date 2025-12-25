@@ -1,4 +1,4 @@
-import { Room, NewRoom, RoomUpdate, RoomStatus } from '../rooms';
+import { Room, NewRoom, RoomUpdate, RoomStatus } from '../rooms.js';
 
 describe('Room Schema Types', () => {
   it('should define RoomStatus enum', () => {

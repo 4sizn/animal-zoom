@@ -1,5 +1,5 @@
-import { DatabaseService } from '../database/database.service';
-import { UpdateAvatarDto, AvatarConfig } from './dto/update-avatar.dto';
+import { DatabaseService } from '../database/database.service.js';
+import { UpdateAvatarDto, AvatarConfig } from './dto/update-avatar.dto.js';
 export declare class AvatarService {
     private db;
     constructor(db: DatabaseService);

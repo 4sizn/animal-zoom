@@ -1,7 +1,7 @@
 import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { RoomService } from '../room/room.service';
-import { JoinRoomEventDto, LeaveRoomEventDto, ChatMessageDto, SyncStateDto } from './dto/room-events.dto';
+import { RoomService } from '../room/room.service.js';
+import { JoinRoomEventDto, LeaveRoomEventDto, ChatMessageDto, SyncStateDto } from './dto/room-events.dto.js';
 export declare class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private roomService;
     server: Server;
@@ -46,7 +46,7 @@ export declare class RoomGateway implements OnGatewayConnection, OnGatewayDiscon
             id: string;
             userId: string;
             displayName: string;
-            role: import("../database/schema").ParticipantRole;
+            role: import("../database/schema/room-participants.js").ParticipantRole;
             isActive: boolean;
             joinedAt: Date | null;
         }[];

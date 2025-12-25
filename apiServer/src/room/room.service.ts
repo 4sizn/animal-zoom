@@ -4,9 +4,9 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
-import { CreateRoomDto, RoomResponseDto, RoomWithParticipantsDto } from './dto';
-import { generateRoomCode } from './room-code.util';
+import { DatabaseService } from '../database/database.service.js';
+import { CreateRoomDto, RoomResponseDto, RoomWithParticipantsDto } from './dto/index.js';
+import { generateRoomCode } from './room-code.util.js';
 
 @Injectable()
 export class RoomService {

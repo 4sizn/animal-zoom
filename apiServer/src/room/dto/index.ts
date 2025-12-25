@@ -1,3 +1,3 @@
-export * from './create-room.dto';
-export * from './join-room.dto';
-export * from './room-response.dto';
+export * from './create-room.dto.js';
+export * from './join-room.dto.js';
+export * from './room-response.dto.js';

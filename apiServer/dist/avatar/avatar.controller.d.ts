@@ -1,7 +1,7 @@
-import { AvatarService } from './avatar.service';
-import { UpdateAvatarDto, AvatarConfig } from './dto/update-avatar.dto';
-import { User } from '../database/schema/users';
-import { RoomGateway } from '../gateway/room.gateway';
+import { AvatarService } from './avatar.service.js';
+import { UpdateAvatarDto, AvatarConfig } from './dto/update-avatar.dto.js';
+import { User } from '../database/schema/users.js';
+import { RoomGateway } from '../gateway/room.gateway.js';
 export declare class AvatarController {
     private avatarService;
     private roomGateway;

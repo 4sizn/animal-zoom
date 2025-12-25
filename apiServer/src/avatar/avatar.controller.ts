@@ -7,12 +7,12 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { AvatarService } from './avatar.service';
-import { UpdateAvatarDto, AvatarConfig } from './dto/update-avatar.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { User } from '../database/schema/users';
-import { RoomGateway } from '../gateway/room.gateway';
+import { AvatarService } from './avatar.service.js';
+import { UpdateAvatarDto, AvatarConfig } from './dto/update-avatar.dto.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import { User } from '../database/schema/users.js';
+import { RoomGateway } from '../gateway/room.gateway.js';
 
 @Controller('avatars')
 @UseGuards(JwtAuthGuard)

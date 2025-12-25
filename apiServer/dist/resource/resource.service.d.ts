@@ -1,4 +1,4 @@
-import { S3Service } from './s3.service';
+import { S3Service } from './s3.service.js';
 export interface ModelResource {
     id: string;
     name: string;

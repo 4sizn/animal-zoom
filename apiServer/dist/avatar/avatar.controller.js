@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -11,14 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AvatarController = void 0;
-const common_1 = require("@nestjs/common");
-const avatar_service_1 = require("./avatar.service");
-const update_avatar_dto_1 = require("./dto/update-avatar.dto");
-const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
-const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
-const room_gateway_1 = require("../gateway/room.gateway");
+import { Controller, Get, Put, Body, Param, UseGuards, ValidationPipe, } from '@nestjs/common';
+import { AvatarService } from './avatar.service.js';
+import { UpdateAvatarDto } from './dto/update-avatar.dto.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import { RoomGateway } from '../gateway/room.gateway.js';
 let AvatarController = class AvatarController {
     avatarService;
     roomGateway;
@@ -38,33 +35,33 @@ let AvatarController = class AvatarController {
         return this.avatarService.getAvatarByUserId(userId);
     }
 };
-exports.AvatarController = AvatarController;
 __decorate([
-    (0, common_1.Get)('me'),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    Get('me'),
+    __param(0, CurrentUser()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AvatarController.prototype, "getMyAvatar", null);
 __decorate([
-    (0, common_1.Put)('me'),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
-    __param(1, (0, common_1.Body)(common_1.ValidationPipe)),
+    Put('me'),
+    __param(0, CurrentUser()),
+    __param(1, Body(ValidationPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, update_avatar_dto_1.UpdateAvatarDto]),
+    __metadata("design:paramtypes", [Object, UpdateAvatarDto]),
     __metadata("design:returntype", Promise)
 ], AvatarController.prototype, "updateMyAvatar", null);
 __decorate([
-    (0, common_1.Get)(':userId'),
-    __param(0, (0, common_1.Param)('userId')),
+    Get(':userId'),
+    __param(0, Param('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AvatarController.prototype, "getAvatar", null);
-exports.AvatarController = AvatarController = __decorate([
-    (0, common_1.Controller)('avatars'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __metadata("design:paramtypes", [avatar_service_1.AvatarService,
-        room_gateway_1.RoomGateway])
+AvatarController = __decorate([
+    Controller('avatars'),
+    UseGuards(JwtAuthGuard),
+    __metadata("design:paramtypes", [AvatarService,
+        RoomGateway])
 ], AvatarController);
+export { AvatarController };
 //# sourceMappingURL=avatar.controller.js.map

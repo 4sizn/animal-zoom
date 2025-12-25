@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.WsJwtAdapter = void 0;
-const platform_socket_io_1 = require("@nestjs/platform-socket.io");
-const jwt_1 = require("@nestjs/jwt");
-class WsJwtAdapter extends platform_socket_io_1.IoAdapter {
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { JwtService } from '@nestjs/jwt';
+export class WsJwtAdapter extends IoAdapter {
     app;
     jwtService;
     constructor(app) {
         super(app);
         this.app = app;
-        this.jwtService = app.get(jwt_1.JwtService);
+        this.jwtService = app.get(JwtService);
     }
     createIOServer(port, options) {
         const server = super.createIOServer(port, {
@@ -37,5 +34,4 @@ class WsJwtAdapter extends platform_socket_io_1.IoAdapter {
         return server;
     }
 }
-exports.WsJwtAdapter = WsJwtAdapter;
 //# sourceMappingURL=ws-jwt.adapter.js.map
