@@ -28,7 +28,8 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd Docker environment for PostgreSQL and API server\n\n- Configure PostgreSQL 16 Alpine container with health checks\n- Containerize API server with multi-stage Dockerfile \\(Bun\\)\n- Set up Docker Compose with service orchestration\n- Add Makefile for convenient Docker commands\n- Implement automatic database migration on startup\n- Add comprehensive documentation in PLAN_docker-environment.md\n- Configure .gitignore for Docker volumes and build artifacts\n- Update Claude Code settings for Docker command permissions\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(grep:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

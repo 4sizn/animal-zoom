@@ -23,17 +23,20 @@ export interface JoinScreenCallbacks {
 export class JoinScreenEnhanced {
   private joinScreen: HTMLElement | null;
   private joinButton: HTMLButtonElement | null;
+  private createRoomButton: HTMLButtonElement | null;
   private muteButton: HTMLButtonElement | null = null;
   private cameraButton: HTMLButtonElement | null = null;
   private cameraOffOverlay: HTMLElement | null;
   private displayNameInput: HTMLInputElement | null;
   private roomCodeInput: HTMLInputElement | null;
   private errorMessage: HTMLElement | null;
+  private successMessage: HTMLElement | null;
   private loadingIndicator: HTMLElement | null;
 
   private isMuted: boolean = false;
   private isCameraOff: boolean = true;
   private isJoining: boolean = false;
+  private isCreatingRoom: boolean = false;
 
   private callbacks: JoinScreenCallbacks;
 
@@ -43,10 +46,12 @@ export class JoinScreenEnhanced {
     // Get elements
     this.joinScreen = document.getElementById('join-screen');
     this.joinButton = document.getElementById('join-now-btn') as HTMLButtonElement;
+    this.createRoomButton = document.getElementById('create-room-btn') as HTMLButtonElement;
     this.cameraOffOverlay = this.joinScreen?.querySelector('.camera-off-overlay') as HTMLElement;
     this.displayNameInput = document.getElementById('display-name-input') as HTMLInputElement;
     this.roomCodeInput = document.getElementById('room-code-input') as HTMLInputElement;
     this.errorMessage = document.getElementById('join-error-message') as HTMLElement;
+    this.successMessage = document.getElementById('join-success-message') as HTMLElement;
     this.loadingIndicator = document.getElementById('join-loading') as HTMLElement;
 
     // Get control buttons
@@ -75,6 +80,11 @@ export class JoinScreenEnhanced {
     // Join button
     this.joinButton?.addEventListener('click', () => {
       this.handleJoin();
+    });
+
+    // Create Room button
+    this.createRoomButton?.addEventListener('click', () => {
+      this.handleCreateRoom();
     });
 
     // Mute button
@@ -181,8 +191,14 @@ export class JoinScreenEnhanced {
 
     // Update join button state
     if (this.joinButton) {
-      this.joinButton.disabled = this.isJoining;
+      this.joinButton.disabled = this.isJoining || this.isCreatingRoom;
       this.joinButton.textContent = this.isJoining ? 'Joining...' : 'Join Now';
+    }
+
+    // Update create room button state
+    if (this.createRoomButton) {
+      this.createRoomButton.disabled = this.isCreatingRoom || this.isJoining;
+      this.createRoomButton.textContent = this.isCreatingRoom ? 'Creating...' : 'Create New Room';
     }
   }
 
@@ -202,6 +218,25 @@ export class JoinScreenEnhanced {
   private hideError(): void {
     if (this.errorMessage) {
       this.errorMessage.classList.add('hidden');
+    }
+  }
+
+  /**
+   * Show success message
+   */
+  private showSuccess(message: string): void {
+    if (this.successMessage) {
+      this.successMessage.textContent = message;
+      this.successMessage.classList.remove('hidden');
+    }
+  }
+
+  /**
+   * Hide success message
+   */
+  private hideSuccess(): void {
+    if (this.successMessage) {
+      this.successMessage.classList.add('hidden');
     }
   }
 
@@ -260,6 +295,7 @@ export class JoinScreenEnhanced {
     if (this.isJoining) return;
 
     this.hideError();
+    this.hideSuccess();
 
     // Validate inputs
     const validation = this.validateInputs();
@@ -359,6 +395,7 @@ export class JoinScreenEnhanced {
       this.joinScreen.style.display = 'flex';
     }
     this.hideError();
+    this.hideSuccess();
     this.displayNameInput?.focus();
   }
 
@@ -369,6 +406,70 @@ export class JoinScreenEnhanced {
     if (this.joinScreen) {
       this.joinScreen.classList.add('hidden');
       this.joinScreen.style.display = 'none';
+    }
+  }
+
+  /**
+   * Handle create room button click
+   */
+  async handleCreateRoom(): Promise<void> {
+    if (this.isCreatingRoom || this.isJoining) return;
+
+    this.hideError();
+    this.hideSuccess();
+    this.isCreatingRoom = true;
+    this.updateUI();
+    this.showLoading();
+
+    try {
+      // Create new room via API
+      const roomCode = await this.createRoom();
+
+      console.log('✅ Room created:', roomCode);
+
+      // Auto-fill room code input
+      if (this.roomCodeInput) {
+        this.roomCodeInput.value = roomCode;
+      }
+
+      // Show success message
+      this.showSuccess(`Room created successfully! Code: ${roomCode}`);
+
+      // Focus on display name input if empty, otherwise focus on join button
+      if (!this.displayNameInput?.value.trim()) {
+        this.displayNameInput?.focus();
+      } else {
+        this.joinButton?.focus();
+      }
+
+      this.hideLoading();
+
+      // Auto-hide success message after 5 seconds
+      setTimeout(() => {
+        this.hideSuccess();
+      }, 5000);
+    } catch (error: any) {
+      console.error('Failed to create room:', error);
+
+      let errorMessage = 'Failed to create room';
+
+      if (error.response?.status === 401) {
+        errorMessage = 'Authentication required. Please try again.';
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      this.showError(errorMessage);
+
+      if (this.callbacks.onError) {
+        this.callbacks.onError(errorMessage);
+      }
+    } finally {
+      this.isCreatingRoom = false;
+      this.hideLoading();
+      this.updateUI();
     }
   }
 
