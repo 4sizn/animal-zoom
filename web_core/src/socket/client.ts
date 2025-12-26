@@ -9,8 +9,8 @@ import type {
   SocketClientOptions,
   EventListeners,
   StateUpdateData,
-  ClientEvents,
-  ServerEvents,
+  // ClientEvents,
+  // ServerEvents,
 } from './types';
 import type { AvatarConfig } from '../api/types';
 

@@ -27,6 +27,7 @@ async function bootstrap() {
     await app.listen(process.env.PORT ?? 3000);
     console.log(`🚀 Application is running on: http://localhost:${process.env.PORT ?? 3000}`);
     console.log(`📚 API Documentation: http://localhost:${process.env.PORT ?? 3000}/api`);
+    console.log(`🔌 WebSocket Server: http://localhost:${process.env.WS_PORT ?? 3001}`);
 }
 void bootstrap();
 //# sourceMappingURL=main.js.map

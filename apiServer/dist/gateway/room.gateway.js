@@ -232,7 +232,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], RoomGateway.prototype, "handleGetParticipants", null);
 RoomGateway = RoomGateway_1 = __decorate([
-    WebSocketGateway({
+    WebSocketGateway(3001, {
         cors: {
             origin: '*',
             credentials: true,

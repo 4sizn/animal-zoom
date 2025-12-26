@@ -17,7 +17,7 @@ import {
   SyncStateDto,
 } from './dto/room-events.dto.js';
 
-@WebSocketGateway({
+@WebSocketGateway(3001, {
   cors: {
     origin: '*',
     credentials: true,
