@@ -91,6 +91,7 @@ export interface Participant {
 
 export interface AvatarConfig {
   modelUrl: string;
+  modelAssetId?: string;
   primaryColor: string;
   secondaryColor: string;
   accessories: string[];
@@ -98,6 +99,7 @@ export interface AvatarConfig {
 
 export interface UpdateAvatarRequest {
   modelUrl?: string;
+  modelAssetId?: string;
   primaryColor?: string;
   secondaryColor?: string;
   accessories?: string[];
@@ -135,6 +137,56 @@ export interface ResourceModel {
 export interface UploadResourceRequest {
   file: File;
   type: 'character' | 'room' | 'accessory';
+}
+
+// ==================== Asset Catalog Types ====================
+
+export enum AssetType {
+  AVATAR = 'avatar',
+  ROOM = 'room',
+  ACCESSORY = 'accessory',
+  FURNITURE = 'furniture',
+  PROP = 'prop',
+}
+
+export enum AssetStatus {
+  ACTIVE = 'active',
+  DEPRECATED = 'deprecated',
+  PENDING = 'pending',
+}
+
+export interface AssetResponseDto {
+  id: string;
+  assetType: AssetType | string;
+  name: string;
+  key: string;
+  category: string;
+  tags: string[];
+  version: string;
+  fileSize: number;
+  mimeType: string;
+  thumbnailKey?: string;
+  metadata: Record<string, any>;
+  uploadedBy: string;
+  status: AssetStatus | string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AssetFilterParams {
+  assetType?: string;
+  category?: string;
+  status?: string;
+  tags?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface AssetCatalogResponse {
+  items: AssetResponseDto[];
+  total: number;
+  page: number;
+  limit: number;
 }
 
 // ==================== WebSocket Event Types ====================

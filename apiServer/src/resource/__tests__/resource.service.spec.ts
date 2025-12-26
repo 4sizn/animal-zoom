@@ -5,6 +5,11 @@ import { ResourceService } from '../resource.service.js';
 import { S3Service } from '../s3.service.js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
+// Mock uuid module
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'test-uuid-123'),
+}));
+
 describe('ResourceService', () => {
   let service: ResourceService;
   let s3Service: jest.Mocked<S3Service>;
@@ -17,6 +22,7 @@ describe('ResourceService', () => {
       deleteFile: jest.fn(),
       getBucketName: jest.fn().mockReturnValue('test-bucket'),
       getRegion: jest.fn().mockReturnValue('us-east-1'),
+      generatePublicUrl: jest.fn((key: string) => `https://test-bucket.s3.us-east-1.amazonaws.com/${key}`),
     };
 
     const module: TestingModule = await Test.createTestingModule({

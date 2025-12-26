@@ -45,7 +45,9 @@ async function bootstrap() {
   console.log(
     `📚 API Documentation: http://localhost:${process.env.PORT ?? 3000}/api`,
   );
-  console.log(`🔌 WebSocket Server: http://localhost:${process.env.WS_PORT ?? 3001}`);
+  console.log(
+    `🔌 WebSocket Server: http://localhost:${process.env.WS_PORT ?? 3001}`,
+  );
 }
 
 void bootstrap();

@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 import { Pool } from 'pg';
 import { promises as fs } from 'fs';
 import {
@@ -11,6 +12,10 @@ import { config } from 'dotenv';
 
 // Load environment variables
 config();
+
+// ES module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function migrateToLatest() {
   const db = new Kysely<any>({

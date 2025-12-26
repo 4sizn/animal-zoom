@@ -11,6 +11,7 @@ import { GatewayModule } from './gateway/gateway.module.js';
 import { AvatarModule } from './avatar/avatar.module.js';
 import { RoomConfigModule } from './room-config/room-config.module.js';
 import { ResourceModule } from './resource/resource.module.js';
+import { AssetCatalogModule } from './asset-catalog/asset-catalog.module.js';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { ResourceModule } from './resource/resource.module.js';
     RoomConfigModule,
     // Resource management module
     ResourceModule,
+    // Asset catalog module
+    AssetCatalogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

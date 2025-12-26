@@ -8,7 +8,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { RoomConfigService } from './room-config.service.js';
-import { UpdateRoomConfigDto, RoomConfig } from './dto/update-room-config.dto.js';
+import {
+  UpdateRoomConfigDto,
+  RoomConfig,
+} from './dto/update-room-config.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import { User } from '../database/schema/users.js';

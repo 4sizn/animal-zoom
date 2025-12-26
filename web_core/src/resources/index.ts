@@ -26,3 +26,6 @@ export {
   validateCharacterConfig,
   validateRoomConfig,
 } from './ResourceConfig';
+
+// Asset URL Resolution
+export { AssetUrlResolver, createDefaultResolver } from './AssetUrlResolver';

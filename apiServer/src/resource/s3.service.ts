@@ -27,6 +27,7 @@ export class S3Service {
   private readonly s3Client: S3Client;
   private readonly bucketName: string;
   private readonly region: string;
+  private readonly endpointUrl: string;
 
   constructor(private configService: ConfigService) {
     this.region = this.configService.get<string>('AWS_REGION', 'us-east-1');
@@ -37,6 +38,8 @@ export class S3Service {
     const secretAccessKey = this.configService.get<string>(
       'AWS_SECRET_ACCESS_KEY',
     );
+    const endpointUrl = this.configService.get<string>('AWS_ENDPOINT_URL', '');
+    this.endpointUrl = endpointUrl;
 
     if (!accessKeyId || !secretAccessKey) {
       this.logger.warn(
@@ -44,8 +47,19 @@ export class S3Service {
       );
     }
 
+    // Log endpoint selection
+    if (endpointUrl) {
+      this.logger.log(
+        `Using custom S3 endpoint: ${endpointUrl} (MinIO/LocalStack)`,
+      );
+    } else {
+      this.logger.log(`Using AWS S3 in region: ${this.region}`);
+    }
+
     this.s3Client = new S3Client({
       region: this.region,
+      endpoint: endpointUrl || undefined,
+      forcePathStyle: !!endpointUrl, // Required for MinIO/LocalStack
       credentials:
         accessKeyId && secretAccessKey
           ? {
@@ -54,6 +68,30 @@ export class S3Service {
             }
           : undefined,
     });
+  }
+
+  /**
+   * Check if using custom endpoint (MinIO/LocalStack) vs AWS S3
+   */
+  private isUsingCustomEndpoint(): boolean {
+    return !!this.endpointUrl;
+  }
+
+  /**
+   * Generate public URL for an object
+   * Returns proper URL format based on endpoint configuration:
+   * - MinIO/LocalStack: http://localhost:9000/bucket-name/key (path-style)
+   * - AWS S3: https://bucket.s3.region.amazonaws.com/key (virtual-hosted-style)
+   */
+  generatePublicUrl(key: string): string {
+    if (this.isUsingCustomEndpoint()) {
+      // Path-style URL for MinIO/LocalStack
+      const endpoint = this.endpointUrl.replace(/\/$/, ''); // Remove trailing slash
+      return `${endpoint}/${this.bucketName}/${key}`;
+    } else {
+      // Virtual-hosted-style URL for AWS S3
+      return `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${key}`;
+    }
   }
 
   async uploadFile(
@@ -78,7 +116,7 @@ export class S3Service {
     return {
       key,
       bucket: this.bucketName,
-      url: `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${key}`,
+      url: this.generatePublicUrl(key),
     };
   }
 
@@ -129,5 +167,9 @@ export class S3Service {
 
   getRegion(): string {
     return this.region;
+  }
+
+  getEndpointUrl(): string {
+    return this.endpointUrl;
   }
 }

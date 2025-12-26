@@ -11,6 +11,7 @@ export interface UsersTable {
   displayName: string | null;
   avatarCustomization: {
     modelUrl?: string;
+    modelAssetId?: string;
     colors?: {
       primary?: string;
       secondary?: string;

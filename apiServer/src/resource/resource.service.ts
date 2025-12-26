@@ -124,8 +124,6 @@ export class ResourceService {
   }
 
   private getPublicUrl(key: string): string {
-    const bucket = this.s3Service.getBucketName();
-    const region = this.s3Service.getRegion();
-    return `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+    return this.s3Service.generatePublicUrl(key);
   }
 }

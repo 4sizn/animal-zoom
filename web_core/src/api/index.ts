@@ -10,6 +10,7 @@ export { apiClient, tokenManager, handleApiError, checkApiHealth } from './clien
 export { authApi } from './auth';
 export { roomsApi, avatarApi, roomConfigApi } from './rooms';
 export { resourcesApi } from './resources';
+export { assetCatalogApi } from './assetCatalog';
 
 // Types
 export type * from './types';

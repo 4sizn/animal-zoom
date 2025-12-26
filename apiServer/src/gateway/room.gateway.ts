@@ -106,11 +106,11 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
 
       // Notify others in room
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const displayName = client.data.user.displayName || client.data.user.username || 'User';
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const displayName =
+        client.data.user.displayName || client.data.user.username || 'User';
       client.to(roomCode).emit('user:joined', {
         user: {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           id: userId,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           displayName,

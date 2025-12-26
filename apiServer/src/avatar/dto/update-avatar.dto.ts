@@ -1,9 +1,13 @@
-import { IsOptional, IsString, Matches, IsArray } from 'class-validator';
+import { IsOptional, IsString, Matches, IsArray, IsUUID } from 'class-validator';
 
 export class UpdateAvatarDto {
   @IsOptional()
   @IsString()
   modelUrl?: string;
+
+  @IsOptional()
+  @IsUUID()
+  modelAssetId?: string;
 
   @IsOptional()
   @IsString()
@@ -26,6 +30,7 @@ export class UpdateAvatarDto {
 
 export interface AvatarConfig {
   modelUrl: string | null;
+  modelAssetId: string | null;
   primaryColor: string | null;
   secondaryColor: string | null;
   accessories: string[];

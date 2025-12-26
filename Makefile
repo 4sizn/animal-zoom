@@ -1,4 +1,4 @@
-.PHONY: help up down restart logs logs-api logs-db ps build clean rebuild-api db-shell
+.PHONY: help up down restart logs logs-api logs-db logs-minio ps build clean rebuild-api db-shell minio-init minio-console minio-logs
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -40,3 +40,18 @@ rebuild-api: ## Rebuild and restart API container only
 
 db-shell: ## Open PostgreSQL shell
 	docker compose exec postgres psql -U postgres -d animal_zoom
+
+logs-minio: ## Show logs from MinIO container only
+	docker compose logs -f minio
+
+minio-init: ## Initialize MinIO bucket (requires MinIO client 'mc')
+	@cd apiServer && ./scripts/init-minio.sh
+
+minio-console: ## Open MinIO web console
+	@echo "Opening MinIO console at http://localhost:9001"
+	@echo "Username: minioadmin"
+	@echo "Password: minioadmin"
+	@xdg-open http://localhost:9001 2>/dev/null || open http://localhost:9001 2>/dev/null || echo "Please open http://localhost:9001 in your browser"
+
+minio-logs: ## Alias for logs-minio
+	$(MAKE) logs-minio

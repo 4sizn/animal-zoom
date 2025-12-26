@@ -7,7 +7,12 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from '../database/database.service.js';
 import { PasswordService } from './password.service.js';
-import { RegisterDto, LoginDto, CreateGuestDto, AuthResponseDto } from './dto/index.js';
+import {
+  RegisterDto,
+  LoginDto,
+  CreateGuestDto,
+  AuthResponseDto,
+} from './dto/index.js';
 import { JwtPayload } from './strategies/jwt.strategy.js';
 
 @Injectable()
