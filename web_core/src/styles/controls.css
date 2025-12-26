@@ -48,7 +48,7 @@
 }
 
 /* ============================================
-   PARTICIPANT COUNT
+   PARTICIPANT COUNT & ROOM CODE
    ============================================ */
 
 .participant-count {
@@ -57,6 +57,30 @@
   font-weight: var(--font-weight-participant-count);
   color: var(--text-secondary);
   user-select: none;
+}
+
+.room-code-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.room-code-label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.room-code-value {
+  color: var(--accent-green);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
 }
 
 /* ============================================

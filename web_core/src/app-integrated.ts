@@ -79,6 +79,9 @@ class IntegratedApp {
         this.appContainer.classList.add('active');
       }
 
+      // Display room code in control bar
+      this.displayRoomCode(this.currentRoomCode);
+
       // Initialize resources with API-backed storage
       this.storage = new ResourceStorageAPI();
       this.loader = new ResourceLoader(this.storage);
@@ -462,6 +465,19 @@ class IntegratedApp {
         this.currentEditor.cancel();
       }
     });
+  }
+
+  /**
+   * Display room code in control bar
+   */
+  private displayRoomCode(roomCode: string): void {
+    const roomCodeDisplay = document.getElementById('room-code-display');
+    const roomCodeValue = document.getElementById('room-code-value');
+
+    if (roomCodeDisplay && roomCodeValue) {
+      roomCodeValue.textContent = roomCode;
+      roomCodeDisplay.style.display = 'flex';
+    }
   }
 
   /**
