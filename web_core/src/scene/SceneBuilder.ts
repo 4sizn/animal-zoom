@@ -200,9 +200,29 @@ export class SceneBuilder {
         );
       }
 
-      // Apply customization (colors, materials)
-      if (config.customization?.colors) {
+      // Apply material from serializedData first
+      if (config.serializedData.material) {
+        const materialData = config.serializedData.material;
         const material = new StandardMaterial(
+          materialData.name || `${mesh.name}_material`,
+          scene
+        );
+
+        // Apply diffuse color from serialized data
+        if (materialData.diffuseColor) {
+          material.diffuseColor = new Color3(
+            materialData.diffuseColor[0],
+            materialData.diffuseColor[1],
+            materialData.diffuseColor[2]
+          );
+        }
+
+        mesh.material = material;
+      }
+
+      // Apply customization (colors, materials) - overrides serializedData
+      if (config.customization?.colors) {
+        const material = mesh.material as StandardMaterial || new StandardMaterial(
           `${mesh.name}_material`,
           scene
         );

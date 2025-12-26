@@ -108,12 +108,26 @@ export class ResourceStorageAPI implements IResourceStorage {
         participantId,
         timestamp: Date.now(),
         character: {
-          modelUrl: avatarConfig.modelUrl,
-          serializedData: null,
+          modelUrl: avatarConfig.modelUrl || '',
+          serializedData: {
+            mesh: {
+              name: 'character',
+              type: 'sphere',
+              diameter: 2,
+              segments: 16,
+            },
+            material: {
+              name: 'characterMat',
+              diffuseColor: [0.5, 0.5, 1.0],
+            },
+          },
           customization: mapAvatarConfigToCustomization(avatarConfig),
         },
         room: {
-          serializedData: null,
+          serializedData: {
+            meshes: [],
+            lights: [],
+          },
           environment: {
             furniture: [],
             decorations: [],

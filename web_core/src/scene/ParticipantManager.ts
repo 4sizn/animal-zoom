@@ -14,6 +14,7 @@ export interface Participant {
   id: string;
   name: string;
   canvas: HTMLCanvasElement;
+  engine: BABYLON.Engine;
   scene: BABYLON.Scene;
   camera: BABYLON.ArcRotateCamera;
   character?: BABYLON.AbstractMesh;
@@ -52,7 +53,6 @@ export class ParticipantManager {
     // Initialize participant count display
     this.updateParticipantCount();
 
-    this.startRenderLoop();
     this.setupResizeHandler();
   }
 
@@ -66,8 +66,15 @@ export class ParticipantManager {
     canvas.id = `canvas-${id}`;
     canvas.className = 'participant-canvas';
 
-    // Create scene
-    const scene = new BABYLON.Scene(this.engine);
+    // Create a separate engine for this participant
+    const participantEngine = new BABYLON.Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      stencil: true,
+      powerPreference: 'high-performance',
+    });
+
+    // Create scene with the participant's engine
+    const scene = new BABYLON.Scene(participantEngine);
     scene.clearColor = new BABYLON.Color4(0.16, 0.15, 0.14, 1); // #2a2624
 
     // Create camera
@@ -81,6 +88,7 @@ export class ParticipantManager {
       id,
       name,
       canvas,
+      engine: participantEngine,
       scene,
       camera,
       isMuted: false,
@@ -92,6 +100,13 @@ export class ParticipantManager {
 
     // Store participant
     this.participants.set(id, participant);
+
+    // Start render loop for this participant
+    participant.engine.runRenderLoop(() => {
+      if (!participant.cameraOff && participant.scene) {
+        participant.scene.render();
+      }
+    });
 
     // Add to DOM
     this.addParticipantToGrid(participant);
@@ -109,8 +124,9 @@ export class ParticipantManager {
     const participant = this.participants.get(participantId);
     if (!participant) return;
 
-    // Dispose scene
+    // Dispose scene and engine
     participant.scene.dispose();
+    participant.engine.dispose();
 
     // Remove from DOM
     const cell = document.querySelector(`[data-participant-id="${participantId}"]`);
@@ -316,25 +332,15 @@ export class ParticipantManager {
       `${count} participant${count !== 1 ? 's' : ''}`;
   }
 
-  /**
-   * Start the render loop for all scenes
-   */
-  private startRenderLoop(): void {
-    this.engine.runRenderLoop(() => {
-      this.participants.forEach((participant) => {
-        if (!participant.cameraOff && participant.scene) {
-          participant.scene.render();
-        }
-      });
-    });
-  }
 
   /**
    * Setup window resize handler
    */
   private setupResizeHandler(): void {
     window.addEventListener('resize', () => {
-      this.engine.resize();
+      this.participants.forEach((participant) => {
+        participant.engine.resize();
+      });
     });
   }
 
