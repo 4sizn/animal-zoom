@@ -8,7 +8,7 @@ set -e
 MINIO_HOST="${MINIO_HOST:-localhost:9000}"
 MINIO_USER="${MINIO_USER:-minioadmin}"
 MINIO_PASSWORD="${MINIO_PASSWORD:-minioadmin}"
-BUCKET_NAME="${BUCKET_NAME:-local-assets}"
+BUCKET_NAME="${BUCKET_NAME:-animal-zoom-assets}"
 MINIO_ALIAS="local"
 
 echo "========================================="
