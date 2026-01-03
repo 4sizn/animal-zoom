@@ -1,0 +1,23 @@
+{
+  "name": "@animal-zoom/monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Animal Zoom Frontend Monorepo",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:standalone": "turbo run dev:standalone",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  },
+  "packageManager": "pnpm@7.9.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=7.0.0"
+  }
+}

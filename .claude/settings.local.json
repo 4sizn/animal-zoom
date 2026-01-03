@@ -54,7 +54,13 @@
       "Bash(mc rm:*)",
       "Bash(xargs kill -9)",
       "Bash(~/mc ls local/animal-zoom-assets)",
-      "Bash(ss -tlnp:*)"
+      "Bash(ss -tlnp:*)",
+      "Bash(wc -l:*)",
+      "Bash(node validate-workspace.test.js:*)",
+      "Bash(pnpm --version:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npx turbo:*)",
+      "Bash(pnpm ls:*)"
     ]
   }
 }
