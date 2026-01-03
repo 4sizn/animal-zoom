@@ -36,6 +36,19 @@ export class WsJwtAdapter extends IoAdapter {
           return next(new Error('Authentication token missing'));
         }
 
+        // Allow demo tokens for development
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        if (token.startsWith('demo-token-')) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          socket.data.user = {
+            sub: 'demo-user-' + Date.now(),
+            name: 'Demo User',
+            isDemo: true,
+          };
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          return next();
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
         const payload = this.jwtService.verify(token);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access

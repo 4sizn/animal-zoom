@@ -178,7 +178,7 @@
         </div>
 
         <div class="control-group">
-          <button id="joinRoom">방 참가</button>
+          <button id="joinRoom">방 수동 참가 (선택사항)</button>
         </div>
 
         <div class="control-group">
@@ -213,24 +213,70 @@
       status.style.color = isError ? '#c62828' : '#2e7d32';
     };
 
+    // Subscribe to connection state changes for auto-join
+    let unsubscribeConnectionState = null;
+
     // Connect WebSocket
     document.getElementById('connectWS').addEventListener('click', () => {
       const userName = document.getElementById('userName').value;
+      const roomId = document.getElementById('roomId').value;
 
       if (!userName) {
         setStatus('이름을 입력하세요', true);
         return;
       }
 
+      if (!roomId) {
+        setStatus('방 ID를 입력하세요', true);
+        return;
+      }
+
       const userId = `user-${Date.now()}`;
+
+      // Set demo token for WebSocket authentication
+      const demoToken = 'demo-token-' + Date.now();
+      localStorage.setItem('animal-zoom:token', demoToken);
+      localStorage.setItem('animal-zoom:user', JSON.stringify({
+        id: userId,
+        name: userName,
+        isDemo: true
+      }));
+
       useChatStore.getState().setUser(userId, userName);
       useChatStore.getState().connectWebSocket();
       useChatStore.getState().setIsOpen(true);
 
       setStatus('WebSocket 연결 시도 중...');
+
+      // Subscribe to connection state for auto-join
+      if (unsubscribeConnectionState) {
+        unsubscribeConnectionState();
+      }
+
+      unsubscribeConnectionState = useChatStore.subscribe(
+        (state) => state.connectionState,
+        (connectionState) => {
+          if (connectionState === 'connected') {
+            // Auto-join room when connected
+            setTimeout(() => {
+              const store = useChatStore.getState();
+              const currentRoomId = document.getElementById('roomId').value;
+
+              if (currentRoomId) {
+                store.joinRoom(currentRoomId);
+                setStatus(`✅ WebSocket 연결 완료 - ${currentRoomId} 방에 자동 참가`);
+              }
+            }, 100);
+          } else if (connectionState === 'error') {
+            setStatus('❌ WebSocket 연결 실패', true);
+          } else if (connectionState === 'disconnected') {
+            setStatus('연결 끊김', true);
+          }
+        }
+      );
     });
 
-    // Join room
+    // Join room (manual - for reference or re-join)
     document.getElementById('joinRoom').addEventListener('click', () => {
       const roomId = document.getElementById('roomId').value;
       const store = useChatStore.getState();
@@ -246,7 +292,7 @@
       }
 
       store.joinRoom(roomId);
-      setStatus(`✅ ${roomId} 방에 참가 요청`);
+      setStatus(`✅ ${roomId} 방에 수동 참가 요청`);
     });
 
     // Add test message

@@ -62,7 +62,10 @@
       "Bash(npx turbo:*)",
       "Bash(pnpm ls:*)",
       "Bash(timeout 5 bun run:*)",
-      "Bash(timeout 8 bun run:*)"
+      "Bash(timeout 8 bun run:*)",
+      "Bash(../../node_modules/.bin/vite:*)",
+      "Bash(fuser:*)",
+      "Bash(ss:*)"
     ]
   }
 }

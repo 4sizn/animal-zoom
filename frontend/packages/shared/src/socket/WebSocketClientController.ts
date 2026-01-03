@@ -28,7 +28,7 @@ import type { AvatarConfig } from '../api/types';
  * Default Configuration
  */
 const DEFAULT_OPTIONS: Required<WebSocketClientControllerOptions> = {
-  url: import.meta.env.VITE_WS_URL || 'http://localhost:3001',
+  url: import.meta.env.VITE_WS_URL || 'http://localhost:3000',
   autoConnect: false,
   reconnection: true,
   reconnectionAttempts: 5,
