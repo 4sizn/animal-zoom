@@ -65,7 +65,13 @@
       "Bash(timeout 8 bun run:*)",
       "Bash(../../node_modules/.bin/vite:*)",
       "Bash(fuser:*)",
-      "Bash(ss:*)"
+      "Bash(ss:*)",
+      "Bash(ln:*)",
+      "Bash(../../node_modules/.bin/tsc:*)",
+      "Bash(timeout 8 ../../node_modules/.bin/vite:*)",
+      "Bash(../../node_modules/.bin/vitest:*)",
+      "Bash(timeout 5 ../../node_modules/.bin/vite:*)",
+      "Bash(xargs:*)"
     ]
   }
 }
