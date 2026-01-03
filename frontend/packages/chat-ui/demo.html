@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat UI - Standalone Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .demo-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .demo-header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      margin: 0 0 10px 0;
+      font-size: 28px;
+    }
+
+    .info {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .chat-demo-wrapper {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    .chat-panel {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .controls-panel {
+      width: 300px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+    }
+
+    .controls-panel h3 {
+      margin: 0 0 16px 0;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .control-group {
+      margin-bottom: 20px;
+    }
+
+    .control-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #666;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .control-group input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .control-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .control-group button {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .control-group button:hover {
+      transform: translateY(-1px);
+    }
+
+    .status {
+      padding: 10px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    #root {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1>💬 Chat UI - Standalone Demo</h1>
+      <p class="info">
+        React 기반 채팅 인터페이스 독립 실행 테스트 페이지
+        <br>
+        <strong>포트:</strong> 5174 | <strong>패키지:</strong> @animal-zoom/chat-ui
+      </p>
+    </div>
+
+    <div class="chat-demo-wrapper">
+      <div class="chat-panel">
+        <div id="root"></div>
+      </div>
+
+      <div class="controls-panel">
+        <h3>⚙️ 컨트롤</h3>
+
+        <div class="status" id="status">
+          준비됨
+        </div>
+
+        <div class="control-group">
+          <label>사용자 이름</label>
+          <input
+            type="text"
+            id="userName"
+            placeholder="이름을 입력하세요"
+            value="테스트 사용자"
+          />
+        </div>
+
+        <div class="control-group">
+          <label>방 ID</label>
+          <input
+            type="text"
+            id="roomId"
+            placeholder="room-123"
+            value="demo-room"
+          />
+        </div>
+
+        <div class="control-group">
+          <button id="initChat">채팅 초기화</button>
+        </div>
+
+        <div class="control-group">
+          <button id="addTestMessage">테스트 메시지 추가</button>
+        </div>
+
+        <div class="control-group">
+          <button id="clearMessages">메시지 지우기</button>
+        </div>
+
+        <div class="control-group">
+          <button id="toggleChat">채팅 토글</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import React from 'react';
+    import ReactDOM from 'react-dom/client';
+    import { ChatContainer, useChatStore } from './src/index.tsx';
+
+    // Initialize React app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(ChatContainer));
+
+    // Status helper
+    const setStatus = (message, isError = false) => {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.style.background = isError ? '#ffebee' : '#e8f5e9';
+      status.style.color = isError ? '#c62828' : '#2e7d32';
+    };
+
+    // Initialize chat
+    document.getElementById('initChat').addEventListener('click', () => {
+      const userName = document.getElementById('userName').value;
+      const roomId = document.getElementById('roomId').value;
+
+      if (!userName || !roomId) {
+        setStatus('이름과 방 ID를 입력하세요', true);
+        return;
+      }
+
+      const userId = `user-${Date.now()}`;
+      useChatStore.getState().setUser(userId, userName);
+      useChatStore.getState().setRoomId(roomId);
+      useChatStore.getState().setIsOpen(true);
+
+      setStatus(`✅ ${userName}으로 ${roomId}에 입장`);
+    });
+
+    // Add test message
+    document.getElementById('addTestMessage').addEventListener('click', () => {
+      const store = useChatStore.getState();
+
+      if (!store.roomId || !store.userId) {
+        setStatus('먼저 채팅을 초기화하세요', true);
+        return;
+      }
+
+      const testMessages = [
+        '안녕하세요!',
+        '테스트 메시지입니다',
+        '채팅이 잘 작동하나요?',
+        '멋진 UI네요! 😊',
+        '여러 줄로\n메시지를 보낼 수도 있나요?'
+      ];
+
+      const message = testMessages[Math.floor(Math.random() * testMessages.length)];
+
+      store.addMessage({
+        id: `${Date.now()}-${Math.random()}`,
+        roomId: store.roomId,
+        userId: `other-user-${Math.random()}`,
+        userName: '다른 사용자',
+        message,
+        timestamp: new Date(),
+        type: 'text'
+      });
+
+      setStatus('테스트 메시지 추가됨');
+    });
+
+    // Clear messages
+    document.getElementById('clearMessages').addEventListener('click', () => {
+      useChatStore.getState().clearMessages();
+      setStatus('메시지 지워짐');
+    });
+
+    // Toggle chat
+    document.getElementById('toggleChat').addEventListener('click', () => {
+      useChatStore.getState().toggleChat();
+      const isOpen = useChatStore.getState().isOpen;
+      setStatus(isOpen ? '채팅 열림' : '채팅 닫힘');
+    });
+
+    // Auto-initialize on load
+    setTimeout(() => {
+      document.getElementById('initChat').click();
+      setStatus('✅ 채팅 UI 로드 완료');
+    }, 500);
+
+    console.log('✅ Chat UI Demo initialized');
+  </script>
+</body>
+</html>

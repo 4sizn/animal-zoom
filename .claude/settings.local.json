@@ -60,7 +60,9 @@
       "Bash(pnpm --version:*)",
       "Bash(pnpm install:*)",
       "Bash(npx turbo:*)",
-      "Bash(pnpm ls:*)"
+      "Bash(pnpm ls:*)",
+      "Bash(timeout 5 bun run:*)",
+      "Bash(timeout 8 bun run:*)"
     ]
   }
 }

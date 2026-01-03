@@ -15,9 +15,12 @@
   "devDependencies": {
     "turbo": "^2.0.0"
   },
-  "packageManager": "pnpm@7.9.0",
+  "packageManager": "bun@1.0.0",
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=7.0.0"
-  }
+    "bun": ">=1.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

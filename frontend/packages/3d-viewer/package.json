@@ -13,12 +13,12 @@
     }
   },
   "scripts": {
-    "dev": "vite --port 5173",
-    "dev:standalone": "vite demo.html --port 5173",
-    "build": "tsc && vite build",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "type-check": "tsc --noEmit",
+    "dev": "../../node_modules/.bin/vite --port 5173",
+    "dev:standalone": "../../node_modules/.bin/vite demo.html --port 5173",
+    "build": "../../node_modules/.bin/vite build",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "type-check": "../../node_modules/.bin/tsc --noEmit",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -28,8 +28,9 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.0",
-    "vitest": "^1.2.0"
+    "typescript": "~5.9.3",
+    "vite": "^5.4.0",
+    "vitest": "^1.2.0",
+    "@types/bun": "^1.1.15"
   }
 }

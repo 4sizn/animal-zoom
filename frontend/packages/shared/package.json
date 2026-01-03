@@ -8,35 +8,41 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
     },
     "./types": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.js"
+      "development": "./src/types/index.ts",
+      "default": "./dist/types/index.js"
     },
     "./api": {
       "types": "./dist/api/index.d.ts",
-      "import": "./dist/api/index.js"
+      "development": "./src/api/index.ts",
+      "default": "./dist/api/index.js"
     },
     "./socket": {
       "types": "./dist/socket/index.d.ts",
-      "import": "./dist/socket/index.js"
+      "development": "./src/socket/index.ts",
+      "default": "./dist/socket/index.js"
     }
   },
   "scripts": {
-    "build": "tsc && vite build",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "type-check": "tsc --noEmit",
+    "build": "../../node_modules/.bin/vite build",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "type-check": "../../node_modules/.bin/tsc --noEmit",
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.8.0",
+    "axios": "^1.7.0",
+    "rxjs": "^7.8.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.0",
-    "vitest": "^1.2.0"
+    "typescript": "~5.9.3",
+    "vite": "^5.4.0",
+    "@types/bun": "^1.1.15"
   }
 }
