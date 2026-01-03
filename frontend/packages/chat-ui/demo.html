@@ -174,11 +174,15 @@
         </div>
 
         <div class="control-group">
-          <button id="initChat">채팅 초기화</button>
+          <button id="connectWS">WebSocket 연결</button>
         </div>
 
         <div class="control-group">
-          <button id="addTestMessage">테스트 메시지 추가</button>
+          <button id="joinRoom">방 참가</button>
+        </div>
+
+        <div class="control-group">
+          <button id="addTestMessage">테스트 메시지 추가 (로컬)</button>
         </div>
 
         <div class="control-group">
@@ -209,22 +213,40 @@
       status.style.color = isError ? '#c62828' : '#2e7d32';
     };
 
-    // Initialize chat
-    document.getElementById('initChat').addEventListener('click', () => {
+    // Connect WebSocket
+    document.getElementById('connectWS').addEventListener('click', () => {
       const userName = document.getElementById('userName').value;
-      const roomId = document.getElementById('roomId').value;
 
-      if (!userName || !roomId) {
-        setStatus('이름과 방 ID를 입력하세요', true);
+      if (!userName) {
+        setStatus('이름을 입력하세요', true);
         return;
       }
 
       const userId = `user-${Date.now()}`;
       useChatStore.getState().setUser(userId, userName);
-      useChatStore.getState().setRoomId(roomId);
+      useChatStore.getState().connectWebSocket();
       useChatStore.getState().setIsOpen(true);
 
-      setStatus(`✅ ${userName}으로 ${roomId}에 입장`);
+      setStatus('WebSocket 연결 시도 중...');
+    });
+
+    // Join room
+    document.getElementById('joinRoom').addEventListener('click', () => {
+      const roomId = document.getElementById('roomId').value;
+      const store = useChatStore.getState();
+
+      if (!roomId) {
+        setStatus('방 ID를 입력하세요', true);
+        return;
+      }
+
+      if (store.connectionState !== 'connected') {
+        setStatus('먼저 WebSocket에 연결하세요', true);
+        return;
+      }
+
+      store.joinRoom(roomId);
+      setStatus(`✅ ${roomId} 방에 참가 요청`);
     });
 
     // Add test message
@@ -272,10 +294,17 @@
       setStatus(isOpen ? '채팅 열림' : '채팅 닫힘');
     });
 
-    // Auto-initialize on load
+    // Auto-initialize on load (demo mode - no WebSocket)
     setTimeout(() => {
-      document.getElementById('initChat').click();
-      setStatus('✅ 채팅 UI 로드 완료');
+      const userName = document.getElementById('userName').value;
+      const roomId = document.getElementById('roomId').value;
+      const userId = `user-${Date.now()}`;
+
+      useChatStore.getState().setUser(userId, userName);
+      useChatStore.getState().setRoomId(roomId);
+      useChatStore.getState().setIsOpen(true);
+
+      setStatus('✅ 채팅 UI 로드 완료 (오프라인 모드)');
     }, 500);
 
     console.log('✅ Chat UI Demo initialized');

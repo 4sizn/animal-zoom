@@ -6,11 +6,18 @@
     "declaration": true,
     "declarationMap": true,
     "composite": true,
+    "noEmit": false,
     "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@animal-zoom/shared": ["../shared/src"],
+      "@animal-zoom/shared/types": ["../shared/src/types"],
+      "@animal-zoom/shared/socket": ["../shared/src/socket"],
+      "@animal-zoom/shared/api": ["../shared/src/api"]
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "__tests__"]
+  "exclude": ["node_modules", "dist", "__tests__"],
+  "references": [{ "path": "../shared" }]
 }
