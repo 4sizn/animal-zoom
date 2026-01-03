@@ -286,4 +286,139 @@ describe('S3Service - MinIO Integration', () => {
       expect(url).not.toContain('//test-bucket');
     });
   });
+
+  describe('Enhanced S3Service methods (Phase 2)', () => {
+    let service: S3Service;
+
+    beforeEach(async () => {
+      const mockConfigService = {
+        get: jest.fn((key: string, defaultValue?: string) => {
+          const config: Record<string, string> = {
+            AWS_REGION: 'us-east-1',
+            AWS_BUCKET_NAME: 'test-bucket',
+            AWS_ACCESS_KEY_ID: 'minioadmin',
+            AWS_SECRET_ACCESS_KEY: 'minioadmin',
+            AWS_ENDPOINT_URL: 'http://localhost:9000',
+            ASSET_CDN_URL: '',
+          };
+          return config[key] || defaultValue;
+        }),
+      };
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          S3Service,
+          { provide: ConfigService, useValue: mockConfigService },
+        ],
+      }).compile();
+
+      service = module.get<S3Service>(S3Service);
+    });
+
+    describe('generateAssetUrl', () => {
+      it('should generate presigned URL when no CDN configured', async () => {
+        const key = 'assets/test.glb';
+        const url = await service.generateAssetUrl(key);
+
+        expect(url).toBeDefined();
+        expect(typeof url).toBe('string');
+      });
+
+      it('should use custom expiry time', async () => {
+        const key = 'assets/test.glb';
+        const customExpiry = 7200; // 2 hours
+        const url = await service.generateAssetUrl(key, customExpiry);
+
+        expect(url).toBeDefined();
+      });
+
+      it('should return CDN URL when CDN is configured', async () => {
+        // Test with CDN URL configured
+        const mockConfigWithCDN = {
+          get: jest.fn((key: string, defaultValue?: string) => {
+            if (key === 'ASSET_CDN_URL') return 'https://cdn.example.com';
+            if (key === 'AWS_BUCKET_NAME') return 'test-bucket';
+            if (key === 'AWS_REGION') return 'us-east-1';
+            if (key === 'AWS_ACCESS_KEY_ID') return 'key';
+            if (key === 'AWS_SECRET_ACCESS_KEY') return 'secret';
+            if (key === 'AWS_ENDPOINT_URL') return '';
+            return defaultValue;
+          }),
+        };
+
+        const moduleWithCDN: TestingModule = await Test.createTestingModule({
+          providers: [
+            S3Service,
+            { provide: ConfigService, useValue: mockConfigWithCDN },
+          ],
+        }).compile();
+
+        const cdnService = moduleWithCDN.get<S3Service>(S3Service);
+        const key = 'assets/test.glb';
+        const url = await cdnService.generateAssetUrl(key);
+
+        expect(url).toBe('https://cdn.example.com/assets/test.glb');
+      });
+    });
+
+    describe('listAssetsByPrefix', () => {
+      it('should list assets with prefix and return pagination info', async () => {
+        const result = await service.listAssetsByPrefix('assets/avatar/', {
+          limit: 10,
+        });
+
+        expect(result).toHaveProperty('assets');
+        expect(result).toHaveProperty('nextContinuationToken');
+        expect(Array.isArray(result.assets)).toBe(true);
+      });
+
+      it('should use default limit when not specified', async () => {
+        const result = await service.listAssetsByPrefix('assets/');
+
+        expect(result).toHaveProperty('assets');
+        expect(Array.isArray(result.assets)).toBe(true);
+      });
+
+      it('should support continuation token for pagination', async () => {
+        const result = await service.listAssetsByPrefix('assets/', {
+          limit: 5,
+          continuationToken: 'some-token',
+        });
+
+        expect(result).toHaveProperty('assets');
+      });
+
+      it('should return assets with key, lastModified, and size', async () => {
+        const result = await service.listAssetsByPrefix('assets/');
+
+        result.assets.forEach((asset) => {
+          expect(asset).toHaveProperty('key');
+          expect(asset).toHaveProperty('lastModified');
+          expect(asset).toHaveProperty('size');
+          expect(asset.lastModified).toBeInstanceOf(Date);
+          expect(typeof asset.size).toBe('number');
+        });
+      });
+    });
+
+    describe('copyAsset', () => {
+      it('should copy asset from source to destination', async () => {
+        const sourceKey = 'assets/old/model.glb';
+        const destKey = 'assets/new/model.glb';
+
+        await expect(
+          service.copyAsset(sourceKey, destKey),
+        ).resolves.not.toThrow();
+      });
+
+      it('should throw error if source does not exist', async () => {
+        const sourceKey = 'assets/nonexistent.glb';
+        const destKey = 'assets/copy.glb';
+
+        // This test expects the actual S3 error behavior
+        // In real scenario, S3 would throw NoSuchKey error
+        await expect(service.copyAsset(sourceKey, destKey)).rejects.toThrow();
+      });
+    });
+  });
 });

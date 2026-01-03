@@ -6,8 +6,10 @@ import {
   ListObjectsV2Command,
   DeleteObjectCommand,
   GetObjectCommand,
+  CopyObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { AssetStorageInterface } from './interfaces/asset-storage.interface.js';
 
 export interface S3UploadResult {
   key: string;
@@ -22,16 +24,18 @@ export interface S3Object {
 }
 
 @Injectable()
-export class S3Service {
+export class S3Service implements AssetStorageInterface {
   private readonly logger = new Logger(S3Service.name);
   private readonly s3Client: S3Client;
   private readonly bucketName: string;
   private readonly region: string;
   private readonly endpointUrl: string;
+  private readonly cdnUrl: string;
 
   constructor(private configService: ConfigService) {
     this.region = this.configService.get<string>('AWS_REGION', 'us-east-1');
     this.bucketName = this.configService.get<string>('AWS_BUCKET_NAME') || '';
+    this.cdnUrl = this.configService.get<string>('ASSET_CDN_URL', '');
 
     // For local development, allow missing credentials (use LocalStack or mock)
     const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID');
@@ -171,5 +175,73 @@ export class S3Service {
 
   getEndpointUrl(): string {
     return this.endpointUrl;
+  }
+
+  /**
+   * Generate asset URL with CDN support
+   * If ASSET_CDN_URL is configured, returns CDN URL
+   * Otherwise, returns presigned URL
+   */
+  async generateAssetUrl(key: string, expiresIn = 3600): Promise<string> {
+    // Use CDN URL if configured
+    if (this.cdnUrl) {
+      const cdnBaseUrl = this.cdnUrl.replace(/\/$/, ''); // Remove trailing slash
+      return `${cdnBaseUrl}/${key}`;
+    }
+
+    // Fall back to presigned URL
+    return this.generateSignedUrl(key, expiresIn);
+  }
+
+  /**
+   * List assets by prefix with pagination support
+   */
+  async listAssetsByPrefix(
+    prefix: string,
+    options?: {
+      limit?: number;
+      continuationToken?: string;
+    },
+  ): Promise<{
+    assets: Array<{
+      key: string;
+      lastModified: Date;
+      size: number;
+    }>;
+    nextContinuationToken?: string;
+  }> {
+    const command = new ListObjectsV2Command({
+      Bucket: this.bucketName,
+      Prefix: prefix,
+      MaxKeys: options?.limit || 1000,
+      ContinuationToken: options?.continuationToken,
+    });
+
+    const response = await this.s3Client.send(command);
+
+    return {
+      assets:
+        response.Contents?.map((obj) => ({
+          key: obj.Key || '',
+          lastModified: obj.LastModified || new Date(),
+          size: obj.Size || 0,
+        })) || [],
+      nextContinuationToken: response.NextContinuationToken,
+    };
+  }
+
+  /**
+   * Copy asset from source to destination (for versioning support)
+   */
+  async copyAsset(sourceKey: string, destinationKey: string): Promise<void> {
+    const command = new CopyObjectCommand({
+      Bucket: this.bucketName,
+      CopySource: `${this.bucketName}/${sourceKey}`,
+      Key: destinationKey,
+    });
+
+    await this.s3Client.send(command);
+
+    this.logger.log(`Asset copied from ${sourceKey} to ${destinationKey}`);
   }
 }

@@ -422,7 +422,33 @@ export class JoinScreenEnhanced {
     this.showLoading();
 
     try {
-      // Create new room via API
+      // Get display name (optional for room creation, but good for consistency)
+      const displayName = this.displayNameInput?.value.trim() || 'Guest';
+
+      // 1. Ensure we have authentication (create guest user if needed)
+      let authResponse: AuthResponse;
+
+      if (authApi.isAuthenticated()) {
+        // Already have a token, just verify it's still valid
+        try {
+          const currentUser = await authApi.getCurrentUser();
+          const token = tokenManager.getToken();
+          authResponse = {
+            accessToken: token || '',
+            user: currentUser,
+          };
+        } catch (error) {
+          // Token expired or invalid, create new guest
+          authResponse = await authApi.createGuest({ displayName });
+        }
+      } else {
+        // No token, create new guest
+        authResponse = await authApi.createGuest({ displayName });
+      }
+
+      console.log('✅ Authenticated as:', authResponse.user.displayName);
+
+      // 2. Create new room via API
       const roomCode = await this.createRoom();
 
       console.log('✅ Room created:', roomCode);

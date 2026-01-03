@@ -53,7 +53,8 @@
       "Bash(~/mc --version:*)",
       "Bash(mc rm:*)",
       "Bash(xargs kill -9)",
-      "Bash(~/mc ls local/animal-zoom-assets)"
+      "Bash(~/mc ls local/animal-zoom-assets)",
+      "Bash(ss -tlnp:*)"
     ]
   }
 }
