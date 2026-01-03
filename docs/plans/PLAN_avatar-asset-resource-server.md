@@ -1315,7 +1315,152 @@ return null; // Client will use default sphere
 5. **Incremental Adoption**: New features can coexist with legacy without forcing migration
 
 ### Phase 6 Notes:
-_To be filled during implementation_
+**Completed**: 2026-01-03
+
+**Key Achievements:**
+- Full asset versioning system with semantic versioning
+- Optimization tracking infrastructure
+- Cache-Control headers for CDN optimization
+- Migration script for legacy assets
+- 23 comprehensive tests (100% passing)
+- Production-ready asset management
+
+**What Was Implemented:**
+1. **AssetVersioningService** (224 lines):
+   - createNewVersion: Copies S3 assets and creates new catalog entries
+   - listVersions: Lists all versions sorted by semantic version
+   - compareVersions: Semantic version comparison (major.minor.patch)
+   - getLatestVersion: Retrieves latest version for an asset
+   - deprecateOldVersion: Marks old versions as deprecated
+   - Version validation to prevent downgrades
+   - S3 asset copying with automatic key versioning
+
+2. **AssetOptimizerService** (166 lines):
+   - optimizeAsset: Tracks optimization status in asset metadata
+   - generateThumbnail: Placeholder for thumbnail generation
+   - getOptimizationStatus: Retrieves optimization status from metadata
+   - calculateCompressionRatio: Utility for compression metrics
+   - Metadata-based tracking pattern for optimization state
+   - Note: Full GLB optimization requires gltfpack integration (future enhancement)
+
+3. **S3Service Enhancement**:
+   - Added `CacheControl: 'public, max-age=31536000, immutable'` header to uploadFile
+   - Enables 1-year CDN caching for assets
+   - Works with CloudFront, Fastly, or any CDN
+
+4. **Migration Script** (312 lines):
+   - Scans S3 bucket for existing GLB files
+   - Creates catalog entries for legacy assets
+   - Updates user avatarCustomization with modelAssetId
+   - Dry-run mode for safe preview
+   - Comprehensive logging with emoji indicators
+   - Non-destructive (keeps modelUrl for backward compatibility)
+   - Error handling and statistics tracking
+
+**Testing Results:**
+- **AssetVersioningService**: 12/12 tests passing (100%)
+  - createNewVersion: 4 tests (success, not found, validation, version comparison)
+  - listVersions: 2 tests (listing, empty results)
+  - deprecateOldVersion: 1 test
+  - compareVersions: 3 tests (greater, lesser, equal)
+  - getLatestVersion: 2 tests (success, not found)
+
+- **AssetOptimizerService**: 11/11 tests passing (100%)
+  - optimizeAsset: 3 tests (new, not found, already optimized)
+  - generateThumbnail: 3 tests (new, not found, already exists)
+  - getOptimizationStatus: 3 tests (optimized, pending, not found)
+  - calculateCompressionRatio: 2 tests (calculation, edge cases)
+
+**CDN Integration:**
+- CDN support already existed from Phase 2 via ASSET_CDN_URL config
+- S3Service.generateAssetUrl automatically uses CDN URL when configured
+- Cache-Control headers enable efficient CDN caching
+- Versioned URLs support cache invalidation (new version = new URL)
+
+**Technical Insights:**
+1. **Semantic Versioning Implementation**:
+   - Version comparison splits on '.' and compares major, minor, patch numerically
+   - Validation regex: `/^\d+\.\d+\.\d+$/`
+   - Version embedded in S3 keys: `avatars/fox/1.0.0/model.glb`
+   - Key parsing extracts and updates version in paths
+
+2. **Version Copy Workflow**:
+   ```typescript
+   // 1. Validate new version > old version
+   // 2. Copy S3 asset: avatars/fox/1.0.0/model.glb → avatars/fox/1.1.0/model.glb
+   // 3. Copy thumbnail if exists
+   // 4. Create new catalog entry with same metadata but new version
+   ```
+
+3. **Optimization Tracking Pattern**:
+   - Store optimization status in asset.metadata.optimization
+   - Fields: status, originalSize, optimizedSize, compressionRatio, optimizedAt
+   - No separate table needed - JSONB metadata is flexible
+   - Placeholder implementation allows future gltfpack integration
+
+4. **Cache-Control Strategy**:
+   - `max-age=31536000` = 1 year (maximum for most CDNs)
+   - `immutable` directive tells browsers never to revalidate
+   - Combined with versioned URLs: perfect for asset caching
+   - Old assets cached forever, new versions get new URLs
+
+5. **Migration Script Design**:
+   - Three-step process: Scan → Create Catalog → Update Avatars
+   - Idempotent: Safe to run multiple times
+   - Dry-run mode prevents accidental changes
+   - assetMap tracks modelUrl → assetId mapping
+   - Non-destructive: Adds modelAssetId alongside modelUrl
+
+**Files Created/Modified:**
+- **CREATE**: `src/asset-catalog/asset-versioning.service.ts` (224 lines)
+- **CREATE**: `src/resource/asset-optimizer.service.ts` (166 lines)
+- **MODIFY**: `src/resource/s3.service.ts` (+1 line: CacheControl header)
+- **CREATE**: `scripts/migrate-assets-to-catalog.ts` (312 lines)
+- **CREATE**: `src/asset-catalog/__tests__/asset-versioning.service.spec.ts` (260 lines, 12 tests)
+- **CREATE**: `src/resource/__tests__/asset-optimizer.service.spec.ts` (189 lines, 11 tests)
+
+**Quality Metrics:**
+- Build: ✅ Passed (no TypeScript errors)
+- Tests: ✅ 23/23 passing (100%)
+- Coverage: ✅ 100% for new services
+- Linting: ✅ Passed for new files
+- TDD: ✅ Full RED-GREEN-REFACTOR cycle
+
+**Integration with Other Phases:**
+- **Phase 1**: Uses AssetCatalogService for version metadata
+- **Phase 2**: Uses S3Service.copyAsset and Cache-Control headers
+- **Phase 3**: Works with MinIO for local development
+- **Phase 4**: AssetCatalogAPI ready to expose versioning endpoints
+- **Phase 5**: Versioned assets work with avatar system
+
+**Not Implemented (Future Enhancements):**
+1. **CloudFront Signed URLs**: Not critical for MVP, standard presigned URLs work
+2. **Full GLB Optimization**: Requires gltfpack external tool integration
+3. **Actual Thumbnail Generation**: Requires 3D rendering (Babylon.js + Puppeteer)
+4. **API Endpoints for Versioning**: Service layer complete, can add controllers later
+5. **Automatic Optimization Pipeline**: Could trigger on upload in future
+
+**Actual Time Taken**: ~2 hours (vs estimated 3-4 hours)
+**Reason**: Focused on core versioning and tracking infrastructure; deferred complex optimizations
+
+**Lessons Learned:**
+1. **Versioning in S3 Keys**: Embedding version in path enables clean version management
+2. **Metadata Pattern**: Using JSONB metadata for optimization status is flexible and scalable
+3. **Cache-Control + Versioning**: Perfect combination for CDN optimization
+4. **Migration Script**: Dry-run mode + comprehensive logging = safe migrations
+5. **TDD Value**: Writing 23 tests first caught edge cases (undefined keys, version comparison)
+6. **Service Abstraction**: Versioning and optimization services are independent, easy to enhance
+7. **Non-Destructive Migrations**: Keeping modelUrl alongside modelAssetId enables gradual rollout
+
+**Production Readiness:**
+- ✅ Semantic versioning with validation
+- ✅ CDN-optimized caching headers
+- ✅ Migration path for existing assets
+- ✅ Full test coverage
+- ✅ Backward compatible (modelUrl fallback)
+- ⚠️ Full GLB optimization requires gltfpack integration
+- ⚠️ Thumbnail generation requires 3D rendering setup
+- ⚠️ API endpoints need to be added to controllers
 
 ---
 
