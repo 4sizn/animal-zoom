@@ -3,11 +3,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AvatarService } from '../avatar.service.js';
 import { DatabaseService } from '../../database/database.service.js';
+import { AssetCatalogService } from '../../asset-catalog/asset-catalog.service.js';
 import { NotFoundException } from '@nestjs/common';
 
 describe('AvatarService', () => {
   let service: AvatarService;
   let dbService: jest.Mocked<DatabaseService>;
+  let assetCatalogService: jest.Mocked<AssetCatalogService>;
 
   beforeEach(async () => {
     const mockDbService = {
@@ -22,6 +24,10 @@ describe('AvatarService', () => {
       },
     };
 
+    const mockAssetCatalogService = {
+      findAssetById: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AvatarService,
@@ -29,11 +35,16 @@ describe('AvatarService', () => {
           provide: DatabaseService,
           useValue: mockDbService,
         },
+        {
+          provide: AssetCatalogService,
+          useValue: mockAssetCatalogService,
+        },
       ],
     }).compile();
 
     service = module.get<AvatarService>(AvatarService);
     dbService = module.get(DatabaseService);
+    assetCatalogService = module.get(AssetCatalogService);
   });
 
   afterEach(() => {
@@ -50,6 +61,7 @@ describe('AvatarService', () => {
 
       expect(result).toEqual({
         modelUrl: null,
+        modelAssetId: null,
         primaryColor: '#ffffff',
         secondaryColor: '#000000',
         accessories: [],
@@ -59,6 +71,7 @@ describe('AvatarService', () => {
     it('should return user avatar config', async () => {
       const customConfig = {
         modelUrl: '/models/fox.glb',
+        modelAssetId: null,
         primaryColor: '#ff0000',
         secondaryColor: '#00ff00',
         accessories: ['hat', 'glasses'],
@@ -86,6 +99,7 @@ describe('AvatarService', () => {
     it('should update avatar config', async () => {
       const currentConfig = {
         modelUrl: null,
+        modelAssetId: null,
         primaryColor: '#ffffff',
         secondaryColor: '#000000',
         accessories: [],
@@ -118,6 +132,7 @@ describe('AvatarService', () => {
     it('should merge updates with existing config', async () => {
       const currentConfig = {
         modelUrl: '/models/fox.glb',
+        modelAssetId: null,
         primaryColor: '#ff0000',
         secondaryColor: '#00ff00',
         accessories: ['hat'],
@@ -144,6 +159,7 @@ describe('AvatarService', () => {
     it('should return avatar for specified user', async () => {
       const customConfig = {
         modelUrl: '/models/fox.glb',
+        modelAssetId: null,
         primaryColor: '#ff0000',
         secondaryColor: '#00ff00',
         accessories: [],
@@ -156,6 +172,95 @@ describe('AvatarService', () => {
       const result = await service.getAvatarByUserId('other-user');
 
       expect(result).toEqual(customConfig);
+    });
+  });
+
+  describe('resolveModelUrl', () => {
+    it('should resolve asset ID to key from asset catalog', async () => {
+      const config = {
+        modelUrl: null,
+        modelAssetId: 'asset-123',
+        primaryColor: '#ffffff',
+        secondaryColor: '#000000',
+        accessories: [],
+      };
+
+      (assetCatalogService.findAssetById as jest.Mock).mockResolvedValue({
+        id: 'asset-123',
+        key: 'avatars/fox/1.0.0/model.glb',
+        name: 'Fox Model',
+      });
+
+      const result = await service.resolveModelUrl(config);
+
+      expect(result).toBe('avatars/fox/1.0.0/model.glb');
+      expect(assetCatalogService.findAssetById).toHaveBeenCalledWith(
+        'asset-123',
+      );
+    });
+
+    it('should fallback to modelUrl if asset ID not found', async () => {
+      const config = {
+        modelUrl: '/models/fallback.glb',
+        modelAssetId: 'invalid-asset',
+        primaryColor: '#ffffff',
+        secondaryColor: '#000000',
+        accessories: [],
+      };
+
+      (assetCatalogService.findAssetById as jest.Mock).mockResolvedValue(null);
+
+      const result = await service.resolveModelUrl(config);
+
+      expect(result).toBe('/models/fallback.glb');
+    });
+
+    it('should fallback to modelUrl if asset catalog throws error', async () => {
+      const config = {
+        modelUrl: '/models/fallback.glb',
+        modelAssetId: 'asset-123',
+        primaryColor: '#ffffff',
+        secondaryColor: '#000000',
+        accessories: [],
+      };
+
+      (assetCatalogService.findAssetById as jest.Mock).mockRejectedValue(
+        new Error('Service unavailable'),
+      );
+
+      const result = await service.resolveModelUrl(config);
+
+      expect(result).toBe('/models/fallback.glb');
+    });
+
+    it('should return null if neither asset ID nor modelUrl exists', async () => {
+      const config = {
+        modelUrl: null,
+        modelAssetId: null,
+        primaryColor: '#ffffff',
+        secondaryColor: '#000000',
+        accessories: [],
+      };
+
+      const result = await service.resolveModelUrl(config);
+
+      expect(result).toBeNull();
+      expect(assetCatalogService.findAssetById).not.toHaveBeenCalled();
+    });
+
+    it('should use modelUrl if no asset ID provided', async () => {
+      const config = {
+        modelUrl: '/models/direct.glb',
+        modelAssetId: null,
+        primaryColor: '#ffffff',
+        secondaryColor: '#000000',
+        accessories: [],
+      };
+
+      const result = await service.resolveModelUrl(config);
+
+      expect(result).toBe('/models/direct.glb');
+      expect(assetCatalogService.findAssetById).not.toHaveBeenCalled();
     });
   });
 });
