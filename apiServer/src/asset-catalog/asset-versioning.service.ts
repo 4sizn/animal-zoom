@@ -33,8 +33,7 @@ export class AssetVersioningService {
     this.validateVersionFormat(newVersion);
 
     // Get existing asset
-    const existingAsset =
-      await this.assetCatalogService.findAssetById(assetId);
+    const existingAsset = await this.assetCatalogService.findAssetById(assetId);
     if (!existingAsset) {
       throw new NotFoundException(`Asset with ID ${assetId} not found`);
     }
@@ -126,7 +125,10 @@ export class AssetVersioningService {
         : assetKeyPrefix;
 
       // Match if the asset key starts with the search prefix
-      return asset.key.startsWith(searchBaseKey) || assetBaseKey.startsWith(searchBaseKey);
+      return (
+        asset.key.startsWith(searchBaseKey) ||
+        assetBaseKey.startsWith(searchBaseKey)
+      );
     });
 
     // Sort by version (latest first)
@@ -192,7 +194,9 @@ export class AssetVersioningService {
   private updateVersionInKey(key: string, newVersion: string): string {
     const parts = key.split('/');
     // Find the version part (assumes format: .../{version}/...)
-    const versionIndex = parts.findIndex((part) => /^\d+\.\d+\.\d+$/.test(part));
+    const versionIndex = parts.findIndex((part) =>
+      /^\d+\.\d+\.\d+$/.test(part),
+    );
 
     if (versionIndex !== -1) {
       parts[versionIndex] = newVersion;
@@ -210,7 +214,9 @@ export class AssetVersioningService {
    * Extract base key without version
    * Example: avatars/fox/1.0.0/model.glb -> avatars/fox
    */
-  private extractBaseKey(key: string): string {
+  private extractBaseKey(key: string | null | undefined): string {
+    if (!key) return '';
+
     const parts = key.split('/');
     // Remove version and filename
     return parts

@@ -1,4 +1,10 @@
-import { IsOptional, IsString, Matches, IsArray, IsUUID } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  Matches,
+  IsArray,
+  IsUUID,
+} from 'class-validator';
 
 export class UpdateAvatarDto {
   @IsOptional()

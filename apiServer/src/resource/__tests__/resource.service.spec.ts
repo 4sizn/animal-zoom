@@ -22,7 +22,10 @@ describe('ResourceService', () => {
       deleteFile: jest.fn(),
       getBucketName: jest.fn().mockReturnValue('test-bucket'),
       getRegion: jest.fn().mockReturnValue('us-east-1'),
-      generatePublicUrl: jest.fn((key: string) => `https://test-bucket.s3.us-east-1.amazonaws.com/${key}`),
+      generatePublicUrl: jest.fn(
+        (key: string) =>
+          `https://test-bucket.s3.us-east-1.amazonaws.com/${key}`,
+      ),
     };
 
     const module: TestingModule = await Test.createTestingModule({

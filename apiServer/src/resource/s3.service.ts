@@ -107,6 +107,7 @@ export class S3Service implements AssetStorageInterface {
       Key: key,
       Body: file.buffer,
       ContentType: file.mimetype,
+      CacheControl: 'public, max-age=31536000, immutable', // 1 year cache for assets
       Metadata: {
         originalName: file.originalname,
         uploadedAt: new Date().toISOString(),

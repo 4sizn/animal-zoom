@@ -139,6 +139,66 @@ animal-zoom/
 
 ---
 
+## 🏛️ Architecture
+
+### Current Architecture (v1.0)
+
+Animal Zoom currently uses a **unified server architecture** where REST API and WebSocket run on the same port:
+
+```
+Frontend (5173/dev, 443/prod)
+    ↓
+NestJS Server (3000)
+    ├── REST API (HTTP)
+    └── WebSocket (Socket.IO)
+    ↓
+PostgreSQL (5432) + MinIO (9000)
+```
+
+**Key Features**:
+- ✅ Simple deployment and configuration
+- ✅ No CORS issues (same origin)
+- ✅ Easy local development
+- ✅ Suitable for small to medium scale (up to ~500 concurrent users)
+
+**Tech Stack**:
+- **Backend**: NestJS + TypeScript + Socket.IO
+- **Frontend**: Vite + TypeScript + Babylon.js
+- **Database**: PostgreSQL 16
+- **Storage**: MinIO (S3-compatible)
+- **Containerization**: Docker + Docker Compose
+
+### Future Architecture (v2.0 - Planned)
+
+For production scale (1,000+ concurrent users), we plan to separate concerns:
+
+```
+Frontend (443/HTTPS)
+    ↓
+nginx Reverse Proxy (443)
+    ├── /api/*          → API Server Pool (3000, 3002, 3004...)
+    └── /socket.io/*    → WebSocket Server Pool (3001, 3003, 3005...)
+    ↓
+PostgreSQL + Redis (state sync) + MinIO
+```
+
+**Benefits**:
+- 🚀 Independent scaling of API and WebSocket servers
+- 🔒 Enhanced security with nginx SSL termination
+- 📊 Better monitoring and observability
+- 🔄 Zero-downtime deployments
+- 🛡️ Traffic isolation and load balancing
+
+**Implementation Plan**: See [PLAN_websocket-api-separation.md](docs/plans/PLAN_websocket-api-separation.md)
+
+**When to Migrate**:
+- ✅ Concurrent users exceed 500
+- ✅ WebSocket traffic impacts API response times
+- ✅ Need independent scaling capabilities
+- ✅ Preparing for production deployment
+
+---
+
 ## 🎓 Using the Agent System
 
 ### Decision Tree: Which Agent to Use?

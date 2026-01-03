@@ -61,7 +61,9 @@ describe('S3Service - MinIO Integration', () => {
       const key = 'avatars/character/body/1.0.0/uuid-123.glb';
       const url = service.generatePublicUrl(key);
 
-      expect(url).toBe('http://localhost:9000/test-bucket/avatars/character/body/1.0.0/uuid-123.glb');
+      expect(url).toBe(
+        'http://localhost:9000/test-bucket/avatars/character/body/1.0.0/uuid-123.glb',
+      );
     });
 
     it('should handle trailing slashes in endpoint URL', () => {
@@ -117,7 +119,9 @@ describe('S3Service - MinIO Integration', () => {
       const key = 'avatars/character/body/1.0.0/uuid-456.glb';
       const url = service.generatePublicUrl(key);
 
-      expect(url).toBe('https://production-bucket.s3.us-east-1.amazonaws.com/avatars/character/body/1.0.0/uuid-456.glb');
+      expect(url).toBe(
+        'https://production-bucket.s3.us-east-1.amazonaws.com/avatars/character/body/1.0.0/uuid-456.glb',
+      );
     });
 
     it('should use correct region in AWS S3 URLs', () => {
@@ -232,7 +236,9 @@ describe('S3Service - MinIO Integration', () => {
       service = module.get<S3Service>(S3Service);
 
       const url = service.generatePublicUrl('test/file.glb');
-      expect(url).toBe('https://prod-bucket.s3.us-west-2.amazonaws.com/test/file.glb');
+      expect(url).toBe(
+        'https://prod-bucket.s3.us-west-2.amazonaws.com/test/file.glb',
+      );
     });
 
     it('should handle different regions correctly', async () => {
@@ -257,7 +263,9 @@ describe('S3Service - MinIO Integration', () => {
       service = module.get<S3Service>(S3Service);
 
       const url = service.generatePublicUrl('assets/model.glb');
-      expect(url).toBe('https://eu-bucket.s3.eu-west-1.amazonaws.com/assets/model.glb');
+      expect(url).toBe(
+        'https://eu-bucket.s3.eu-west-1.amazonaws.com/assets/model.glb',
+      );
     });
 
     it('should handle endpoint URLs with trailing slashes', async () => {

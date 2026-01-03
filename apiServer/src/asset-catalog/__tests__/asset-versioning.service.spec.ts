@@ -228,16 +228,19 @@ describe('AssetVersioningService', () => {
       const versions = [
         {
           id: 'asset-1',
+          key: 'avatars/fox/1.0.0/model.glb',
           version: '1.0.0',
           createdAt: new Date('2024-01-01'),
         },
         {
           id: 'asset-2',
+          key: 'avatars/fox/2.0.0/model.glb',
           version: '2.0.0',
           createdAt: new Date('2024-03-01'),
         },
         {
           id: 'asset-3',
+          key: 'avatars/fox/1.5.0/model.glb',
           version: '1.5.0',
           createdAt: new Date('2024-02-01'),
         },
