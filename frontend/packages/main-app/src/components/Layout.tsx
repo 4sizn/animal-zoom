@@ -8,7 +8,7 @@ export function Layout() {
       <header className="border-b">
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center space-x-2">
-            <h1 className="text-xl font-bold text-primary">Animal Zoom</h1>
+            <h1 className="text-xl font-bold text-primary">Animal Study Room</h1>
           </div>
         </div>
       </header>

@@ -101,6 +101,11 @@ export function LiveSession() {
           {/* Meeting Info Overlay */}
           <div className="absolute top-4 left-4 bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg border">
             <h2 className="font-semibold text-sm">{meeting.title}</h2>
+            {meeting.code && (
+              <p className="text-xs text-muted-foreground font-mono">
+                Room Code: <span className="font-semibold text-foreground">{meeting.code}</span>
+              </p>
+            )}
             <p className="text-xs text-muted-foreground">
               {participants.length} {participants.length === 1 ? 'participant' : 'participants'}
             </p>

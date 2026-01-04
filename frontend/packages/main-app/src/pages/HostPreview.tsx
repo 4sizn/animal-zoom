@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useMeetingStore } from '@/stores/meetingStore';
 import { useToast } from '@/hooks/use-toast';
 import { Copy, Users, Video, CheckCircle2, Loader2 } from 'lucide-react';
+import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
 
 export function HostPreview() {
   const { meetingId } = useParams<{ meetingId: string }>();
@@ -17,6 +18,31 @@ export function HostPreview() {
   const { toast } = useToast();
   const { meeting, startMeeting, isLoading } = useMeetingStore();
   const [copied, setCopied] = useState(false);
+
+  // Connect to WebSocket when entering preview (but don't sync yet)
+  useEffect(() => {
+    const wsController = getWebSocketController();
+
+    // Connect to WebSocket if not already connected
+    if (!wsController.isConnected()) {
+      console.log('[HostPreview] Connecting to WebSocket...');
+      wsController.connect();
+    }
+
+    // Join room when connected
+    const connectedSub = wsController.connected$.subscribe(() => {
+      if (meeting?.code) {
+        console.log('[HostPreview] WebSocket connected, joining room:', meeting.code);
+        wsController.joinRoom(meeting.code);
+      }
+    });
+
+    return () => {
+      connectedSub.unsubscribe();
+      // Keep connection alive - don't disconnect
+      // Synchronization will be enabled in LiveSession
+    };
+  }, [meeting?.code]);
 
   useEffect(() => {
     // Redirect if no meeting or wrong meeting

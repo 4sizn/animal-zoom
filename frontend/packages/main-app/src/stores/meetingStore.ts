@@ -228,26 +228,48 @@ export const useMeetingStore = create<MeetingStore>()(
       joinMeeting: async (meetingCode, request) => {
         set({ isLoading: true, error: null });
         try {
-          // Get meeting info
-          const room = await roomsApi.getRoom(meetingCode);
+          // Get meeting info with participants
+          const roomData = await roomsApi.getRoom(meetingCode);
+          console.log('Got room data:', roomData);
 
           // Join the room
-          const participant = await roomsApi.joinRoom(meetingCode, {
+          const joinResult = await roomsApi.joinRoom(meetingCode, {
             displayName: request.userName,
           });
+          console.log('Joined room result:', joinResult);
 
-          const meeting: MeetingInfo = roomToMeetingInfo(room, 'Host'); // TODO: Get actual host name
+          const meeting: MeetingInfo = roomToMeetingInfo(roomData.room, 'Host'); // TODO: Get actual host name
 
-          // Set current user
-          const currentUser: ParticipantInfo = participantToParticipantInfo(participant, false);
-          currentUser.joinState = 'PREVIEW'; // Start in preview state
+          // Set current user with actual isHost from API response
+          const currentUser: ParticipantInfo = {
+            id: joinResult.room.id,
+            name: request.userName,
+            joinState: 'PREVIEW',
+            status: 'PRESENT',
+            isHost: joinResult.isHost,
+            joinedAt: new Date(),
+          };
+
+          // Convert existing participants to ParticipantInfo
+          const existingParticipants: ParticipantInfo[] = roomData.participants.map((p) =>
+            participantToParticipantInfo(p, p.id === roomData.room.id)
+          );
+
+          console.log('Setting meeting store:', {
+            meeting,
+            currentUser,
+            isHost: currentUser.isHost,
+            participants: existingParticipants,
+          });
 
           set({
             meeting,
             currentUser,
+            participants: existingParticipants,
             isLoading: false,
           });
         } catch (error) {
+          console.error('joinMeeting error:', error);
           const errorMessage = error instanceof Error ? error.message : 'Failed to join meeting';
           set({ error: errorMessage, isLoading: false });
           throw error;

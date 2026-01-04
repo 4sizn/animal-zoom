@@ -17,9 +17,10 @@ export function SimpleGuest() {
   const [nickname, setNickname] = useState('');
   const [roomId, setRoomId] = useState('');
   const [isJoining, setIsJoining] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const navigate = useNavigate();
-  const { meeting, createMeeting, joinMeeting, isLoading, error } = useMeetingStore();
+  const { meeting, currentUser, createMeeting, joinMeeting, isLoading, error } = useMeetingStore();
   const { toast } = useToast();
 
   // Auto-populate room ID when meeting is created
@@ -29,17 +30,55 @@ export function SimpleGuest() {
     }
   }, [meeting]);
 
-  // Navigate to live session after joining
+  // Navigate to host preview after creating room
   useEffect(() => {
-    if (isJoining && meeting && meeting.id) {
+    if (isCreating && meeting && meeting.id && currentUser?.isHost) {
+      toast({
+        title: 'Room created!',
+        description: 'Redirecting to host preview',
+      });
+      navigate(`/meeting/${meeting.id}/host-preview`);
+      setIsCreating(false);
+    }
+  }, [isCreating, meeting, currentUser, navigate, toast]);
+
+  // Navigate after joining - redirect based on host status
+  useEffect(() => {
+    console.log('Navigation useEffect:', {
+      isJoining,
+      meeting: !!meeting,
+      meetingId: meeting?.id,
+      currentUser: !!currentUser,
+      isHost: currentUser?.isHost
+    });
+
+    if (isJoining && meeting && meeting.id && currentUser) {
+      console.log('Navigating...', { isHost: currentUser.isHost, meetingId: meeting.id });
+
       toast({
         title: 'Joining meeting...',
-        description: 'Entering session',
+        description: currentUser.isHost ? 'Redirecting to host preview' : 'Redirecting to participant preview',
       });
-      navigate(`/meeting/${meeting.id}/session`);
+
+      // Navigate to appropriate preview page based on role
+      if (currentUser.isHost) {
+        console.log('Navigating to host-preview');
+        navigate(`/meeting/${meeting.id}/host-preview`);
+      } else {
+        console.log('Navigating to participant-preview');
+        navigate(`/meeting/${meeting.id}/participant-preview`);
+      }
+
       setIsJoining(false);
+    } else {
+      console.log('Navigation condition failed:', {
+        hasIsJoining: !!isJoining,
+        hasMeeting: !!meeting,
+        hasMeetingId: !!(meeting?.id),
+        hasCurrentUser: !!currentUser
+      });
     }
-  }, [isJoining, meeting, navigate, toast]);
+  }, [isJoining, meeting, currentUser, navigate, toast]);
 
   // Show error toast when error occurs
   useEffect(() => {
@@ -70,12 +109,11 @@ export function SimpleGuest() {
       }
 
       // Then create the room with the token
+      setIsCreating(true);
       await createMeeting({ title: 'Quick Meeting' });
-      toast({
-        title: 'Room created!',
-        description: 'Your room ID has been generated',
-      });
+      // Navigation happens in useEffect after meeting is created
     } catch (err) {
+      setIsCreating(false);
       toast({
         title: 'Failed to create room',
         description: err instanceof Error ? err.message : 'Unknown error',
@@ -126,7 +164,7 @@ export function SimpleGuest() {
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">Simple Guest</h1>
@@ -135,46 +173,43 @@ export function SimpleGuest() {
         </p>
       </div>
 
-      {/* Input Form */}
+      {/* Nickname Input - Common for both actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Enter Your Details</CardTitle>
+          <CardTitle>Your Nickname</CardTitle>
           <CardDescription>
-            Provide your nickname to get started
+            Enter your nickname to get started
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Nickname Input */}
-          <div className="space-y-2">
-            <label htmlFor="nickname" className="text-sm font-medium">
-              Your Nickname
-            </label>
-            <Input
-              id="nickname"
-              placeholder="Enter your nickname"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              maxLength={50}
-            />
-          </div>
+        <CardContent>
+          <Input
+            id="nickname"
+            placeholder="Enter your nickname"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            maxLength={50}
+            className="text-lg"
+          />
+        </CardContent>
+      </Card>
 
-          {/* Room ID Input */}
-          <div className="space-y-2">
-            <label htmlFor="room-id" className="text-sm font-medium">
-              Room ID
-            </label>
-            <Input
-              id="room-id"
-              placeholder="Enter room ID or create new"
-              value={roomId}
-              onChange={(e) => setRoomId(e.target.value)}
-              maxLength={20}
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="pt-2 space-y-3">
-            {/* Create Room Button */}
+      {/* Two Action Cards Side by Side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Create Room Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Create Room</CardTitle>
+            <CardDescription>
+              Start a new meeting room
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {roomId && (
+              <div className="p-3 bg-muted rounded-md">
+                <p className="text-sm text-muted-foreground mb-1">Room Code:</p>
+                <p className="text-lg font-mono font-semibold">{roomId}</p>
+              </div>
+            )}
             <Button
               onClick={handleCreateRoom}
               disabled={!nickname.trim() || isLoading}
@@ -190,8 +225,31 @@ export function SimpleGuest() {
                 'Create Room'
               )}
             </Button>
+          </CardContent>
+        </Card>
 
-            {/* Join Room Button */}
+        {/* Join Room Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Join Room</CardTitle>
+            <CardDescription>
+              Enter a room code to join
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="room-code" className="text-sm font-medium">
+                Room Code
+              </label>
+              <Input
+                id="room-code"
+                placeholder="Enter room code"
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value)}
+                maxLength={20}
+                className="font-mono"
+              />
+            </div>
             <Button
               onClick={handleJoinRoom}
               disabled={!nickname.trim() || !roomId.trim() || isLoading}
@@ -210,9 +268,9 @@ export function SimpleGuest() {
                 </>
               )}
             </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

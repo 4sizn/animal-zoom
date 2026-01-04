@@ -74,7 +74,8 @@
       "Bash(xargs:*)",
       "Bash(pnpm run dev:standalone)",
       "Bash(pnpm run dev:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(python3 -c \"import sys,json; print\\(json.load\\(sys.stdin\\)[''accessToken'']\\)\")"
     ]
   }
 }

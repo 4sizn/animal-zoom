@@ -25,16 +25,16 @@ export const roomsApi = {
   /**
    * Get room by code
    */
-  async getRoom(roomCode: string): Promise<Room> {
-    const response = await apiClient.get<Room>(`/rooms/${roomCode}`);
+  async getRoom(roomCode: string): Promise<{ room: Room; isHost: boolean; participants: Participant[] }> {
+    const response = await apiClient.get<{ room: Room; isHost: boolean; participants: Participant[] }>(`/rooms/${roomCode}`);
     return response.data;
   },
 
   /**
    * Join a room
    */
-  async joinRoom(roomCode: string, data?: JoinRoomRequest): Promise<Participant> {
-    const response = await apiClient.post<Participant>(`/rooms/${roomCode}/join`, data || {});
+  async joinRoom(roomCode: string, data?: JoinRoomRequest): Promise<{ room: Room; isHost: boolean }> {
+    const response = await apiClient.post<{ room: Room; isHost: boolean }>(`/rooms/${roomCode}/join`, data || {});
     return response.data;
   },
 

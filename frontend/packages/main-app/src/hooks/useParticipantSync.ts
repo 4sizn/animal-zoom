@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { useToast } from '@/hooks/use-toast';
 import { ParticipantStatus } from '@/types/meeting';
+import { getInstance } from '@animal-zoom/shared/socket';
 
 /**
  * Hook to synchronize participant state via WebSocket
@@ -29,92 +30,108 @@ export function useParticipantSync(meetingId: string | undefined, enabled = true
   useEffect(() => {
     if (!meetingId || !enabled) return;
 
-    // TODO: Integrate with WebSocketClientController from @animal-zoom/shared
-    //
-    // Expected WebSocket events:
-    // 1. USER_JOINED: New participant joins live session
-    //    - Payload: { participantId, name, isHost, joinedAt }
-    //    - Action: addParticipant()
-    //    - Show toast notification
-    //
-    // 2. USER_LEFT: Participant leaves meeting
-    //    - Payload: { participantId, name }
-    //    - Action: removeParticipant()
-    //    - Show toast notification
-    //
-    // 3. USER_STATUS_UPDATE: Participant changes status
-    //    - Payload: { participantId, status: 'PRESENT' | 'AWAY' | 'DO_NOT_DISTURB' }
-    //    - Action: updateParticipantStatus()
-    //
-    // 4. MEETING_STATE_CHANGED: Meeting state changes
-    //    - Payload: { state: 'CREATED' | 'LIVE' | 'ENDED' }
-    //    - Action: updateMeetingState()
-    //
-    // 5. MEETING_ENDED: Host ends meeting for all
-    //    - Payload: { endedBy: string }
-    //    - Action: Navigate to dashboard, show notification
+    // Get WebSocket controller instance
+    const wsController = getInstance();
+    const subscriptions: Array<{ unsubscribe: () => void }> = [];
 
-    // Example implementation (to be completed with actual WebSocket controller):
-    /*
-    const wsController = WebSocketClientController.getInstance();
+    console.log('[useParticipantSync] Starting synchronization for meeting:', meetingId);
 
-    const subscriptions = [
-      // Participant joined
-      wsController.onUserJoined$.subscribe((data) => {
-        addParticipant({
-          id: data.participantId,
-          name: data.name,
-          joinState: 'JOINED',
-          status: 'PRESENT',
-          isHost: data.isHost || false,
-          joinedAt: data.joinedAt
-        });
+    // Subscribe to room joined events (includes initial participant list)
+    const roomJoinedSub = wsController.roomJoined$.subscribe((data) => {
+      console.log('[useParticipantSync] Room joined with participants:', data);
 
-        if (!data.isHost) {
-          toast({
-            title: 'Participant joined',
-            description: `${data.name} joined the meeting`,
-          });
-        }
-      }),
+      // Set all participants from the room
+      const participants = data.participants.map((p) => ({
+        id: p.id,
+        name: p.displayName,
+        joinState: 'JOINED' as const,
+        status: 'PRESENT' as const,
+        isHost: false, // TODO: Determine from participant data
+        joinedAt: new Date(),
+      }));
 
-      // Participant left
-      wsController.onUserLeft$.subscribe((data) => {
-        removeParticipant(data.participantId);
+      // Use setParticipants to replace the entire list
+      const { setParticipants } = useMeetingStore.getState();
+      setParticipants(participants);
 
+      console.log('[useParticipantSync] Updated participant list:', participants);
+    });
+    subscriptions.push(roomJoinedSub);
+
+    // Subscribe to user joined events
+    const userJoinedSub = wsController.userJoined$.subscribe((data) => {
+      console.log('[useParticipantSync] User joined:', data);
+
+      addParticipant({
+        id: data.participant.id,
+        name: data.participant.displayName,
+        joinState: 'JOINED',
+        status: 'PRESENT',
+        isHost: false,
+        joinedAt: new Date(),
+      });
+
+      toast({
+        title: 'Participant joined',
+        description: `${data.participant.displayName} joined the meeting`,
+      });
+    });
+    subscriptions.push(userJoinedSub);
+
+    // Subscribe to user left events
+    const userLeftSub = wsController.userLeft$.subscribe((data) => {
+      console.log('[useParticipantSync] User left:', data);
+
+      removeParticipant(data.participant.id);
+
+      toast({
+        title: 'Participant left',
+        description: `${data.participant.displayName} left the meeting`,
+      });
+    });
+    subscriptions.push(userLeftSub);
+
+    // Subscribe to room updated events (meeting state changes)
+    const roomUpdatedSub = wsController.roomUpdated$.subscribe((data) => {
+      console.log('[useParticipantSync] Room updated:', data);
+
+      toast({
+        title: 'Meeting updated',
+        description: 'Meeting settings have been changed',
+      });
+    });
+    subscriptions.push(roomUpdatedSub);
+
+    // Subscribe to connection errors
+    const errorSub = wsController.error$.subscribe((error) => {
+      console.error('[useParticipantSync] WebSocket error:', error);
+
+      toast({
+        title: 'Connection error',
+        description: 'Lost connection to the meeting. Attempting to reconnect...',
+        variant: 'destructive',
+      });
+    });
+    subscriptions.push(errorSub);
+
+    // Subscribe to disconnection events
+    const disconnectedSub = wsController.disconnected$.subscribe((reason) => {
+      console.log('[useParticipantSync] Disconnected:', reason);
+
+      if (reason === 'io server disconnect') {
         toast({
-          title: 'Participant left',
-          description: `${data.name} left the meeting`,
+          title: 'Meeting ended',
+          description: 'The meeting has been ended by the host',
         });
-      }),
-
-      // Status update
-      wsController.onUserStatusUpdate$.subscribe((data) => {
-        updateParticipantStatus(data.participantId, data.status as ParticipantStatus);
-      }),
-
-      // Meeting state changed
-      wsController.onMeetingStateChanged$.subscribe((data) => {
-        updateMeetingState(data.state);
-
-        if (data.state === 'ENDED') {
-          toast({
-            title: 'Meeting ended',
-            description: 'The host has ended the meeting for everyone',
-            variant: 'destructive',
-          });
-        }
-      })
-    ];
+        updateMeetingState('ENDED');
+      }
+    });
+    subscriptions.push(disconnectedSub);
 
     return () => {
+      console.log('[useParticipantSync] Cleaning up subscriptions');
+      // Unsubscribe from all events
       subscriptions.forEach(sub => sub.unsubscribe());
-    };
-    */
-
-    // Placeholder cleanup
-    return () => {
-      // Cleanup subscriptions
     };
   }, [
     meetingId,
