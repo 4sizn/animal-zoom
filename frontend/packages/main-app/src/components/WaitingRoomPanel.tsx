@@ -6,10 +6,10 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
 import { UserCheck, UserX, Clock, ChevronDown, ChevronUp } from 'lucide-react';
-import { ParticipantInfo } from '@/types/meeting';
+import { ParticipantInfo } from '@/types/room';
 
 interface WaitingRoomPanelProps {
   /**
@@ -20,7 +20,7 @@ interface WaitingRoomPanelProps {
 
 export function WaitingRoomPanel({ collapsible = false }: WaitingRoomPanelProps) {
   const [isExpanded, setIsExpanded] = useState(!collapsible);
-  const { waitingParticipants, admitParticipant, rejectParticipant } = useMeetingStore();
+  const { waitingParticipants, admitParticipant, rejectParticipant } = useRoomStore();
   const { toast } = useToast();
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
@@ -30,7 +30,7 @@ export function WaitingRoomPanel({ collapsible = false }: WaitingRoomPanelProps)
       admitParticipant(participant.id);
       toast({
         title: 'Participant admitted',
-        description: `${participant.name} has joined the meeting`,
+        description: `${participant.name} has joined the room`,
       });
     } catch (error) {
       toast({

@@ -1,11 +1,11 @@
 /**
  * ControlBar Component
- * Bottom control bar with meeting controls (Zoom-like)
+ * Bottom control bar with room controls (Zoom-like)
  */
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import {
   MessageSquare,
   Users,
@@ -20,7 +20,7 @@ interface ControlBarProps {
   onToggleParticipants: () => void;
   onOpenSettings: () => void;
   onLeave: () => void;
-  onEndMeeting: () => void;
+  onEndRoom: () => void;
   chatUnreadCount?: number;
 }
 
@@ -29,10 +29,10 @@ export function ControlBar({
   onToggleParticipants,
   onOpenSettings,
   onLeave,
-  onEndMeeting,
+  onEndRoom,
   chatUnreadCount = 0,
 }: ControlBarProps) {
-  const { currentUser, participants } = useMeetingStore();
+  const { currentUser, participants } = useRoomStore();
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
 
   const isHost = currentUser?.isHost || false;
@@ -85,7 +85,7 @@ export function ControlBar({
   return (
     <div className="h-16 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Left Section - Meeting Info */}
+        {/* Left Section - Room Info */}
         <div className="flex items-center gap-4">
           <div className="text-sm text-muted-foreground">
             <span className="font-medium">{participants.length}</span> participant
@@ -115,17 +115,17 @@ export function ControlBar({
           />
         </div>
 
-        {/* Right Section - Leave/End Meeting */}
+        {/* Right Section - Leave/End Room */}
         <div className="flex items-center gap-2">
           {isHost ? (
             <Button
               variant="destructive"
               size="lg"
-              onClick={onEndMeeting}
+              onClick={onEndRoom}
               className="flex items-center gap-2"
             >
               <PhoneOff className="h-4 w-4" />
-              End Meeting
+              End Room
             </Button>
           ) : (
             <Button

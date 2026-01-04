@@ -1,6 +1,6 @@
 /**
  * SimpleGuest Page
- * Simplified interface for creating or joining meetings
+ * Simplified interface for creating or joining rooms
  */
 
 import { useState, useEffect } from 'react';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, LogIn } from 'lucide-react';
 import { authApi } from '@animal-zoom/shared/api';
@@ -20,65 +20,65 @@ export function SimpleGuest() {
   const [isCreating, setIsCreating] = useState(false);
 
   const navigate = useNavigate();
-  const { meeting, currentUser, createMeeting, joinMeeting, isLoading, error } = useMeetingStore();
+  const { room, currentUser, createRoom, joinRoom, isLoading, error } = useRoomStore();
   const { toast } = useToast();
 
-  // Auto-populate room ID when meeting is created
+  // Auto-populate room ID when room is created
   useEffect(() => {
-    if (meeting && meeting.code) {
-      setRoomId(meeting.code);
+    if (room && room.code) {
+      setRoomId(room.code);
     }
-  }, [meeting]);
+  }, [room]);
 
   // Navigate to host preview after creating room
   useEffect(() => {
-    if (isCreating && meeting && meeting.id && currentUser?.isHost) {
+    if (isCreating && room && room.id && currentUser?.isHost) {
       toast({
         title: 'Room created!',
         description: 'Redirecting to host preview',
       });
-      navigate(`/meeting/${meeting.id}/host-preview`);
+      navigate(`/room/${room.id}/host-preview`);
       setIsCreating(false);
     }
-  }, [isCreating, meeting, currentUser, navigate, toast]);
+  }, [isCreating, room, currentUser, navigate, toast]);
 
   // Navigate after joining - redirect based on host status
   useEffect(() => {
     console.log('Navigation useEffect:', {
       isJoining,
-      meeting: !!meeting,
-      meetingId: meeting?.id,
+      room: !!room,
+      roomId: room?.id,
       currentUser: !!currentUser,
       isHost: currentUser?.isHost
     });
 
-    if (isJoining && meeting && meeting.id && currentUser) {
-      console.log('Navigating...', { isHost: currentUser.isHost, meetingId: meeting.id });
+    if (isJoining && room && room.id && currentUser) {
+      console.log('Navigating...', { isHost: currentUser.isHost, roomId: room.id });
 
       toast({
-        title: 'Joining meeting...',
+        title: 'Joining room...',
         description: currentUser.isHost ? 'Redirecting to host preview' : 'Redirecting to participant preview',
       });
 
       // Navigate to appropriate preview page based on role
       if (currentUser.isHost) {
         console.log('Navigating to host-preview');
-        navigate(`/meeting/${meeting.id}/host-preview`);
+        navigate(`/room/${room.id}/host-preview`);
       } else {
         console.log('Navigating to participant-preview');
-        navigate(`/meeting/${meeting.id}/participant-preview`);
+        navigate(`/room/${room.id}/participant-preview`);
       }
 
       setIsJoining(false);
     } else {
       console.log('Navigation condition failed:', {
         hasIsJoining: !!isJoining,
-        hasMeeting: !!meeting,
-        hasMeetingId: !!(meeting?.id),
+        hasRoom: !!room,
+        hasRoomId: !!(room?.id),
         hasCurrentUser: !!currentUser
       });
     }
-  }, [isJoining, meeting, currentUser, navigate, toast]);
+  }, [isJoining, room, currentUser, navigate, toast]);
 
   // Show error toast when error occurs
   useEffect(() => {
@@ -110,8 +110,8 @@ export function SimpleGuest() {
 
       // Then create the room with the token
       setIsCreating(true);
-      await createMeeting({ title: 'Quick Meeting' });
-      // Navigation happens in useEffect after meeting is created
+      await createRoom({ title: 'Quick Room' });
+      // Navigation happens in useEffect after room is created
     } catch (err) {
       setIsCreating(false);
       toast({
@@ -151,8 +151,8 @@ export function SimpleGuest() {
       }
 
       // Then join the room with the token
-      await joinMeeting(roomId.trim(), { userName: nickname.trim() });
-      // Navigation happens in useEffect after meeting is updated
+      await joinRoom(roomId.trim(), { userName: nickname.trim() });
+      // Navigation happens in useEffect after room is updated
     } catch (err) {
       setIsJoining(false);
       toast({
@@ -200,7 +200,7 @@ export function SimpleGuest() {
           <CardHeader>
             <CardTitle>Create Room</CardTitle>
             <CardDescription>
-              Start a new meeting room
+              Start a new room
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

@@ -4,7 +4,7 @@
  */
 
 import { useEffect } from 'react';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
 
 /**
@@ -13,14 +13,14 @@ import { useToast } from '@/hooks/use-toast';
  * This hook will be enhanced once WebSocket controller from @animal-zoom/shared
  * is properly integrated. For now, it provides the structure for future integration.
  *
- * @param meetingId - The current meeting ID
+ * @param roomId - The current room ID
  */
-export function useWaitingRoomSync(meetingId: string | undefined) {
+export function useWaitingRoomSync(roomId: string | undefined) {
   const { toast } = useToast();
-  const { addToWaitingRoom, admitParticipant, removeParticipant } = useMeetingStore();
+  const { addToWaitingRoom, admitParticipant, removeParticipant } = useRoomStore();
 
   useEffect(() => {
-    if (!meetingId) return;
+    if (!roomId) return;
 
     // TODO: Integrate with WebSocketClientController from @animal-zoom/shared
     //
@@ -37,7 +37,7 @@ export function useWaitingRoomSync(meetingId: string | undefined) {
     //    - Payload: { participantId }
     //    - Action: removeParticipant()
     //
-    // 4. USER_JOINED: Participant successfully joined meeting
+    // 4. USER_JOINED: Participant successfully joined room
     //    - Payload: { participantId, name, joinState: 'JOINED' }
     //    - Action: Update participant state
     //
@@ -71,7 +71,7 @@ export function useWaitingRoomSync(meetingId: string | undefined) {
 
         toast({
           title: 'Participant admitted',
-          description: 'User has joined the meeting',
+          description: 'User has joined the room',
         });
       }),
 
@@ -94,5 +94,5 @@ export function useWaitingRoomSync(meetingId: string | undefined) {
     return () => {
       // Cleanup subscriptions
     };
-  }, [meetingId, addToWaitingRoom, admitParticipant, removeParticipant, toast]);
+  }, [roomId, addToWaitingRoom, admitParticipant, removeParticipant, toast]);
 }

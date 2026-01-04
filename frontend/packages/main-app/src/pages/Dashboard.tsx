@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { NewMeetingDialog } from '@/components/NewMeetingDialog';
+import { NewRoomDialog } from '@/components/NewRoomDialog';
 import { Video, LogIn } from 'lucide-react';
 
 export function Dashboard() {
-  const [showNewMeetingDialog, setShowNewMeetingDialog] = useState(false);
+  const [showNewRoomDialog, setShowNewRoomDialog] = useState(false);
   const navigate = useNavigate();
 
-  const handleJoinMeeting = () => {
+  const handleJoinRoom = () => {
     navigate('/join');
   };
 
@@ -28,28 +28,28 @@ export function Dashboard() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="md:col-span-2 lg:col-span-2">
           <CardHeader>
-            <CardTitle>Start a New Meeting</CardTitle>
+            <CardTitle>Start a New Room</CardTitle>
             <CardDescription>
-              Create a meeting room and invite participants to join
+              Create a room and invite participants to join
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button
               size="lg"
               className="w-full md:w-auto"
-              onClick={() => setShowNewMeetingDialog(true)}
+              onClick={() => setShowNewRoomDialog(true)}
             >
               <Video className="mr-2 h-4 w-4" />
-              New Meeting
+              New Room
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Join a Meeting</CardTitle>
+            <CardTitle>Join a Room</CardTitle>
             <CardDescription>
-              Enter a meeting code to join an existing room
+              Enter a room code to join an existing room
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -57,7 +57,7 @@ export function Dashboard() {
               variant="outline"
               size="lg"
               className="w-full"
-              onClick={handleJoinMeeting}
+              onClick={handleJoinRoom}
             >
               <LogIn className="mr-2 h-4 w-4" />
               Join
@@ -66,23 +66,23 @@ export function Dashboard() {
         </Card>
       </div>
 
-      {/* Recent meetings placeholder */}
+      {/* Recent rooms placeholder */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Meetings</CardTitle>
-          <CardDescription>Your meeting history will appear here</CardDescription>
+          <CardTitle>Recent Rooms</CardTitle>
+          <CardDescription>Your room history will appear here</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            No recent meetings. Create your first meeting to get started!
+            No recent rooms. Create your first room to get started!
           </p>
         </CardContent>
       </Card>
 
-      {/* New Meeting Dialog */}
-      <NewMeetingDialog
-        open={showNewMeetingDialog}
-        onOpenChange={setShowNewMeetingDialog}
+      {/* New Room Dialog */}
+      <NewRoomDialog
+        open={showNewRoomDialog}
+        onOpenChange={setShowNewRoomDialog}
       />
     </div>
   );

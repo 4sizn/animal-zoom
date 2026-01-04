@@ -8,10 +8,10 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { SimpleGuest } from '../SimpleGuest';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 
-// Mock meeting store
-vi.mock('@/stores/meetingStore');
+// Mock room store
+vi.mock('@/stores/roomStore');
 
 // Mock react-router-dom
 vi.mock('react-router-dom', async () => {
@@ -23,8 +23,8 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('SimpleGuest', () => {
-  const mockCreateMeeting = vi.fn();
-  const mockJoinMeeting = vi.fn();
+  const mockCreateRoom = vi.fn();
+  const mockJoinRoom = vi.fn();
   const mockNavigate = vi.fn();
 
   beforeEach(() => {
@@ -34,10 +34,10 @@ describe('SimpleGuest', () => {
     vi.mocked(useNavigate).mockReturnValue(mockNavigate);
 
     // Setup default mock implementation
-    vi.mocked(useMeetingStore).mockReturnValue({
-      meeting: null,
-      createMeeting: mockCreateMeeting,
-      joinMeeting: mockJoinMeeting,
+    vi.mocked(useRoomStore).mockReturnValue({
+      room: null,
+      createRoom: mockCreateRoom,
+      joinRoom: mockJoinRoom,
       isLoading: false,
       error: null,
     } as any);
@@ -138,8 +138,8 @@ describe('SimpleGuest', () => {
       expect(createButton.disabled).toBe(false);
     });
 
-    test('should call createMeeting when Create Room is clicked', async () => {
-      mockCreateMeeting.mockResolvedValue(undefined);
+    test('should call createRoom when Create Room is clicked', async () => {
+      mockCreateRoom.mockResolvedValue(undefined);
 
       renderWithRouter(<SimpleGuest />);
       const nicknameInput = screen.getByPlaceholderText(/nickname/i);
@@ -149,13 +149,13 @@ describe('SimpleGuest', () => {
       fireEvent.click(createButton);
 
       await waitFor(() => {
-        expect(mockCreateMeeting).toHaveBeenCalledWith({ title: 'Quick Meeting' });
+        expect(mockCreateRoom).toHaveBeenCalledWith({ title: 'Quick Meeting' });
       });
     });
 
     test('should auto-populate room ID after room creation', async () => {
-      const mockMeeting = {
-        id: 'meeting-123',
+      const mockRoom = {
+        id: 'room-123',
         code: 'ABC-123-XYZ',
         hostId: 'user-1',
         hostName: 'John',
@@ -165,10 +165,10 @@ describe('SimpleGuest', () => {
         waitingRoomEnabled: true,
       };
 
-      mockCreateMeeting.mockResolvedValue(undefined);
-      vi.mocked(useMeetingStore).mockReturnValue({
-        meeting: mockMeeting,
-        createMeeting: mockCreateMeeting,
+      mockCreateRoom.mockResolvedValue(undefined);
+      vi.mocked(useRoomStore).mockReturnValue({
+        room: mockRoom,
+        createRoom: mockCreateRoom,
         isLoading: false,
         error: null,
       } as any);
@@ -180,9 +180,9 @@ describe('SimpleGuest', () => {
     });
 
     test('should show loading state during room creation', async () => {
-      vi.mocked(useMeetingStore).mockReturnValue({
-        meeting: null,
-        createMeeting: mockCreateMeeting,
+      vi.mocked(useRoomStore).mockReturnValue({
+        room: null,
+        createRoom: mockCreateRoom,
         isLoading: true,
         error: null,
       } as any);
@@ -193,10 +193,10 @@ describe('SimpleGuest', () => {
     });
 
     test('should display error message on creation failure', async () => {
-      vi.mocked(useMeetingStore).mockReturnValue({
-        meeting: null,
-        createMeeting: mockCreateMeeting,
-        joinMeeting: mockJoinMeeting,
+      vi.mocked(useRoomStore).mockReturnValue({
+        room: null,
+        createRoom: mockCreateRoom,
+        joinRoom: mockJoinRoom,
         isLoading: false,
         error: 'Failed to create room',
       } as any);
@@ -232,8 +232,8 @@ describe('SimpleGuest', () => {
       expect(joinButton.disabled).toBe(false);
     });
 
-    test('should call joinMeeting when Join Room is clicked', async () => {
-      mockJoinMeeting.mockResolvedValue(undefined);
+    test('should call joinRoom when Join Room is clicked', async () => {
+      mockJoinRoom.mockResolvedValue(undefined);
 
       renderWithRouter(<SimpleGuest />);
       const nicknameInput = screen.getByPlaceholderText(/nickname/i);
@@ -245,27 +245,27 @@ describe('SimpleGuest', () => {
       fireEvent.click(joinButton);
 
       await waitFor(() => {
-        expect(mockJoinMeeting).toHaveBeenCalledWith('ABC-123', { userName: 'Jane' });
+        expect(mockJoinRoom).toHaveBeenCalledWith('ABC-123', { userName: 'Jane' });
       });
     });
 
     test('should navigate to live session after successful join', async () => {
-      const mockMeeting = {
-        id: 'meeting-456',
+      const mockRoom = {
+        id: 'room-456',
         code: 'ABC-123',
         hostId: 'user-2',
         hostName: 'Host',
-        title: 'Test Meeting',
+        title: 'Test Room',
         state: 'CREATED' as const,
         createdAt: new Date(),
         waitingRoomEnabled: true,
       };
 
-      mockJoinMeeting.mockResolvedValue(undefined);
-      vi.mocked(useMeetingStore).mockReturnValue({
-        meeting: mockMeeting,
-        createMeeting: mockCreateMeeting,
-        joinMeeting: mockJoinMeeting,
+      mockJoinRoom.mockResolvedValue(undefined);
+      vi.mocked(useRoomStore).mockReturnValue({
+        room: mockRoom,
+        createRoom: mockCreateRoom,
+        joinRoom: mockJoinRoom,
         isLoading: false,
         error: null,
       } as any);
@@ -280,15 +280,15 @@ describe('SimpleGuest', () => {
       fireEvent.click(joinButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/meeting/meeting-456/session');
+        expect(mockNavigate).toHaveBeenCalledWith('/room/room-456/session');
       });
     });
 
     test('should show loading state during join', () => {
-      vi.mocked(useMeetingStore).mockReturnValue({
-        meeting: null,
-        createMeeting: mockCreateMeeting,
-        joinMeeting: mockJoinMeeting,
+      vi.mocked(useRoomStore).mockReturnValue({
+        room: null,
+        createRoom: mockCreateRoom,
+        joinRoom: mockJoinRoom,
         isLoading: true,
         error: null,
       } as any);
@@ -303,12 +303,12 @@ describe('SimpleGuest', () => {
     });
 
     test('should display error on invalid room ID', async () => {
-      mockJoinMeeting.mockRejectedValue(new Error('Room not found'));
+      mockJoinRoom.mockRejectedValue(new Error('Room not found'));
 
-      vi.mocked(useMeetingStore).mockReturnValue({
-        meeting: null,
-        createMeeting: mockCreateMeeting,
-        joinMeeting: mockJoinMeeting,
+      vi.mocked(useRoomStore).mockReturnValue({
+        room: null,
+        createRoom: mockCreateRoom,
+        joinRoom: mockJoinRoom,
         isLoading: false,
         error: 'Room not found',
       } as any);

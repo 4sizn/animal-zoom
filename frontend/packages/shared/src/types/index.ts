@@ -38,6 +38,13 @@ export interface Vector3 {
 }
 
 // Chat types
+export interface MessageReaction {
+  emoji: string;
+  userId: string;
+  userName: string;
+  timestamp: Date;
+}
+
 export interface ChatMessage {
   id: string;
   roomId: string;
@@ -46,6 +53,7 @@ export interface ChatMessage {
   message: string;
   timestamp: Date;
   type?: 'text' | 'system' | 'emoji';
+  reactions?: MessageReaction[];
 }
 
 // WebSocket event types

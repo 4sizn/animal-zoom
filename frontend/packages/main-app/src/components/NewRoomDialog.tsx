@@ -1,6 +1,6 @@
 /**
- * NewMeetingDialog Component
- * Modal for creating a new meeting with settings
+ * NewRoomDialog Component
+ * Modal for creating a new room with settings
  */
 
 import { useState } from 'react';
@@ -15,44 +15,44 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
-interface NewMeetingDialogProps {
+interface NewRoomDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function NewMeetingDialog({ open, onOpenChange }: NewMeetingDialogProps) {
+export function NewRoomDialog({ open, onOpenChange }: NewRoomDialogProps) {
   const [title, setTitle] = useState('');
   const [waitingRoomEnabled, setWaitingRoomEnabled] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { createMeeting, isLoading } = useMeetingStore();
+  const { createRoom, isLoading } = useRoomStore();
 
   const handleCreate = async () => {
     try {
-      await createMeeting({
-        title: title || 'Quick Meeting',
+      await createRoom({
+        title: title || 'Quick Room',
         waitingRoomEnabled,
       });
 
       toast({
-        title: 'Meeting created!',
+        title: 'Room created!',
         description: 'Redirecting to host preview...',
       });
 
       onOpenChange(false);
 
       // Navigate to host preview
-      const meetingId = useMeetingStore.getState().meeting?.id;
-      if (meetingId) {
-        navigate(`/meeting/${meetingId}/host-preview`);
+      const roomId = useRoomStore.getState().room?.id;
+      if (roomId) {
+        navigate(`/room/${roomId}/host-preview`);
       }
     } catch (error) {
       toast({
-        title: 'Failed to create meeting',
+        title: 'Failed to create room',
         description: error instanceof Error ? error.message : 'Unknown error',
         variant: 'destructive',
       });
@@ -69,21 +69,21 @@ export function NewMeetingDialog({ open, onOpenChange }: NewMeetingDialogProps) 
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Meeting</DialogTitle>
+          <DialogTitle>Create New Room</DialogTitle>
           <DialogDescription>
-            Set up your meeting room. You can change these settings later.
+            Set up your room. You can change these settings later.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {/* Meeting Title */}
+          {/* Room Title */}
           <div className="grid gap-2">
             <label htmlFor="title" className="text-sm font-medium">
-              Meeting Title (Optional)
+              Room Title (Optional)
             </label>
             <Input
               id="title"
-              placeholder="Quick Meeting"
+              placeholder="Quick Room"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               disabled={isLoading}
@@ -135,7 +135,7 @@ export function NewMeetingDialog({ open, onOpenChange }: NewMeetingDialogProps) 
                 Creating...
               </>
             ) : (
-              'Create Meeting'
+              'Create Room'
             )}
           </Button>
         </DialogFooter>

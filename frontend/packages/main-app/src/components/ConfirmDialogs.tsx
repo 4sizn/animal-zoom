@@ -1,6 +1,6 @@
 /**
  * ConfirmDialogs Component
- * Confirmation dialogs for leave/end meeting actions
+ * Confirmation dialogs for leave/end room actions
  */
 
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
 import { AlertCircle, PhoneOff } from 'lucide-react';
 
@@ -24,15 +24,15 @@ interface LeaveConfirmDialogProps {
 
 export function LeaveConfirmDialog({ open, onOpenChange }: LeaveConfirmDialogProps) {
   const navigate = useNavigate();
-  const { leaveMeeting } = useMeetingStore();
+  const { leaveRoom } = useRoomStore();
   const { toast } = useToast();
 
   const handleLeave = () => {
     try {
-      leaveMeeting();
+      leaveRoom();
       toast({
-        title: 'Left meeting',
-        description: 'You have left the meeting',
+        title: 'Left room',
+        description: 'You have left the room',
       });
       onOpenChange(false);
       navigate('/');
@@ -51,16 +51,16 @@ export function LeaveConfirmDialog({ open, onOpenChange }: LeaveConfirmDialogPro
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-yellow-500" />
-            Leave Meeting?
+            Leave Room?
           </DialogTitle>
           <DialogDescription>
-            Are you sure you want to leave this meeting?
+            Are you sure you want to leave this room?
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
           <p className="text-sm text-muted-foreground">
-            You can rejoin the meeting at any time using the meeting code.
+            You can rejoin the room at any time using the room code.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export function LeaveConfirmDialog({ open, onOpenChange }: LeaveConfirmDialogPro
             Cancel
           </Button>
           <Button variant="destructive" onClick={handleLeave}>
-            Leave Meeting
+            Leave Room
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -77,31 +77,31 @@ export function LeaveConfirmDialog({ open, onOpenChange }: LeaveConfirmDialogPro
   );
 }
 
-interface EndMeetingDialogProps {
+interface EndRoomDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function EndMeetingDialog({ open, onOpenChange }: EndMeetingDialogProps) {
+export function EndRoomDialog({ open, onOpenChange }: EndRoomDialogProps) {
   const navigate = useNavigate();
-  const { meeting, endMeeting } = useMeetingStore();
+  const { room, endRoom } = useRoomStore();
   const { toast } = useToast();
 
-  const handleEndMeeting = () => {
+  const handleEndRoom = () => {
     try {
-      endMeeting();
+      endRoom();
       toast({
-        title: 'Meeting ended',
-        description: 'The meeting has been ended for all participants',
+        title: 'Room ended',
+        description: 'The room has been ended for all participants',
       });
       onOpenChange(false);
       navigate('/');
 
       // TODO: Send WebSocket event to notify all participants
-      // wsController.emit('MEETING_ENDED', { meetingId: meeting.id });
+      // wsController.emit('ROOM_ENDED', { roomId: room.id });
     } catch (error) {
       toast({
-        title: 'Failed to end meeting',
+        title: 'Failed to end room',
         description: error instanceof Error ? error.message : 'Unknown error',
         variant: 'destructive',
       });
@@ -114,10 +114,10 @@ export function EndMeetingDialog({ open, onOpenChange }: EndMeetingDialogProps) 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <PhoneOff className="h-5 w-5 text-destructive" />
-            End Meeting for All?
+            End Room for All?
           </DialogTitle>
           <DialogDescription>
-            This will end the meeting for all participants. This action cannot be undone.
+            This will end the room for all participants. This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
 
@@ -127,17 +127,17 @@ export function EndMeetingDialog({ open, onOpenChange }: EndMeetingDialogProps) 
               Warning
             </p>
             <p className="text-sm text-muted-foreground">
-              All participants will be removed from the meeting and the meeting will be closed.
+              All participants will be removed from the room and the room will be closed.
             </p>
           </div>
 
-          {meeting && (
+          {room && (
             <div className="text-sm">
               <p className="text-muted-foreground">
-                Meeting: <span className="font-medium text-foreground">{meeting.title}</span>
+                Room: <span className="font-medium text-foreground">{room.title}</span>
               </p>
               <p className="text-muted-foreground">
-                Code: <span className="font-mono font-medium text-foreground">{meeting.code}</span>
+                Code: <span className="font-mono font-medium text-foreground">{room.code}</span>
               </p>
             </div>
           )}
@@ -147,8 +147,8 @@ export function EndMeetingDialog({ open, onOpenChange }: EndMeetingDialogProps) 
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleEndMeeting}>
-            End Meeting for All
+          <Button variant="destructive" onClick={handleEndRoom}>
+            End Room for All
           </Button>
         </DialogFooter>
       </DialogContent>

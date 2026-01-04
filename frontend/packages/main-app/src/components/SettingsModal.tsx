@@ -13,9 +13,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
-import { ParticipantStatus } from '@/types/meeting';
+import { ParticipantStatus } from '@/types/room';
 import { Circle, Moon, MinusCircle } from 'lucide-react';
 
 interface SettingsModalProps {
@@ -24,7 +24,7 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
-  const { currentUser, updateParticipantStatus } = useMeetingStore();
+  const { currentUser, updateParticipantStatus } = useRoomStore();
   const { toast } = useToast();
   const [selectedStatus, setSelectedStatus] = useState<ParticipantStatus>(
     currentUser?.status || 'PRESENT'
@@ -65,11 +65,11 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
   const getStatusDescription = (status: ParticipantStatus): string => {
     switch (status) {
       case 'PRESENT':
-        return 'You are active and available in the meeting';
+        return 'You are active and available in the room';
       case 'AWAY':
-        return 'You are temporarily away from the meeting';
+        return 'You are temporarily away from the room';
       case 'DO_NOT_DISTURB':
-        return 'You prefer not to be disturbed during the meeting';
+        return 'You prefer not to be disturbed during the session';
       default:
         return '';
     }
@@ -111,7 +111,7 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
           <DialogDescription>
-            Manage your meeting preferences and status
+            Manage your room preferences and status
           </DialogDescription>
         </DialogHeader>
 

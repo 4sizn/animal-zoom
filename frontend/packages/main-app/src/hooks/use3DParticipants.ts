@@ -1,10 +1,10 @@
 /**
  * use3DParticipants Hook
- * Manages synchronization between meeting store participants and 3D scene avatars
+ * Manages synchronization between room store participants and 3D scene avatars
  */
 
 import { useEffect, useRef } from 'react';
-import { ParticipantInfo } from '@/types/meeting';
+import { ParticipantInfo } from '@/types/room';
 
 /**
  * Hook to synchronize participants with 3D scene
@@ -12,7 +12,7 @@ import { ParticipantInfo } from '@/types/meeting';
  * This hook will be enhanced once @animal-zoom/3d-viewer integration is complete.
  * It manages the lifecycle of 3D avatars based on participant state changes.
  *
- * @param participants - Current list of participants from meeting store
+ * @param participants - Current list of participants from room store
  * @param scene - Babylon.js scene instance (from SceneBuilder)
  * @param currentUserId - Current user's ID (to highlight their avatar)
  */

@@ -20,3 +20,6 @@ export * from './socket/types';
 export * from './socket/WebSocketClientController';
 export * from './socket/SubscriptionManager';
 export * from './socket/controller-types';
+
+// Debug Tools
+export * from './debug';

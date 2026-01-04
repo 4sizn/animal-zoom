@@ -7,42 +7,42 @@ import { ParticipantPreview } from './pages/ParticipantPreview';
 import { WaitingRoom } from './pages/WaitingRoom';
 import { LiveSession } from './pages/LiveSession';
 import { SimpleGuest } from './pages/SimpleGuest';
-import { useMeetingStore } from './stores/meetingStore';
+import { useRoomStore } from './stores/roomStore';
 
-// Loader for session page - ensures user is properly authenticated and meeting is live
-async function sessionLoader({ params }: { params: { meetingId?: string } }) {
-  const { meetingId } = params;
+// Loader for session page - ensures user is properly authenticated and room is live
+async function sessionLoader({ params }: { params: { roomId?: string } }) {
+  const { roomId } = params;
 
-  if (!meetingId) {
-    console.log('No meetingId, redirecting to home');
+  if (!roomId) {
+    console.log('No roomId, redirecting to home');
     return redirect('/');
   }
 
-  const { meeting, currentUser } = useMeetingStore.getState();
+  const { room, currentUser } = useRoomStore.getState();
 
   console.log('Session Loader:', {
-    meetingId,
-    meeting,
+    roomId,
+    room,
     currentUser,
-    meetingState: meeting?.state,
+    roomState: room?.state,
     joinState: currentUser?.joinState
   });
 
-  // If no meeting info (e.g., after refresh), redirect to participant preview
+  // If no room info (e.g., after refresh), redirect to participant preview
   // The preview page will handle re-fetching data or redirecting further
-  if (!meeting || meeting.id !== meetingId) {
-    console.log('No meeting data, redirecting to participant preview');
-    return redirect(`/meeting/${meetingId}/participant-preview`);
+  if (!room || room.id !== roomId) {
+    console.log('No room data, redirecting to participant preview');
+    return redirect(`/room/${roomId}/participant-preview`);
   }
 
-  // Check if meeting is live
-  if (meeting.state !== 'LIVE') {
-    console.log('Redirecting to preview: meeting not live');
+  // Check if room is live
+  if (room.state !== 'LIVE') {
+    console.log('Redirecting to preview: room not live');
     // Redirect to appropriate preview page
     if (currentUser?.isHost) {
-      return redirect(`/meeting/${meetingId}/host-preview`);
+      return redirect(`/room/${roomId}/host-preview`);
     } else {
-      return redirect(`/meeting/${meetingId}/participant-preview`);
+      return redirect(`/room/${roomId}/participant-preview`);
     }
   }
 
@@ -51,9 +51,9 @@ async function sessionLoader({ params }: { params: { meetingId?: string } }) {
     console.log('Redirecting to preview: user not joined');
     // Redirect to appropriate preview page
     if (currentUser?.isHost) {
-      return redirect(`/meeting/${meetingId}/host-preview`);
+      return redirect(`/room/${roomId}/host-preview`);
     } else {
-      return redirect(`/meeting/${meetingId}/participant-preview`);
+      return redirect(`/room/${roomId}/participant-preview`);
     }
   }
 
@@ -76,7 +76,7 @@ export const router = createBrowserRouter([
         element: <JoinMeeting />,
       },
       {
-        path: 'join/:meetingCode',
+        path: 'join/:roomCode',
         element: <JoinMeeting />,
       },
       {
@@ -84,7 +84,7 @@ export const router = createBrowserRouter([
         element: <SimpleGuest />,
       },
       {
-        path: 'meeting/:meetingId',
+        path: 'room/:roomId',
         children: [
           {
             path: 'host-preview',

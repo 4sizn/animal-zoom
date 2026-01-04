@@ -1,6 +1,6 @@
 /**
  * JoinMeeting Page
- * Entry point for participants to join a meeting
+ * Entry point for participants to join a room
  */
 
 import { useState, useEffect } from 'react';
@@ -8,58 +8,58 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, LogIn } from 'lucide-react';
 import { authApi } from '@animal-zoom/shared/api';
 
 export function JoinMeeting() {
-  const { meetingCode: urlMeetingCode } = useParams<{ meetingCode?: string }>();
-  const [roomId, setRoomId] = useState(urlMeetingCode || '');
+  const { roomCode: urlRoomCode } = useParams<{ roomCode?: string }>();
+  const [roomId, setRoomId] = useState(urlRoomCode || '');
   const [nickname, setNickname] = useState('');
   const [isJoining, setIsJoining] = useState(false);
 
   const navigate = useNavigate();
-  const { meeting, currentUser, joinMeeting, isLoading, error } = useMeetingStore();
+  const { room, currentUser, joinRoom, isLoading, error } = useRoomStore();
   const { toast } = useToast();
 
   // Navigate after joining - redirect based on host status
   useEffect(() => {
     console.log('Navigation useEffect:', {
       isJoining,
-      meeting: !!meeting,
-      meetingId: meeting?.id,
+      room: !!room,
+      roomId: room?.id,
       currentUser: !!currentUser,
       isHost: currentUser?.isHost
     });
 
-    if (isJoining && meeting && meeting.id && currentUser) {
-      console.log('Navigating...', { isHost: currentUser.isHost, meetingId: meeting.id });
+    if (isJoining && room && room.id && currentUser) {
+      console.log('Navigating...', { isHost: currentUser.isHost, roomId: room.id });
 
       toast({
-        title: 'Joining meeting...',
+        title: 'Joining room...',
         description: currentUser.isHost ? 'Redirecting to host preview' : 'Redirecting to participant preview',
       });
 
       // Navigate to appropriate preview page based on role
       if (currentUser.isHost) {
         console.log('Navigating to host-preview');
-        navigate(`/meeting/${meeting.id}/host-preview`);
+        navigate(`/room/${room.id}/host-preview`);
       } else {
         console.log('Navigating to participant-preview');
-        navigate(`/meeting/${meeting.id}/participant-preview`);
+        navigate(`/room/${room.id}/participant-preview`);
       }
 
       setIsJoining(false);
     } else {
       console.log('Navigation condition failed:', {
         hasIsJoining: !!isJoining,
-        hasMeeting: !!meeting,
-        hasMeetingId: !!(meeting?.id),
+        hasRoom: !!room,
+        hasRoomId: !!(room?.id),
         hasCurrentUser: !!currentUser
       });
     }
-  }, [isJoining, meeting, currentUser, navigate, toast]);
+  }, [isJoining, room, currentUser, navigate, toast]);
 
   // Show error toast when error occurs
   useEffect(() => {
@@ -101,8 +101,8 @@ export function JoinMeeting() {
       }
 
       // Then join the room with the token
-      await joinMeeting(roomId.trim(), { userName: nickname.trim() });
-      // Navigation happens in useEffect after meeting is updated
+      await joinRoom(roomId.trim(), { userName: nickname.trim() });
+      // Navigation happens in useEffect after room is updated
     } catch (err) {
       setIsJoining(false);
       toast({
@@ -189,12 +189,12 @@ export function JoinMeeting() {
       <Card className="bg-muted/50">
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground text-center">
-            Don't have a meeting code?{' '}
+            Don't have a room code?{' '}
             <button
               onClick={() => navigate('/')}
               className="text-primary hover:underline font-medium"
             >
-              Create a new meeting
+              Create a new room
             </button>
           </p>
         </CardContent>

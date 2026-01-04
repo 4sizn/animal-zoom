@@ -1,10 +1,10 @@
 /**
- * Meeting State Management Types
+ * Room State Management Types
  * Defines all states and data structures for Zero-Media Zoom Clone
  */
 
-// Meeting lifecycle states
-export type MeetingState = 'CREATED' | 'LIVE' | 'ENDED';
+// Room lifecycle states
+export type RoomState = 'CREATED' | 'LIVE' | 'ENDED';
 
 // User join states (participant journey)
 export type UserJoinState = 'PREVIEW' | 'WAITING' | 'JOINED' | 'LEFT';
@@ -13,15 +13,15 @@ export type UserJoinState = 'PREVIEW' | 'WAITING' | 'JOINED' | 'LEFT';
 export type ParticipantStatus = 'PRESENT' | 'AWAY' | 'DO_NOT_DISTURB';
 
 /**
- * Meeting information
+ * Room information
  */
-export interface MeetingInfo {
-  id: string;
-  code: string;
+export interface RoomInfo {
+  id: string; // roomId
+  code: string; // roomCode
   hostId: string;
   hostName: string;
   title: string;
-  state: MeetingState;
+  state: RoomState;
   createdAt: Date;
   waitingRoomEnabled: boolean;
 }
@@ -39,16 +39,16 @@ export interface ParticipantInfo {
 }
 
 /**
- * Create meeting request
+ * Create room request
  */
-export interface CreateMeetingRequest {
+export interface CreateRoomRequest {
   title?: string;
   waitingRoomEnabled?: boolean;
 }
 
 /**
- * Join meeting request
+ * Join room request
  */
-export interface JoinMeetingRequest {
+export interface JoinRoomRequest {
   userName: string;
 }

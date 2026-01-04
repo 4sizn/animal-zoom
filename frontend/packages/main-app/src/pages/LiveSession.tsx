@@ -1,11 +1,11 @@
 /**
  * LiveSession Page
- * Main meeting view with 3D viewer and participant management
+ * Main room view with 3D viewer and participant management
  */
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
 import { useParticipantSync } from '@/hooks/useParticipantSync';
 import { ViewerArea } from '@/components/ViewerArea';
@@ -14,14 +14,16 @@ import { ControlBar } from '@/components/ControlBar';
 import { ChatSidebar } from '@/components/ChatSidebar';
 import { ParticipantListSidebar } from '@/components/ParticipantListSidebar';
 import { SettingsModal } from '@/components/SettingsModal';
-import { LeaveConfirmDialog, EndMeetingDialog } from '@/components/ConfirmDialogs';
+import { LeaveConfirmDialog, EndRoomDialog } from '@/components/ConfirmDialogs';
 import { Loader2 } from 'lucide-react';
+import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
+import { DebugPanel } from '@animal-zoom/shared';
 
 export function LiveSession() {
-  const { meetingId } = useParams<{ meetingId: string }>();
+  const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { meeting, currentUser, participants } = useMeetingStore();
+  const { room, currentUser, participants } = useRoomStore();
 
   // UI State
   const [showWaitingRoom, setShowWaitingRoom] = useState(false);
@@ -31,14 +33,44 @@ export function LiveSession() {
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [showEndDialog, setShowEndDialog] = useState(false);
 
+  // Ensure WebSocket is connected and room is joined
+  useEffect(() => {
+    if (!room?.code) return;
+
+    const wsController = getWebSocketController();
+
+    console.log('[LiveSession] Checking WebSocket connection...');
+
+    // Connect to WebSocket if not already connected
+    if (!wsController.isConnected()) {
+      console.log('[LiveSession] Connecting to WebSocket...');
+      wsController.connect();
+    } else {
+      // Already connected, join room immediately
+      console.log('[LiveSession] Already connected, joining room:', room.code);
+      wsController.joinRoom(room.code);
+    }
+
+    // Join room when connected
+    const connectedSub = wsController.connected$.subscribe(() => {
+      console.log('[LiveSession] WebSocket connected, joining room:', room.code);
+      wsController.joinRoom(room.code);
+    });
+
+    return () => {
+      connectedSub.unsubscribe();
+      // Keep connection alive - don't disconnect
+    };
+  }, [room?.code]);
+
   // Enable real-time participant synchronization
-  useParticipantSync(meetingId, true);
+  useParticipantSync(roomId, true);
 
   useEffect(() => {
-    // Redirect if no meeting or wrong meeting
-    if (!meeting || meeting.id !== meetingId) {
+    // Redirect if no room or wrong room
+    if (!room || room.id !== roomId) {
       toast({
-        title: 'Meeting not found',
+        title: 'Room not found',
         description: 'Redirecting to dashboard...',
         variant: 'destructive',
       });
@@ -46,38 +78,38 @@ export function LiveSession() {
       return;
     }
 
-    // Check if meeting is live
-    if (meeting.state !== 'LIVE') {
+    // Check if room is live
+    if (room.state !== 'LIVE') {
       toast({
-        title: 'Meeting not started',
-        description: 'Waiting for host to start the meeting...',
+        title: 'Room not started',
+        description: 'Waiting for host to start the room...',
       });
-      navigate(`/meeting/${meetingId}/host-preview`);
+      navigate(`/room/${roomId}/host-preview`);
       return;
     }
 
     // Check if user has joined
     if (currentUser?.joinState !== 'JOINED') {
       toast({
-        title: 'Not in meeting',
-        description: 'Please join the meeting first',
+        title: 'Not in room',
+        description: 'Please join the room first',
       });
-      navigate(`/meeting/${meetingId}/participant-preview`);
+      navigate(`/room/${roomId}/participant-preview`);
     }
-  }, [meeting, meetingId, currentUser, navigate, toast]);
+  }, [room, roomId, currentUser, navigate, toast]);
 
-  // Handle meeting end
+  // Handle room end
   useEffect(() => {
-    if (meeting?.state === 'ENDED') {
+    if (room?.state === 'ENDED') {
       toast({
-        title: 'Meeting ended',
-        description: 'The meeting has ended',
+        title: 'Room ended',
+        description: 'The room has ended',
       });
       navigate('/');
     }
-  }, [meeting?.state, navigate, toast]);
+  }, [room?.state, navigate, toast]);
 
-  if (!meeting || !currentUser) {
+  if (!room || !currentUser) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -98,12 +130,12 @@ export function LiveSession() {
             currentUserId={currentUser.id}
           />
 
-          {/* Meeting Info Overlay */}
+          {/* Room Info Overlay */}
           <div className="absolute top-4 left-4 bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg border">
-            <h2 className="font-semibold text-sm">{meeting.title}</h2>
-            {meeting.code && (
+            <h2 className="font-semibold text-sm">{room.title}</h2>
+            {room.code && (
               <p className="text-xs text-muted-foreground font-mono">
-                Room Code: <span className="font-semibold text-foreground">{meeting.code}</span>
+                Room Code: <span className="font-semibold text-foreground">{room.code}</span>
               </p>
             )}
             <p className="text-xs text-muted-foreground">
@@ -127,7 +159,7 @@ export function LiveSession() {
         )}
 
         {/* Right Sidebar - Waiting Room (Host Only) */}
-        {isHost && meeting.waitingRoomEnabled && showWaitingRoom && (
+        {isHost && room.waitingRoomEnabled && showWaitingRoom && (
           <div className="w-80 border-l bg-background overflow-y-auto">
             <div className="p-4">
               <WaitingRoomPanel collapsible={false} />
@@ -150,7 +182,7 @@ export function LiveSession() {
         }}
         onOpenSettings={() => setShowSettings(true)}
         onLeave={() => setShowLeaveDialog(true)}
-        onEndMeeting={() => setShowEndDialog(true)}
+        onEndRoom={() => setShowEndDialog(true)}
         chatUnreadCount={0} // TODO: Track unread messages
       />
 
@@ -165,10 +197,18 @@ export function LiveSession() {
         onOpenChange={setShowLeaveDialog}
       />
 
-      <EndMeetingDialog
+      <EndRoomDialog
         open={showEndDialog}
         onOpenChange={setShowEndDialog}
       />
+
+      {/* Debug Panel - Development Only */}
+      {import.meta.env.DEV && (
+        <DebugPanel
+          userId={currentUser.id}
+          wsController={getWebSocketController()}
+        />
+      )}
     </div>
   );
 }

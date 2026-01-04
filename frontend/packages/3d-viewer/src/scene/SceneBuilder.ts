@@ -11,11 +11,14 @@ import {
   Vector3,
   StandardMaterial,
   Color3,
+  Color4,
   HemisphericLight,
   PointLight,
   MeshBuilder,
   SceneLoader,
   AbstractMesh,
+  Engine,
+  ArcRotateCamera,
 } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF"; // Register GLB/GLTF loaders
 import type { CharacterConfig, RoomConfig } from "../resources/ResourceConfig";
@@ -40,6 +43,73 @@ export interface RoomBuildResult {
  * Builds Babylon.js scenes from resource configurations
  */
 export class SceneBuilder {
+  public engine: Engine;
+  public scene: Scene;
+  public camera: ArcRotateCamera;
+  private isDisposed = false;
+
+  /**
+   * Create a new SceneBuilder instance
+   * @param canvas - HTMLCanvasElement for rendering
+   */
+  constructor(canvas: HTMLCanvasElement) {
+    // Create engine
+    this.engine = new Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      stencil: true,
+    });
+
+    // Create scene
+    this.scene = new Scene(this.engine);
+    this.scene.clearColor = new Color4(0.2, 0.2, 0.25, 1);
+
+    // Setup camera
+    this.camera = new ArcRotateCamera(
+      "camera",
+      Math.PI / 2,
+      Math.PI / 3,
+      5,
+      new Vector3(0, 1, 0),
+      this.scene
+    );
+    this.camera.attachControl(canvas, true);
+
+    // Setup default lighting
+    const light = new HemisphericLight(
+      "light",
+      new Vector3(0, 1, 0),
+      this.scene
+    );
+    light.intensity = 0.7;
+
+    // Start render loop
+    this.engine.runRenderLoop(() => {
+      if (!this.isDisposed) {
+        this.scene.render();
+      }
+    });
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+      this.engine.resize();
+    });
+  }
+
+  /**
+   * Dispose resources
+   */
+  dispose(): void {
+    if (this.isDisposed) return;
+    this.isDisposed = true;
+
+    if (this.scene) {
+      this.scene.dispose();
+    }
+
+    if (this.engine) {
+      this.engine.dispose();
+    }
+  }
   /**
    * Builds a character mesh from configuration.
    * Supports loading GLB/GLTF models from URLs (local or external).

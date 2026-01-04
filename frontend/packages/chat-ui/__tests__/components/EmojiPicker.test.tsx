@@ -3,7 +3,7 @@
  * Tests for the emoji selection component
  */
 
-import { describe, it, expect, mock } from 'bun:test';
+import { describe, it, expect, mock, beforeEach } from 'bun:test';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { EmojiPicker } from '../../src/components/EmojiPicker';

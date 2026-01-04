@@ -1,27 +1,27 @@
 /**
- * Meeting Store - Zustand State Management
- * Manages meeting lifecycle, participants, and real-time state
+ * Room Store - Zustand State Management
+ * Manages room lifecycle, participants, and real-time state
  */
 
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 import { roomsApi } from '@animal-zoom/shared/api';
 import type { Room, Participant } from '@animal-zoom/shared/types';
 import type {
-  MeetingInfo,
+  RoomInfo,
   ParticipantInfo,
-  MeetingState,
+  RoomState,
   UserJoinState,
   ParticipantStatus,
-  CreateMeetingRequest,
-  JoinMeetingRequest,
-} from '@/types/meeting';
+  CreateRoomRequest,
+  JoinRoomRequest,
+} from '@/types/room';
 
-interface MeetingStore {
-  // Meeting state
-  meeting: MeetingInfo | null;
-  setMeeting: (meeting: MeetingInfo) => void;
-  updateMeetingState: (state: MeetingState) => void;
+interface RoomStore {
+  // Room state
+  room: RoomInfo | null;
+  setRoom: (room: RoomInfo) => void;
+  updateRoomState: (state: RoomState) => void;
 
   // Current user state
   currentUser: ParticipantInfo | null;
@@ -45,11 +45,11 @@ interface MeetingStore {
   rejectParticipant: (participantId: string) => Promise<void>;
 
   // Actions
-  createMeeting: (request: CreateMeetingRequest) => Promise<void>;
-  startMeeting: () => void;
-  endMeeting: () => Promise<void>;
-  joinMeeting: (meetingCode: string, request: JoinMeetingRequest) => Promise<void>;
-  leaveMeeting: () => Promise<void>;
+  createRoom: (request: CreateRoomRequest) => Promise<void>;
+  startRoom: () => void;
+  endRoom: () => Promise<void>;
+  joinRoom: (roomCode: string, request: JoinRoomRequest) => Promise<void>;
+  leaveRoom: () => Promise<void>;
 
   // Loading states
   isLoading: boolean;
@@ -61,14 +61,14 @@ interface MeetingStore {
   reset: () => void;
 }
 
-// Helper function to convert API Room to MeetingInfo
-function roomToMeetingInfo(room: Room, hostName: string): MeetingInfo {
+// Helper function to convert API Room to RoomInfo
+function roomToRoomInfo(room: Room, hostName: string): RoomInfo {
   return {
     id: room.id,
     code: room.code,
     hostId: room.id, // Assuming room creator is host
     hostName: hostName,
-    title: room.name || 'Quick Meeting',
+    title: room.name || 'Quick Room',
     state: 'CREATED', // Initial state
     createdAt: room.createdAt,
     waitingRoomEnabled: true, // Default
@@ -87,23 +87,24 @@ function participantToParticipantInfo(participant: Participant, isHost: boolean)
   };
 }
 
-export const useMeetingStore = create<MeetingStore>()(
-  devtools(
-    (set, get) => ({
+export const useRoomStore = create<RoomStore>()(
+  persist(
+    devtools(
+      (set, get) => ({
       // Initial state
-      meeting: null,
+      room: null,
       currentUser: null,
       participants: [],
       waitingParticipants: [],
       isLoading: false,
       error: null,
 
-      // Meeting setters
-      setMeeting: (meeting) => set({ meeting }),
+      // Room setters
+      setRoom: (room) => set({ room }),
 
-      updateMeetingState: (state) =>
+      updateRoomState: (state) =>
         set((prev) => ({
-          meeting: prev.meeting ? { ...prev.meeting, state } : null,
+          room: prev.room ? { ...prev.room, state } : null,
         })),
 
       // Current user setters
@@ -173,14 +174,14 @@ export const useMeetingStore = create<MeetingStore>()(
       },
 
       // Actions
-      createMeeting: async (request) => {
+      createRoom: async (request) => {
         set({ isLoading: true, error: null });
         try {
           const room = await roomsApi.createRoom({
-            name: request.title || 'Quick Meeting',
+            name: request.title || 'Quick Room',
           });
 
-          const meeting: MeetingInfo = roomToMeetingInfo(room, 'Me'); // TODO: Get actual user name
+          const roomInfo: RoomInfo = roomToRoomInfo(room, 'Me'); // TODO: Get actual user name
 
           // Set current user as host
           const hostUser: ParticipantInfo = {
@@ -192,53 +193,53 @@ export const useMeetingStore = create<MeetingStore>()(
           };
 
           set({
-            meeting,
+            room: roomInfo,
             currentUser: hostUser,
             participants: [hostUser],
             isLoading: false,
           });
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to create meeting';
+          const errorMessage = error instanceof Error ? error.message : 'Failed to create room';
           set({ error: errorMessage, isLoading: false });
           throw error;
         }
       },
 
-      startMeeting: () => {
-        get().updateMeetingState('LIVE');
+      startRoom: () => {
+        get().updateRoomState('LIVE');
         get().updateUserJoinState('JOINED');
       },
 
-      endMeeting: async () => {
-        const meeting = get().meeting;
-        if (!meeting) return;
+      endRoom: async () => {
+        const room = get().room;
+        if (!room) return;
 
         set({ isLoading: true, error: null });
         try {
-          await roomsApi.deleteRoom(meeting.code);
-          get().updateMeetingState('ENDED');
+          await roomsApi.deleteRoom(room.code);
+          get().updateRoomState('ENDED');
           set({ isLoading: false });
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to end meeting';
+          const errorMessage = error instanceof Error ? error.message : 'Failed to end room';
           set({ error: errorMessage, isLoading: false });
           throw error;
         }
       },
 
-      joinMeeting: async (meetingCode, request) => {
+      joinRoom: async (roomCode, request) => {
         set({ isLoading: true, error: null });
         try {
-          // Get meeting info with participants
-          const roomData = await roomsApi.getRoom(meetingCode);
+          // Get room info with participants
+          const roomData = await roomsApi.getRoom(roomCode);
           console.log('Got room data:', roomData);
 
           // Join the room
-          const joinResult = await roomsApi.joinRoom(meetingCode, {
+          const joinResult = await roomsApi.joinRoom(roomCode, {
             displayName: request.userName,
           });
           console.log('Joined room result:', joinResult);
 
-          const meeting: MeetingInfo = roomToMeetingInfo(roomData.room, 'Host'); // TODO: Get actual host name
+          const roomInfo: RoomInfo = roomToRoomInfo(roomData.room, 'Host'); // TODO: Get actual host name
 
           // Set current user with actual isHost from API response
           const currentUser: ParticipantInfo = {
@@ -255,38 +256,38 @@ export const useMeetingStore = create<MeetingStore>()(
             participantToParticipantInfo(p, p.id === roomData.room.id)
           );
 
-          console.log('Setting meeting store:', {
-            meeting,
+          console.log('Setting room store:', {
+            room: roomInfo,
             currentUser,
             isHost: currentUser.isHost,
             participants: existingParticipants,
           });
 
           set({
-            meeting,
+            room: roomInfo,
             currentUser,
             participants: existingParticipants,
             isLoading: false,
           });
         } catch (error) {
-          console.error('joinMeeting error:', error);
-          const errorMessage = error instanceof Error ? error.message : 'Failed to join meeting';
+          console.error('joinRoom error:', error);
+          const errorMessage = error instanceof Error ? error.message : 'Failed to join room';
           set({ error: errorMessage, isLoading: false });
           throw error;
         }
       },
 
-      leaveMeeting: async () => {
-        const meeting = get().meeting;
-        if (!meeting) return;
+      leaveRoom: async () => {
+        const room = get().room;
+        if (!room) return;
 
         set({ isLoading: true, error: null });
         try {
-          await roomsApi.leaveRoom(meeting.code);
+          await roomsApi.leaveRoom(room.code);
           get().updateUserJoinState('LEFT');
           set({ isLoading: false });
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to leave meeting';
+          const errorMessage = error instanceof Error ? error.message : 'Failed to leave room';
           set({ error: errorMessage, isLoading: false });
           throw error;
         }
@@ -299,7 +300,7 @@ export const useMeetingStore = create<MeetingStore>()(
       // Reset state
       reset: () =>
         set({
-          meeting: null,
+          room: null,
           currentUser: null,
           participants: [],
           waitingParticipants: [],
@@ -307,6 +308,14 @@ export const useMeetingStore = create<MeetingStore>()(
           error: null,
         }),
     }),
-    { name: 'meeting-store' }
-  )
-);
+    { name: 'room-store' }
+  ),
+  {
+    name: 'room-storage',
+    partialize: (state) => ({
+      room: state.room,
+      currentUser: state.currentUser,
+      participants: state.participants,
+    }),
+  }
+));

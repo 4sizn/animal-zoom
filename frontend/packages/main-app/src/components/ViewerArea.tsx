@@ -4,7 +4,7 @@
  */
 
 import { useRef, useEffect, useState } from 'react';
-import { ParticipantInfo } from '@/types/meeting';
+import { ParticipantInfo } from '@/types/room';
 import { use3DParticipants } from '@/hooks/use3DParticipants';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

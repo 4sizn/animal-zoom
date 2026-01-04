@@ -1,163 +1,99 @@
 /**
  * ChatSidebar Component
- * Chat interface with shadcn styling (integrates with @animal-zoom/chat-ui)
+ * Chat interface integrating @animal-zoom/chat-ui
  */
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useMeetingStore } from '@/stores/meetingStore';
-import { X, Send } from 'lucide-react';
-import { useState } from 'react';
+import { useRoomStore } from '@/stores/roomStore';
+import { X } from 'lucide-react';
+import { useEffect } from 'react';
+import { ChatContainer, useChatStore } from '@animal-zoom/chat-ui';
+import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
+import '@animal-zoom/chat-ui/styles';
 
 interface ChatSidebarProps {
   onClose?: () => void;
 }
 
 export function ChatSidebar({ onClose }: ChatSidebarProps) {
-  const { meeting, currentUser } = useMeetingStore();
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<Array<{
-    id: string;
-    senderId: string;
-    senderName: string;
-    content: string;
-    timestamp: Date;
-  }>>([]);
+  const { room, currentUser } = useRoomStore();
+  const { setUser, setRoomId, connectWebSocket, joinRoom } = useChatStore();
 
-  // TODO: Integrate with @animal-zoom/chat-ui
-  // Expected integration:
-  // import { ChatContainer } from '@animal-zoom/chat-ui';
-  //
-  // <ChatContainer
-  //   roomId={meeting?.id}
-  //   userId={currentUser?.id}
-  //   userName={currentUser?.name}
-  //   theme="shadcn" // Custom theme
-  // />
+  // Initialize chat store when room/user are available
+  useEffect(() => {
+    if (currentUser && room) {
+      // Set user info in chat store
+      setUser(currentUser.id, currentUser.name);
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim() || !currentUser) return;
+      // Set room ID
+      setRoomId(room.id);
 
-    // TODO: Send message via WebSocket
-    // For now, add to local state as placeholder
-    const newMessage = {
-      id: `msg-${Date.now()}`,
-      senderId: currentUser.id,
-      senderName: currentUser.name,
-      content: message.trim(),
-      timestamp: new Date(),
-    };
+      const wsController = getWebSocketController();
 
-    setMessages([...messages, newMessage]);
-    setMessage('');
-  };
+      // Connect to WebSocket if not already connected
+      if (!wsController.isConnected()) {
+        connectWebSocket();
+      }
 
-  const formatTime = (date: Date): string => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
+      // Join the room when WebSocket is connected
+      const subscription = wsController.connected$.subscribe(() => {
+        console.log('[ChatSidebar] WebSocket connected, joining room:', room.code);
+        joinRoom(room.code);
+      });
+
+      // If already connected, join immediately
+      if (wsController.isConnected()) {
+        console.log('[ChatSidebar] Already connected, joining room:', room.code);
+        joinRoom(room.code);
+      }
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
+  }, [currentUser?.id, currentUser?.name, room?.id, room?.code, setUser, setRoomId, connectWebSocket, joinRoom]);
+
+  // Don't render if no user or room
+  if (!currentUser || !room) {
+    return (
+      <Card className="h-full flex flex-col">
+        <CardHeader className="pb-3 border-b">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-lg">Chat</CardTitle>
+              <CardDescription>Loading...</CardDescription>
+            </div>
+            {onClose && (
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="pb-3 border-b">
-        <div className="flex items-center justify-between">
+    <div className="h-full flex flex-col bg-card rounded-lg border">
+      {/* Optional Header with Close Button */}
+      {onClose && (
+        <div className="flex items-center justify-between p-4 border-b">
           <div>
-            <CardTitle className="text-lg">Chat</CardTitle>
-            <CardDescription>Send messages to everyone</CardDescription>
+            <h3 className="text-lg font-semibold">Chat</h3>
+            <p className="text-sm text-muted-foreground">Send messages to everyone</p>
           </div>
-          {onClose && (
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </CardHeader>
-
-      {/* Messages Area */}
-      <CardContent className="flex-1 overflow-y-auto p-4 space-y-3">
-        {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">No messages yet</p>
-              <p className="text-xs text-muted-foreground">
-                Start the conversation by sending a message
-              </p>
-            </div>
-          </div>
-        ) : (
-          messages.map((msg) => {
-            const isOwnMessage = msg.senderId === currentUser?.id;
-
-            return (
-              <div
-                key={msg.id}
-                className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'}`}
-              >
-                {!isOwnMessage && (
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center">
-                      <span className="text-xs font-semibold">
-                        {msg.senderName.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <span className="text-xs font-medium">{msg.senderName}</span>
-                  </div>
-                )}
-
-                <div
-                  className={`
-                    max-w-[80%] rounded-lg px-3 py-2
-                    ${
-                      isOwnMessage
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
-                    }
-                  `}
-                >
-                  <p className="text-sm break-words">{msg.content}</p>
-                  <p
-                    className={`
-                      text-xs mt-1
-                      ${isOwnMessage ? 'text-primary-foreground/70' : 'text-muted-foreground'}
-                    `}
-                  >
-                    {formatTime(msg.timestamp)}
-                  </p>
-                </div>
-              </div>
-            );
-          })
-        )}
-      </CardContent>
-
-      {/* Input Area */}
-      <div className="p-4 border-t">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
-          <Input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type a message..."
-            maxLength={500}
-            disabled={!currentUser}
-          />
-          <Button
-            type="submit"
-            size="icon"
-            disabled={!message.trim() || !currentUser}
-          >
-            <Send className="h-4 w-4" />
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            <X className="h-4 w-4" />
           </Button>
-        </form>
-
-        {/* Integration Note */}
-        <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs text-blue-900 dark:text-blue-200 border border-blue-200 dark:border-blue-800">
-          <p className="font-medium mb-1">Integration Ready</p>
-          <p className="text-blue-700 dark:text-blue-300">
-            Replace this placeholder with ChatContainer from @animal-zoom/chat-ui for full WebSocket integration
-          </p>
         </div>
+      )}
+
+      {/* Integrated ChatContainer from @animal-zoom/chat-ui */}
+      <div className="flex-1 overflow-hidden">
+        <ChatContainer className="h-full" />
       </div>
-    </Card>
+    </div>
   );
 }

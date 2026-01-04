@@ -5,8 +5,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useMeetingStore } from '@/stores/meetingStore';
-import { ParticipantInfo, ParticipantStatus } from '@/types/meeting';
+import { useRoomStore } from '@/stores/roomStore';
+import { ParticipantInfo, ParticipantStatus } from '@/types/room';
 import { Circle, Moon, MinusCircle, Crown, X } from 'lucide-react';
 
 interface ParticipantListSidebarProps {
@@ -14,7 +14,7 @@ interface ParticipantListSidebarProps {
 }
 
 export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps) {
-  const { participants, currentUser } = useMeetingStore();
+  const { participants, currentUser } = useRoomStore();
 
   const getStatusIcon = (status: ParticipantStatus) => {
     switch (status) {
@@ -119,7 +119,7 @@ export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps)
           <div>
             <CardTitle className="text-lg">Participants</CardTitle>
             <CardDescription>
-              {participants.length} {participants.length === 1 ? 'person' : 'people'} in meeting
+              {participants.length} {participants.length === 1 ? 'person' : 'people'} in room
             </CardDescription>
           </div>
           {onClose && (

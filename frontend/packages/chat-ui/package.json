@@ -10,6 +10,10 @@
       "types": "./dist/index.d.ts",
       "development": "./src/index.tsx",
       "default": "./dist/index.js"
+    },
+    "./styles": {
+      "development": "./src/styles/chat.css",
+      "default": "./dist/style.css"
     }
   },
   "scripts": {
@@ -38,6 +42,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "happy-dom": "^20.0.11",
     "typescript": "~5.9.3",
-    "vite": "^5.4.0"
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.5.4"
   }
 }

@@ -6,21 +6,21 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Clock, Users } from 'lucide-react';
 
 export function WaitingRoom() {
-  const { meetingId } = useParams<{ meetingId: string }>();
+  const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { meeting, currentUser } = useMeetingStore();
+  const { room, currentUser } = useRoomStore();
 
   useEffect(() => {
-    // Redirect if no meeting or wrong meeting
-    if (!meeting || meeting.id !== meetingId) {
+    // Redirect if no room or wrong room
+    if (!room || room.id !== roomId) {
       toast({
-        title: 'Meeting not found',
+        title: 'Room not found',
         description: 'Redirecting to join page...',
         variant: 'destructive',
       });
@@ -36,7 +36,7 @@ export function WaitingRoom() {
       });
       navigate('/join');
     }
-  }, [meeting, meetingId, currentUser, navigate, toast]);
+  }, [room, roomId, currentUser, navigate, toast]);
 
   // Listen for admission via WebSocket
   useEffect(() => {
@@ -49,9 +49,9 @@ export function WaitingRoom() {
       if (currentUser.joinState === 'JOINED') {
         toast({
           title: 'You have been admitted!',
-          description: 'Joining the meeting...',
+          description: 'Joining the room...',
         });
-        navigate(`/meeting/${meetingId}/session`);
+        navigate(`/room/${roomId}/session`);
       }
     };
 
@@ -61,9 +61,9 @@ export function WaitingRoom() {
     return () => {
       clearInterval(interval);
     };
-  }, [currentUser, meetingId, navigate, toast]);
+  }, [currentUser, roomId, navigate, toast]);
 
-  if (!meeting || !currentUser) {
+  if (!room || !currentUser) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -91,7 +91,7 @@ export function WaitingRoom() {
             Please Wait
           </CardTitle>
           <CardDescription>
-            You're in the waiting room for this meeting
+            You're in the waiting room for this room
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -105,13 +105,13 @@ export function WaitingRoom() {
             </div>
           </div>
 
-          {/* Meeting Info */}
+          {/* Room Info */}
           <div className="space-y-4 pt-4 border-t">
             <div className="flex items-start gap-3">
               <Users className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium text-sm">Meeting</p>
-                <p className="text-sm text-muted-foreground">{meeting.title}</p>
+                <p className="font-medium text-sm">Room</p>
+                <p className="text-sm text-muted-foreground">{room.title}</p>
               </div>
             </div>
 
@@ -119,7 +119,7 @@ export function WaitingRoom() {
               <Users className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
                 <p className="font-medium text-sm">Host</p>
-                <p className="text-sm text-muted-foreground">{meeting.hostName}</p>
+                <p className="text-sm text-muted-foreground">{room.hostName}</p>
               </div>
             </div>
 
@@ -136,7 +136,7 @@ export function WaitingRoom() {
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
             <p className="text-sm text-blue-900 dark:text-blue-200">
               The host has been notified of your request to join. You'll be automatically
-              admitted to the meeting once the host approves.
+              admitted to the room once the host approves.
             </p>
           </div>
         </CardContent>
@@ -146,7 +146,7 @@ export function WaitingRoom() {
       <Card className="bg-muted/50">
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground text-center">
-            This meeting has a waiting room enabled for security.
+            This room has a waiting room enabled for security.
             <br />
             Thank you for your patience.
           </p>

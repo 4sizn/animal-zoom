@@ -45,6 +45,14 @@ export interface ChatState {
   disconnectWebSocket: () => void;
   joinRoom: (roomCode: string) => void;
   sendMessage: (message: string) => void;
+
+  // Reactions
+  addReaction: (messageId: string, emoji: string) => void;
+  removeReaction: (messageId: string, emoji: string) => void;
+  toggleReaction: (messageId: string, emoji: string) => void;
+  getReactionCounts: (messageId: string) => Record<string, number>;
+  hasUserReacted: (messageId: string, emoji: string) => boolean;
+  MAX_REACTIONS_PER_MESSAGE: number;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -92,6 +100,134 @@ export const useChatStore = create<ChatState>((set) => ({
 
   sendMessage: (message: string) => {
     wsController.sendChatMessage(message);
+  },
+
+  // Reactions
+  MAX_REACTIONS_PER_MESSAGE: 50,
+
+  addReaction: (messageId: string, emoji: string) => {
+    set((state) => {
+      const { userId, userName } = state;
+
+      // Require user info
+      if (!userId || !userName) {
+        console.warn('Cannot add reaction: user info missing');
+        return state;
+      }
+
+      // Validate emoji
+      if (!emoji || typeof emoji !== 'string') {
+        console.warn('Cannot add reaction: invalid emoji');
+        return state;
+      }
+
+      const messages = state.messages.map((msg) => {
+        if (msg.id !== messageId) return msg;
+
+        const reactions = msg.reactions || [];
+
+        // Check if user already reacted with this emoji
+        const hasReacted = reactions.some(
+          (r) => r.userId === userId && r.emoji === emoji
+        );
+
+        if (hasReacted) {
+          return msg; // Don't add duplicate
+        }
+
+        // Check max reactions limit
+        if (reactions.length >= state.MAX_REACTIONS_PER_MESSAGE) {
+          console.warn('Cannot add reaction: max reactions reached');
+          return msg;
+        }
+
+        // Add new reaction
+        const newReaction = {
+          emoji,
+          userId,
+          userName,
+          timestamp: new Date(),
+        };
+
+        return {
+          ...msg,
+          reactions: [...reactions, newReaction],
+        };
+      });
+
+      return { messages };
+    });
+  },
+
+  removeReaction: (messageId: string, emoji: string) => {
+    set((state) => {
+      const { userId } = state;
+
+      if (!userId) {
+        console.warn('Cannot remove reaction: user info missing');
+        return state;
+      }
+
+      const messages = state.messages.map((msg) => {
+        if (msg.id !== messageId) return msg;
+
+        const reactions = (msg.reactions || []).filter(
+          (r) => !(r.userId === userId && r.emoji === emoji)
+        );
+
+        return {
+          ...msg,
+          reactions,
+        };
+      });
+
+      return { messages };
+    });
+  },
+
+  toggleReaction: (messageId: string, emoji: string) => {
+    const state = useChatStore.getState();
+    const hasReacted = state.hasUserReacted(messageId, emoji);
+
+    if (hasReacted) {
+      state.removeReaction(messageId, emoji);
+    } else {
+      state.addReaction(messageId, emoji);
+    }
+  },
+
+  getReactionCounts: (messageId: string) => {
+    const state = useChatStore.getState();
+    const message = state.messages.find((m) => m.id === messageId);
+
+    if (!message || !message.reactions) {
+      return {};
+    }
+
+    const counts: Record<string, number> = {};
+
+    for (const reaction of message.reactions) {
+      counts[reaction.emoji] = (counts[reaction.emoji] || 0) + 1;
+    }
+
+    return counts;
+  },
+
+  hasUserReacted: (messageId: string, emoji: string) => {
+    const state = useChatStore.getState();
+    const { userId } = state;
+
+    if (!userId) return false;
+
+    const message = state.messages.find((m) => m.id === messageId);
+
+    if (!message || !message.reactions) {
+      return false;
+    }
+
+    return message.reactions.some(
+      (r) => r.userId === userId && r.emoji === emoji
+    );
   },
 }));
 

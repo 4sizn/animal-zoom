@@ -4,9 +4,9 @@
  */
 
 import { useEffect } from 'react';
-import { useMeetingStore } from '@/stores/meetingStore';
+import { useRoomStore } from '@/stores/roomStore';
 import { useToast } from '@/hooks/use-toast';
-import { ParticipantStatus } from '@/types/meeting';
+import { ParticipantStatus } from '@/types/room';
 import { getInstance } from '@animal-zoom/shared/socket';
 
 /**
@@ -15,43 +15,57 @@ import { getInstance } from '@animal-zoom/shared/socket';
  * This hook will be enhanced once WebSocket controller from @animal-zoom/shared
  * is properly integrated. For now, it provides the structure for future integration.
  *
- * @param meetingId - The current meeting ID
+ * @param roomId - The current room ID
  * @param enabled - Whether to enable synchronization
  */
-export function useParticipantSync(meetingId: string | undefined, enabled = true) {
+export function useParticipantSync(roomId: string | undefined, enabled = true) {
   const { toast } = useToast();
   const {
     addParticipant,
     removeParticipant,
     updateParticipantStatus,
-    updateMeetingState
-  } = useMeetingStore();
+    updateRoomState
+  } = useRoomStore();
 
   useEffect(() => {
-    if (!meetingId || !enabled) return;
+    if (!roomId || !enabled) return;
 
     // Get WebSocket controller instance
     const wsController = getInstance();
     const subscriptions: Array<{ unsubscribe: () => void }> = [];
 
-    console.log('[useParticipantSync] Starting synchronization for meeting:', meetingId);
+    console.log('[useParticipantSync] Starting synchronization for room:', roomId);
 
     // Subscribe to room joined events (includes initial participant list)
     const roomJoinedSub = wsController.roomJoined$.subscribe((data) => {
       console.log('[useParticipantSync] Room joined with participants:', data);
 
+      // Validate data structure
+      if (!data) {
+        console.error('[useParticipantSync] Invalid room joined data:', data);
+        return;
+      }
+
+      // Check if participants array exists
+      if (!Array.isArray(data.participants)) {
+        console.error('[useParticipantSync] Participants is not an array:', data.participants);
+        return;
+      }
+
       // Set all participants from the room
-      const participants = data.participants.map((p) => ({
-        id: p.id,
-        name: p.displayName,
-        joinState: 'JOINED' as const,
-        status: 'PRESENT' as const,
-        isHost: false, // TODO: Determine from participant data
-        joinedAt: new Date(),
-      }));
+      const participants = data.participants
+        .filter((p) => p && p.id && p.displayName) // Filter out invalid participants
+        .map((p) => ({
+          id: p.id,
+          name: p.displayName,
+          joinState: 'JOINED' as const,
+          status: 'PRESENT' as const,
+          isHost: false, // TODO: Determine from participant data
+          joinedAt: new Date(),
+        }));
 
       // Use setParticipants to replace the entire list
-      const { setParticipants } = useMeetingStore.getState();
+      const { setParticipants } = useRoomStore.getState();
       setParticipants(participants);
 
       console.log('[useParticipantSync] Updated participant list:', participants);
@@ -62,9 +76,21 @@ export function useParticipantSync(meetingId: string | undefined, enabled = true
     const userJoinedSub = wsController.userJoined$.subscribe((data) => {
       console.log('[useParticipantSync] User joined:', data);
 
+      // Validate data structure
+      if (!data || !data.participant) {
+        console.error('[useParticipantSync] Invalid user joined data:', data);
+        return;
+      }
+
+      const participant = data.participant;
+      if (!participant.id || !participant.displayName) {
+        console.error('[useParticipantSync] Missing required participant fields:', participant);
+        return;
+      }
+
       addParticipant({
-        id: data.participant.id,
-        name: data.participant.displayName,
+        id: participant.id,
+        name: participant.displayName,
         joinState: 'JOINED',
         status: 'PRESENT',
         isHost: false,
@@ -73,7 +99,7 @@ export function useParticipantSync(meetingId: string | undefined, enabled = true
 
       toast({
         title: 'Participant joined',
-        description: `${data.participant.displayName} joined the meeting`,
+        description: `${participant.displayName} joined the meeting`,
       });
     });
     subscriptions.push(userJoinedSub);
@@ -82,11 +108,23 @@ export function useParticipantSync(meetingId: string | undefined, enabled = true
     const userLeftSub = wsController.userLeft$.subscribe((data) => {
       console.log('[useParticipantSync] User left:', data);
 
-      removeParticipant(data.participant.id);
+      // Validate data structure
+      if (!data || !data.participant) {
+        console.error('[useParticipantSync] Invalid user left data:', data);
+        return;
+      }
+
+      const participant = data.participant;
+      if (!participant.id) {
+        console.error('[useParticipantSync] Missing participant id:', participant);
+        return;
+      }
+
+      removeParticipant(participant.id);
 
       toast({
         title: 'Participant left',
-        description: `${data.participant.displayName} left the meeting`,
+        description: `${participant.displayName || 'A participant'} left the meeting`,
       });
     });
     subscriptions.push(userLeftSub);
@@ -120,10 +158,10 @@ export function useParticipantSync(meetingId: string | undefined, enabled = true
 
       if (reason === 'io server disconnect') {
         toast({
-          title: 'Meeting ended',
-          description: 'The meeting has been ended by the host',
+          title: 'Room ended',
+          description: 'The room has been ended by the host',
         });
-        updateMeetingState('ENDED');
+        updateRoomState('ENDED');
       }
     });
     subscriptions.push(disconnectedSub);
@@ -134,12 +172,12 @@ export function useParticipantSync(meetingId: string | undefined, enabled = true
       subscriptions.forEach(sub => sub.unsubscribe());
     };
   }, [
-    meetingId,
+    roomId,
     enabled,
     addParticipant,
     removeParticipant,
     updateParticipantStatus,
-    updateMeetingState,
+    updateRoomState,
     toast
   ]);
 }

@@ -75,7 +75,14 @@
       "Bash(pnpm run dev:standalone)",
       "Bash(pnpm run dev:*)",
       "mcp__ide__getDiagnostics",
-      "Bash(python3 -c \"import sys,json; print\\(json.load\\(sys.stdin\\)[''accessToken'']\\)\")"
+      "Bash(python3 -c \"import sys,json; print\\(json.load\\(sys.stdin\\)[''accessToken'']\\)\")",
+      "Bash(timeout 10 bun run dev:*)",
+      "Bash(git mv:*)",
+      "Bash(pnpm test:*)",
+      "Bash(timeout 10 pnpm run dev:standalone:*)",
+      "Bash(for f in /home/lotus/document/lotus/animal-zoom/docs/plans/PLAN_*.md)",
+      "Bash(do)",
+      "Bash(find:*)"
     ]
   }
 }

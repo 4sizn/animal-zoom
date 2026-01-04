@@ -119,6 +119,32 @@
       transform: translateY(0);
     }
 
+    .scene-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scene-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s;
+    }
+
+    .scene-btn:hover::before {
+      left: 100%;
+    }
+
+    .scene-btn.active {
+      background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+
     .status {
       padding: 10px 20px;
       background: #e8f5e9;
@@ -149,35 +175,312 @@
     </div>
 
     <div class="controls">
-      <button id="resetCamera">카메라 리셋</button>
-      <button id="toggleWireframe">와이어프레임</button>
-      <button id="addCube">큐브 추가</button>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; flex: 1;">
+        <button id="sceneBasic" class="scene-btn active">기본 씬</button>
+        <button id="sceneAvatar" class="scene-btn">아바타 편집</button>
+        <button id="sceneRoom" class="scene-btn">공간 편집</button>
+        <button id="sceneParticipant" class="scene-btn">참여자 뷰</button>
+        <div style="border-left: 2px solid #ddd; margin: 0 5px;"></div>
+        <button id="resetCamera">카메라 리셋</button>
+        <button id="toggleWireframe">와이어프레임</button>
+        <button id="addCube">큐브 추가</button>
+      </div>
       <div class="status" id="status">준비</div>
     </div>
   </div>
 
   <script type="module">
     import { createViewer } from './src/index.ts';
+    import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+    import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+    import { Color3, Vector3 } from '@babylonjs/core/Maths/math';
+    import { DirectionalLight, SpotLight } from '@babylonjs/core/Lights';
 
     const canvas = document.getElementById('renderCanvas');
     const loading = document.getElementById('loading');
     const status = document.getElementById('status');
 
-    try {
-      // 3D Viewer 초기화
-      const viewer = createViewer(canvas);
+    let viewer;
+    let currentSceneType = 'basic';
 
-      // 로딩 화면 제거
-      setTimeout(() => {
-        loading.style.display = 'none';
-        status.textContent = '✅ 3D 엔진 초기화 완료';
-        status.style.background = '#e8f5e9';
-        status.style.color = '#2e7d32';
-      }, 1000);
+    // 씬 초기화 함수
+    function initViewer() {
+      try {
+        // 기존 viewer가 있으면 dispose
+        if (viewer) {
+          viewer.scene.meshes.slice().forEach(mesh => {
+            if (mesh.name !== 'camera') mesh.dispose();
+          });
+          viewer.scene.lights.slice().forEach(light => light.dispose());
+        } else {
+          // 첫 초기화
+          viewer = createViewer(canvas);
+        }
 
-      // 컨트롤 버튼 이벤트
-      document.getElementById('resetCamera').addEventListener('click', () => {
-        if (viewer.camera) {
+        // 로딩 화면 제거
+        setTimeout(() => {
+          loading.style.display = 'none';
+          status.textContent = '✅ 3D 엔진 초기화 완료';
+          status.style.background = '#e8f5e9';
+          status.style.color = '#2e7d32';
+        }, 500);
+
+        return viewer;
+      } catch (error) {
+        console.error('❌ Failed to initialize 3D Viewer:', error);
+        loading.innerHTML = `
+          <div style="color: #c62828;">
+            <h3>❌ 초기화 실패</h3>
+            <p style="margin-top: 10px; font-size: 14px;">${error.message}</p>
+          </div>
+        `;
+        status.textContent = '❌ 초기화 실패';
+        status.style.background = '#ffebee';
+        status.style.color = '#c62828';
+        throw error;
+      }
+    }
+
+    // 씬 타입별 로드 함수
+    function loadScene(sceneType) {
+      currentSceneType = sceneType;
+
+      // 모든 버튼의 active 클래스 제거
+      document.querySelectorAll('.scene-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`scene${sceneType.charAt(0).toUpperCase() + sceneType.slice(1)}`).classList.add('active');
+
+      // 기존 mesh와 light 제거 (카메라는 유지)
+      viewer.scene.meshes.slice().forEach(mesh => {
+        if (mesh.name !== 'camera') mesh.dispose();
+      });
+      viewer.scene.lights.slice().forEach(light => light.dispose());
+
+      switch (sceneType) {
+        case 'basic':
+          loadBasicScene();
+          break;
+        case 'avatar':
+          loadAvatarScene();
+          break;
+        case 'room':
+          loadRoomScene();
+          break;
+        case 'participant':
+          loadParticipantScene();
+          break;
+      }
+
+      status.textContent = `✅ ${sceneType === 'basic' ? '기본' : sceneType === 'avatar' ? '아바타 편집' : sceneType === 'room' ? '공간 편집' : '참여자 뷰'} 씬 로드됨`;
+    }
+
+    // 기본 씬
+    async function loadBasicScene() {
+      // 기본 조명
+      const { HemisphericLight } = await import('@babylonjs/core/Lights/hemisphericLight');
+      const light = new HemisphericLight(
+        'light',
+        new Vector3(0, 1, 0),
+        viewer.scene
+      );
+      light.intensity = 0.7;
+
+      // 기본 큐브
+      const box = MeshBuilder.CreateBox('box', { size: 2 }, viewer.scene);
+      box.position.y = 1;
+
+      const material = new StandardMaterial('boxMat', viewer.scene);
+      material.diffuseColor = new Color3(0.4, 0.6, 0.9);
+      box.material = material;
+
+      // 카메라 리셋
+      viewer.camera.alpha = Math.PI / 2;
+      viewer.camera.beta = Math.PI / 3;
+      viewer.camera.radius = 5;
+    }
+
+    // 아바타 편집 씬
+    async function loadAvatarScene() {
+      // 3점 조명 (EditMyAnimal 스타일)
+      const keyLight = new DirectionalLight(
+        'keyLight',
+        new Vector3(-1, -2, -1),
+        viewer.scene
+      );
+      keyLight.position = new Vector3(3, 4, 3);
+      keyLight.intensity = 1.0;
+      keyLight.diffuse = new Color3(1, 0.98, 0.9);
+
+      const { HemisphericLight: HemisphericLight2 } = await import('@babylonjs/core/Lights/hemisphericLight');
+      const fillLight = new HemisphericLight2(
+        'fillLight',
+        new Vector3(0, 1, 0),
+        viewer.scene
+      );
+      fillLight.intensity = 0.6;
+      fillLight.diffuse = new Color3(0.96, 0.9, 0.85);
+      fillLight.groundColor = new Color3(0.3, 0.3, 0.35);
+
+      const rimLight = new SpotLight(
+        'rimLight',
+        new Vector3(0, 3, -3),
+        new Vector3(0, -1, 1),
+        Math.PI / 3,
+        2,
+        viewer.scene
+      );
+      rimLight.intensity = 0.5;
+      rimLight.diffuse = new Color3(0.9, 0.95, 1);
+
+      // 바닥
+      const ground = MeshBuilder.CreateGround('ground', { width: 20, height: 20 }, viewer.scene);
+      const groundMat = new StandardMaterial('groundMat', viewer.scene);
+      groundMat.diffuseColor = new Color3(0.4, 0.4, 0.45);
+      ground.material = groundMat;
+
+      // 캐릭터 (구체)
+      const character = MeshBuilder.CreateSphere('character', { diameter: 2, segments: 32 }, viewer.scene);
+      character.position.y = 1.2;
+
+      const charMat = new StandardMaterial('charMat', viewer.scene);
+      charMat.diffuseColor = new Color3(0.5, 0.5, 1);
+      character.material = charMat;
+
+      // 회전 애니메이션
+      viewer.scene.registerBeforeRender(() => {
+        character.rotation.y += 0.01;
+      });
+
+      // 카메라 위치 조정
+      viewer.camera.alpha = Math.PI / 2;
+      viewer.camera.beta = Math.PI / 3;
+      viewer.camera.radius = 5;
+      viewer.camera.target = new Vector3(0, 1.2, 0);
+    }
+
+    // 공간 편집 씬
+    async function loadRoomScene() {
+      // 기본 조명
+      const { HemisphericLight } = await import('@babylonjs/core/Lights/hemisphericLight');
+      const defaultLight = new HemisphericLight(
+        'defaultLight',
+        new Vector3(0, 1, 0),
+        viewer.scene
+      );
+      defaultLight.intensity = 0.7;
+
+      const roomSize = 20;
+      const wallHeight = 5;
+
+      // 바닥
+      const ground = MeshBuilder.CreateGround('ground', { width: roomSize, height: roomSize }, viewer.scene);
+      const groundMat = new StandardMaterial('groundMat', viewer.scene);
+      groundMat.diffuseColor = new Color3(0.88, 0.88, 0.88);
+      ground.material = groundMat;
+
+      // 벽들
+      const wallColor = new Color3(0.96, 0.96, 0.96);
+
+      // 뒷벽
+      const backWall = MeshBuilder.CreateBox('backWall', { width: roomSize, height: wallHeight, depth: 0.5 }, viewer.scene);
+      backWall.position.z = -roomSize / 2;
+      backWall.position.y = wallHeight / 2;
+      const backMat = new StandardMaterial('backMat', viewer.scene);
+      backMat.diffuseColor = wallColor;
+      backWall.material = backMat;
+
+      // 왼쪽 벽
+      const leftWall = MeshBuilder.CreateBox('leftWall', { width: 0.5, height: wallHeight, depth: roomSize }, viewer.scene);
+      leftWall.position.x = -roomSize / 2;
+      leftWall.position.y = wallHeight / 2;
+      const leftMat = new StandardMaterial('leftMat', viewer.scene);
+      leftMat.diffuseColor = wallColor;
+      leftWall.material = leftMat;
+
+      // 오른쪽 벽
+      const rightWall = MeshBuilder.CreateBox('rightWall', { width: 0.5, height: wallHeight, depth: roomSize }, viewer.scene);
+      rightWall.position.x = roomSize / 2;
+      rightWall.position.y = wallHeight / 2;
+      const rightMat = new StandardMaterial('rightMat', viewer.scene);
+      rightMat.diffuseColor = wallColor;
+      rightWall.material = rightMat;
+
+      // 카메라 위치 조정 (방 전체가 보이도록)
+      viewer.camera.alpha = -Math.PI / 2;
+      viewer.camera.beta = Math.PI / 4;
+      viewer.camera.radius = 15;
+      viewer.camera.target = new Vector3(0, 0, 0);
+    }
+
+    // 참여자 뷰 씬
+    async function loadParticipantScene() {
+      // 기본 조명
+      const keyLight = new DirectionalLight(
+        'keyLight',
+        new Vector3(-1, -2, -1),
+        viewer.scene
+      );
+      keyLight.position = new Vector3(2, 3, 2);
+      keyLight.intensity = 0.8;
+      keyLight.diffuse = new Color3(1, 0.98, 0.9);
+
+      const { HemisphericLight: HemisphericLight3 } = await import('@babylonjs/core/Lights/hemisphericLight');
+      const fillLight = new HemisphericLight3(
+        'fillLight',
+        new Vector3(0, 1, 0),
+        viewer.scene
+      );
+      fillLight.intensity = 0.5;
+
+      // 여러 참여자 (구체들을 그리드로 배치)
+      const colors = [
+        new Color3(1, 0.5, 0.5),
+        new Color3(0.5, 1, 0.5),
+        new Color3(0.5, 0.5, 1),
+        new Color3(1, 1, 0.5),
+        new Color3(1, 0.5, 1),
+        new Color3(0.5, 1, 1),
+      ];
+
+      for (let i = 0; i < 6; i++) {
+        const row = Math.floor(i / 3);
+        const col = i % 3;
+
+        const participant = MeshBuilder.CreateSphere(`participant${i}`, { diameter: 1, segments: 32 }, viewer.scene);
+        participant.position.x = (col - 1) * 3;
+        participant.position.y = 1.2;
+        participant.position.z = (row - 0.5) * 3;
+
+        const mat = new StandardMaterial(`mat${i}`, viewer.scene);
+        mat.diffuseColor = colors[i];
+        participant.material = mat;
+
+        // 각자 회전
+        const rotationSpeed = 0.005 + Math.random() * 0.01;
+        viewer.scene.registerBeforeRender(() => {
+          participant.rotation.y += rotationSpeed;
+        });
+      }
+
+      // 카메라 위치 조정
+      viewer.camera.alpha = Math.PI / 2;
+      viewer.camera.beta = Math.PI / 3.5;
+      viewer.camera.radius = 12;
+      viewer.camera.target = new Vector3(0, 1, 0);
+    }
+
+    // 초기화
+    initViewer();
+    loadBasicScene();
+
+    // 씬 전환 버튼 이벤트
+    document.getElementById('sceneBasic').addEventListener('click', () => loadScene('basic'));
+    document.getElementById('sceneAvatar').addEventListener('click', () => loadScene('avatar'));
+    document.getElementById('sceneRoom').addEventListener('click', () => loadScene('room'));
+    document.getElementById('sceneParticipant').addEventListener('click', () => loadScene('participant'));
+
+    // 컨트롤 버튼 이벤트
+    document.getElementById('resetCamera').addEventListener('click', () => {
+      if (viewer.camera) {
           viewer.camera.alpha = Math.PI / 2;
           viewer.camera.beta = Math.PI / 4;
           viewer.camera.radius = 10;
@@ -220,22 +523,6 @@
           status.style.color = '#c62828';
         }
       });
-
-      console.log('✅ 3D Viewer initialized successfully');
-      console.log('Viewer instance:', viewer);
-
-    } catch (error) {
-      console.error('❌ Failed to initialize 3D Viewer:', error);
-      loading.innerHTML = `
-        <div style="color: #c62828;">
-          <h3>❌ 초기화 실패</h3>
-          <p style="margin-top: 10px; font-size: 14px;">${error.message}</p>
-        </div>
-      `;
-      status.textContent = '❌ 초기화 실패';
-      status.style.background = '#ffebee';
-      status.style.color = '#c62828';
-    }
   </script>
 </body>
 </html>
