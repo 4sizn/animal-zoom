@@ -13,6 +13,7 @@ import { RoomConfigModule } from './room-config/room-config.module.js';
 import { ResourceModule } from './resource/resource.module.js';
 import { AssetCatalogModule } from './asset-catalog/asset-catalog.module.js';
 import { ChatModule } from './chat/chat.module.js';
+import { DevToolsModule } from './dev-tools/dev-tools.module.js';
 
 @Module({
   imports: [
@@ -41,6 +42,8 @@ import { ChatModule } from './chat/chat.module.js';
     AssetCatalogModule,
     // Chat module
     ChatModule,
+    // Development tools module
+    DevToolsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

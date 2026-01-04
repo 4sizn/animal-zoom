@@ -13,6 +13,7 @@ import {
 } from './dto/index.js';
 import { generateRoomCode } from './room-code.util.js';
 import { GracePeriodManager } from './grace-period-manager.js';
+import { DemoRoomService } from '../dev-tools/demo-room.service.js';
 
 @Injectable()
 export class RoomService {
@@ -21,6 +22,7 @@ export class RoomService {
   constructor(
     private db: DatabaseService,
     private gracePeriodManager: GracePeriodManager,
+    private demoRoomService: DemoRoomService,
   ) {}
 
   /**
@@ -253,6 +255,14 @@ export class RoomService {
       .executeTakeFirst();
 
     if (!remainingParticipants) {
+      // Skip grace period for demo room - keep it always active
+      if (this.demoRoomService.isDemoRoom(roomCode)) {
+        this.logger.log(
+          `Room ${roomCode} is demo room, keeping active (no grace period)`,
+        );
+        return;
+      }
+
       // Start grace period instead of immediately marking as inactive
       this.logger.log(
         `Room ${roomCode} is empty, starting grace period (60 seconds)`,
@@ -384,6 +394,14 @@ export class RoomService {
       .executeTakeFirst();
 
     if (!participants) {
+      // Skip marking demo room as inactive
+      if (this.demoRoomService.isDemoRoom(roomCode)) {
+        this.logger.log(
+          `Room ${roomCode} is demo room, keeping active (skipping finalization)`,
+        );
+        return;
+      }
+
       // Room is still empty after grace period, mark as inactive
       await this.db.db
         .updateTable('rooms')

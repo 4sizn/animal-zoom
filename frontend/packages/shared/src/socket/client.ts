@@ -17,7 +17,7 @@ import type { AvatarConfig } from '../api/types';
 /**
  * WebSocket Client Configuration
  */
-const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3001';
+const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3000';
 const DEFAULT_OPTIONS: SocketClientOptions = {
   autoConnect: false,
   reconnection: true,
