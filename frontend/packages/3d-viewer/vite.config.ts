@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  root: command === 'serve' ? __dirname : undefined,
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
@@ -25,5 +26,9 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'src')
     }
+  },
+  server: {
+    port: 5173,
+    open: '/demo.html'
   }
-});
+}));

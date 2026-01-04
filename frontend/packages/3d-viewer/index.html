@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Viewer - Standalone Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      margin: 0 0 10px 0;
+      font-size: 28px;
+    }
+
+    .info {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .viewer-container {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      position: relative;
+    }
+
+    #renderCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .controls {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .status {
+      padding: 10px 20px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎮 3D Viewer - Standalone Demo</h1>
+      <p class="info">
+        Babylon.js 기반 3D 렌더링 엔진 독립 실행 테스트 페이지
+        <br>
+        <strong>포트:</strong> 5173 | <strong>패키지:</strong> @animal-zoom/3d-viewer
+      </p>
+    </div>
+
+    <div class="viewer-container">
+      <canvas id="renderCanvas"></canvas>
+      <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>3D 엔진 초기화 중...</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="resetCamera">카메라 리셋</button>
+      <button id="toggleWireframe">와이어프레임</button>
+      <button id="addCube">큐브 추가</button>
+      <div class="status" id="status">준비</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createViewer } from './src/index.ts';
+
+    const canvas = document.getElementById('renderCanvas');
+    const loading = document.getElementById('loading');
+    const status = document.getElementById('status');
+
+    try {
+      // 3D Viewer 초기화
+      const viewer = createViewer(canvas);
+
+      // 로딩 화면 제거
+      setTimeout(() => {
+        loading.style.display = 'none';
+        status.textContent = '✅ 3D 엔진 초기화 완료';
+        status.style.background = '#e8f5e9';
+        status.style.color = '#2e7d32';
+      }, 1000);
+
+      // 컨트롤 버튼 이벤트
+      document.getElementById('resetCamera').addEventListener('click', () => {
+        if (viewer.camera) {
+          viewer.camera.alpha = Math.PI / 2;
+          viewer.camera.beta = Math.PI / 4;
+          viewer.camera.radius = 10;
+        }
+        status.textContent = '📹 카메라 리셋됨';
+      });
+
+      document.getElementById('toggleWireframe').addEventListener('click', () => {
+        const scene = viewer.scene;
+        if (scene) {
+          scene.meshes.forEach(mesh => {
+            if (mesh.material) {
+              mesh.material.wireframe = !mesh.material.wireframe;
+            }
+          });
+          status.textContent = '🔲 와이어프레임 토글됨';
+        }
+      });
+
+      document.getElementById('addCube').addEventListener('click', async () => {
+        try {
+          const { MeshBuilder } = await import('@babylonjs/core/Meshes/meshBuilder');
+          const { StandardMaterial } = await import('@babylonjs/core/Materials/standardMaterial');
+          const { Color3 } = await import('@babylonjs/core/Maths/math.color');
+
+          const box = MeshBuilder.CreateBox('box_' + Date.now(), { size: 2 }, viewer.scene);
+          box.position.y = 1;
+          box.position.x = (Math.random() - 0.5) * 10;
+          box.position.z = (Math.random() - 0.5) * 10;
+
+          const material = new StandardMaterial('boxMat_' + Date.now(), viewer.scene);
+          material.diffuseColor = new Color3(Math.random(), Math.random(), Math.random());
+          box.material = material;
+
+          status.textContent = '📦 큐브 추가됨';
+        } catch (error) {
+          console.error('큐브 추가 실패:', error);
+          status.textContent = '❌ 큐브 추가 실패';
+          status.style.background = '#ffebee';
+          status.style.color = '#c62828';
+        }
+      });
+
+      console.log('✅ 3D Viewer initialized successfully');
+      console.log('Viewer instance:', viewer);
+
+    } catch (error) {
+      console.error('❌ Failed to initialize 3D Viewer:', error);
+      loading.innerHTML = `
+        <div style="color: #c62828;">
+          <h3>❌ 초기화 실패</h3>
+          <p style="margin-top: 10px; font-size: 14px;">${error.message}</p>
+        </div>
+      `;
+      status.textContent = '❌ 초기화 실패';
+      status.style.background = '#ffebee';
+      status.style.color = '#c62828';
+    }
+  </script>
+</body>
+</html>

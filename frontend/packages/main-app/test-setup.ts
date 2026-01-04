@@ -4,6 +4,7 @@
  */
 
 import { beforeAll } from 'vitest';
+import '@testing-library/jest-dom/vitest';
 
 beforeAll(() => {
   // Mock window.matchMedia if it doesn't exist

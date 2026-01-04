@@ -6,6 +6,7 @@ import { JoinMeeting } from './pages/JoinMeeting';
 import { ParticipantPreview } from './pages/ParticipantPreview';
 import { WaitingRoom } from './pages/WaitingRoom';
 import { LiveSession } from './pages/LiveSession';
+import { SimpleGuest } from './pages/SimpleGuest';
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: 'join/:meetingCode',
         element: <JoinMeeting />,
+      },
+      {
+        path: 'simple-guest',
+        element: <SimpleGuest />,
       },
       {
         path: 'meeting/:meetingId',
