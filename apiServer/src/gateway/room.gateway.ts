@@ -102,12 +102,19 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // Get current participants
       const participants = await this.roomService.getRoomParticipants(roomCode);
 
-      // Notify client
+      // Get recent chat messages (last 50 messages)
+      const recentMessages = await this.chatService.getRoomMessages(
+        result.room.id,
+        50
+      );
+
+      // Notify client with room info and message history
       client.emit('room:joined', {
         roomCode: result.room.code,
         room: result.room,
         isHost: result.isHost,
         participants,
+        messages: recentMessages,
       });
 
       // Notify others in room

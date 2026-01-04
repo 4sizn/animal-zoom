@@ -80,6 +80,7 @@ export class ChatService {
           'chat_messages.content',
           'chat_messages.message_type',
           'chat_messages.created_at',
+          'users.displayName',
           'users.username',
         ])
         .where('chat_messages.room_id', '=', roomId)
@@ -95,7 +96,8 @@ export class ChatService {
         content: msg.content,
         messageType: msg.message_type,
         createdAt: msg.created_at,
-        username: msg.username || undefined,
+        // Prefer displayName over username
+        username: msg.displayName || msg.username || 'Guest',
       }));
     } catch (error) {
       this.logger.error(`Failed to get room messages for ${roomId}`, error);

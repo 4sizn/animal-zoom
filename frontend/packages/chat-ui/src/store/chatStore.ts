@@ -236,6 +236,33 @@ wsController.connectionState$.subscribe((state: ConnectionState) => {
   useChatStore.setState({ connectionState: state });
 });
 
+// Handle room joined - load message history
+wsController.roomJoined$.subscribe((data: any) => {
+  console.log('[ChatStore] Room joined, loading message history');
+
+  // Clear existing messages
+  useChatStore.getState().clearMessages();
+
+  // Load message history if provided
+  if (data.messages && Array.isArray(data.messages)) {
+    const messages: ChatMessage[] = data.messages.map((msg: any) => ({
+      id: msg.id,
+      roomId: msg.roomId,
+      userId: msg.userId,
+      userName: msg.username || 'Unknown User',
+      message: msg.content,
+      timestamp: new Date(msg.createdAt),
+      type: 'text',
+    }));
+
+    // Add all historical messages
+    messages.forEach(msg => useChatStore.getState().addMessage(msg));
+
+    console.log(`[ChatStore] Loaded ${messages.length} historical messages`);
+  }
+});
+
+// Handle incoming real-time messages
 wsController.chatMessage$.subscribe((data: any) => {
   const message: ChatMessage = {
     id: `${Date.now()}-${Math.random()}`,
