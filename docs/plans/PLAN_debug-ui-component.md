@@ -2,8 +2,8 @@
 
 **Created:** 2026-01-04
 **Last Updated:** 2026-01-04
-**Status:** Planning
-**Scope:** Small (2-3 phases, 3-6 hours total)
+**Status:** ✅ Completed
+**Scope:** Small (3 phases, ~3-4 hours total)
 
 ---
 
@@ -393,20 +393,97 @@ open coverage/index.html
 ## Notes & Learnings
 
 ### Phase 1 Notes
-_To be filled during implementation_
+**Completed:** 2026-01-04
+
+✅ **Achievements:**
+- Created complete component structure with TypeScript
+- Implemented translucent dark theme styling (rgba(0,0,0,0.85))
+- Added smooth expand/collapse animations
+- Implemented toggle button with keyboard navigation (Enter/Space)
+- Added copy-to-clipboard functionality for User ID and Room Code
+- Responsive design (320px desktop, 280px mobile)
+
+📝 **Key Decisions:**
+- Used CSS instead of CSS modules for simplicity
+- Fixed position (bottom-right, 20px margins) with z-index: 9999
+- Toggle button uses 🐛 emoji for easy recognition
+- Component starts **expanded by default** for better DX
 
 ### Phase 2 Notes
-_To be filled during implementation_
+**Completed:** 2026-01-04
+
+✅ **Achievements:**
+- Integrated RxJS Observable subscriptions for real-time updates
+- Subscribed to `connectionState$`, `currentRoom$`, and `chatMessage$`
+- Implemented proper cleanup with unsubscribe on unmount
+- Added relative time formatting for messages (e.g., "2초 전")
+- Handled edge cases: undefined controller, missing user, no room
+
+📝 **Key Decisions:**
+- Used `useEffect` with cleanup function for subscription management
+- Socket ID accessed via `(wsController as any).socket?.id` (type assertion needed)
+- Connection state mapped to color indicators using constants
+- Format timestamps as relative time in Korean
+
+🔍 **Technical Details:**
+- Connection states: disconnected (🔴) → connecting (🟡) → connected (🟢)
+- Socket ID only shown when connected
+- Room code only shown when in a room
+- Latest message shows sender name and relative timestamp
 
 ### Phase 3 Notes
-_To be filled during implementation_
+**Completed:** 2026-01-04
+
+✅ **Achievements:**
+- **Changed integration approach:** Moved from LiveSession to Layout component
+- Now available on **all pages** (Dashboard, JoinMeeting, Previews, LiveSession, etc.)
+- Automatically handles undefined values (shows "Guest", "Not in a room", etc.)
+- Only visible in development mode (`import.meta.env.DEV`)
+- TypeScript compilation successful with no errors
+
+📝 **Key Decisions:**
+- **Global integration in Layout.tsx** instead of per-page implementation
+- Uses `useRoomStore()` to get current user (may be undefined)
+- WebSocket controller obtained via `getInstance()` singleton
+- Default state: **expanded** (changed from collapsed)
+
+🎯 **Benefits of Layout Integration:**
+- Single point of integration for entire app
+- Automatically tracks state across page navigation
+- No need to add to individual pages
+- Consistent debugging experience everywhere
+
+### Additional Changes
+
+**Post-Implementation Enhancements:**
+1. **Default expanded state** - Panel starts open for better developer experience
+2. **Global availability** - Accessible on all pages, not just LiveSession
+3. **Smart undefined handling** - Gracefully displays placeholder text when data unavailable
+
+**Socket ID (SID) Clarification:**
+- **Socket ID** = `client.id` in backend, temporary per-connection identifier
+- **User ID** = `client.data.user.sub`, permanent user identifier
+- Socket ID is connection-specific, changes on reconnect
+- Backend maps Socket ID → Room Code in `userRooms` Map
 
 ---
 
 ## References
 
+### Implementation Files
+- **DebugPanel Component**: `frontend/packages/shared/src/debug/DebugPanel.tsx`
+- **DebugPanel Styles**: `frontend/packages/shared/src/debug/DebugPanel.css`
+- **Type Definitions**: `frontend/packages/shared/src/debug/types.ts`
+- **Test File**: `frontend/packages/shared/src/debug/__tests__/DebugPanel.test.tsx`
+- **Integration**: `frontend/packages/main-app/src/components/Layout.tsx`
+
+### Dependencies
 - **WebSocketClientController**: `frontend/packages/shared/src/socket/WebSocketClientController.ts`
 - **Connection Types**: `frontend/packages/shared/src/socket/controller-types.ts`
 - **Message Types**: `frontend/packages/shared/src/socket/types.ts`
 - **User Types**: `frontend/packages/shared/src/api/types.ts`
-- **Meeting Store**: `frontend/packages/main-app/src/stores/meetingStore.ts`
+- **Room Store**: `frontend/packages/main-app/src/stores/roomStore.ts`
+
+### Backend Reference
+- **Room Gateway**: `apiServer/src/gateway/room.gateway.ts`
+- Socket ID (`client.id`) vs User ID (`client.data.user.sub`)

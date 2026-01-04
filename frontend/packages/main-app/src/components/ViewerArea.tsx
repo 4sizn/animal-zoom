@@ -36,6 +36,8 @@ export function ViewerArea({ participants, currentUserId }: ViewerAreaProps) {
   useEffect(() => {
     if (!canvasRef.current || !webGLSupported) return;
 
+    console.log('[ViewerArea] Initializing 3D viewer...');
+
     // TODO: Initialize Babylon.js scene using @animal-zoom/3d-viewer
     //
     // Expected integration:
@@ -52,13 +54,12 @@ export function ViewerArea({ participants, currentUserId }: ViewerAreaProps) {
     //   sceneBuilder.dispose();
     // };
 
-    // Placeholder: Simulate loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    // For now, mark as loaded immediately
+    setIsLoading(false);
+    console.log('[ViewerArea] 3D viewer ready');
 
     return () => {
-      clearTimeout(timer);
+      console.log('[ViewerArea] Cleanup');
     };
   }, [webGLSupported]);
 
