@@ -9,6 +9,9 @@ async function bootstrap() {
   // Enable CORS
   app.enableCors();
 
+  // Set global API prefix
+  app.setGlobalPrefix('api');
+
   // Use WebSocket JWT adapter
   app.useWebSocketAdapter(new WsJwtAdapter(app));
 
@@ -36,14 +39,14 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(
     `🚀 Application is running on: http://localhost:${process.env.PORT ?? 3000}`,
   );
   console.log(
-    `📚 API Documentation: http://localhost:${process.env.PORT ?? 3000}/api`,
+    `📚 API Documentation: http://localhost:${process.env.PORT ?? 3000}/docs`,
   );
   console.log(
     `🔌 WebSocket Server: http://localhost:${process.env.WS_PORT ?? 3001}`,

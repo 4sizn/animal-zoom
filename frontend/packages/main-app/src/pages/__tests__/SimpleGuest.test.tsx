@@ -249,7 +249,7 @@ describe('SimpleGuest', () => {
       });
     });
 
-    test('should navigate to participant-preview after successful join', async () => {
+    test('should navigate to live session after successful join', async () => {
       const mockMeeting = {
         id: 'meeting-456',
         code: 'ABC-123',
@@ -280,7 +280,7 @@ describe('SimpleGuest', () => {
       fireEvent.click(joinButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/meeting/meeting-456/participant-preview');
+        expect(mockNavigate).toHaveBeenCalledWith('/meeting/meeting-456/session');
       });
     });
 

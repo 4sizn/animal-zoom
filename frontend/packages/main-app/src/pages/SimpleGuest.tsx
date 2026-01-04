@@ -29,14 +29,14 @@ export function SimpleGuest() {
     }
   }, [meeting]);
 
-  // Navigate to participant preview after joining
+  // Navigate to live session after joining
   useEffect(() => {
     if (isJoining && meeting && meeting.id) {
       toast({
         title: 'Joining meeting...',
-        description: 'Redirecting to preview',
+        description: 'Entering session',
       });
-      navigate(`/meeting/${meeting.id}/participant-preview`);
+      navigate(`/meeting/${meeting.id}/session`);
       setIsJoining(false);
     }
   }, [isJoining, meeting, navigate, toast]);

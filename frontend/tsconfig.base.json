@@ -19,6 +19,9 @@
     "baseUrl": ".",
     "paths": {
       "@animal-zoom/shared": ["./packages/shared/src"],
+      "@animal-zoom/shared/api": ["./packages/shared/src/api"],
+      "@animal-zoom/shared/types": ["./packages/shared/src/types"],
+      "@animal-zoom/shared/socket": ["./packages/shared/src/socket"],
       "@animal-zoom/shared/*": ["./packages/shared/src/*"],
       "@animal-zoom/3d-viewer": ["./packages/3d-viewer/src"],
       "@animal-zoom/3d-viewer/*": ["./packages/3d-viewer/src/*"],
