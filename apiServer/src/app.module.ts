@@ -12,6 +12,7 @@ import { AvatarModule } from './avatar/avatar.module.js';
 import { RoomConfigModule } from './room-config/room-config.module.js';
 import { ResourceModule } from './resource/resource.module.js';
 import { AssetCatalogModule } from './asset-catalog/asset-catalog.module.js';
+import { ChatModule } from './chat/chat.module.js';
 
 @Module({
   imports: [
@@ -38,6 +39,8 @@ import { AssetCatalogModule } from './asset-catalog/asset-catalog.module.js';
     ResourceModule,
     // Asset catalog module
     AssetCatalogModule,
+    // Chat module
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

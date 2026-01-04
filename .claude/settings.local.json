@@ -87,7 +87,8 @@
       "Bash(node --version)",
       "Bash(node:*)",
       "Bash(pnpm run lint:*)",
-      "Bash(pnpm run build:*)"
+      "Bash(pnpm run build:*)",
+      "Bash(npm run start:dev:*)"
     ]
   }
 }

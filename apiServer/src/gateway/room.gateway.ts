@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { RoomService } from '../room/room.service.js';
+import { ChatService } from '../chat/chat.service.js';
 import {
   JoinRoomEventDto,
   LeaveRoomEventDto,
@@ -30,7 +31,10 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(RoomGateway.name);
   private userRooms = new Map<string, string>(); // socketId -> roomCode
 
-  constructor(private roomService: RoomService) {}
+  constructor(
+    private roomService: RoomService,
+    private chatService: ChatService,
+  ) {}
 
   handleConnection(client: Socket) {
     try {
@@ -173,7 +177,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('chat:message')
-  handleChatMessage(
+  async handleChatMessage(
     @MessageBody() data: ChatMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
@@ -184,8 +188,22 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const username = client.data.user.username;
       const { roomCode, message } = data;
 
-      // Broadcast to all in room (including sender)
+      // Get room ID from room code
+      const roomData = await this.roomService.getRoomByCode(roomCode);
+      if (!roomData) {
+        this.logger.warn(`Room not found: ${roomCode}`);
+        return { success: false, error: 'Room not found' };
+      }
 
+      // Save message to database
+      await this.chatService.saveMessage({
+        roomId: roomData.room.id,
+        userId: userId as string,
+        content: message,
+        messageType: 'text',
+      });
+
+      // Broadcast to all in room (including sender)
       this.server.to(roomCode).emit('chat:message', {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         userId,
@@ -196,7 +214,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
 
       this.logger.log(
-        `Chat message in room ${roomCode} from ${username as string}`,
+        `Chat message saved and broadcast in room ${roomCode} from ${username as string}`,
       );
 
       return { success: true };
