@@ -61,25 +61,14 @@ export class ChatService {
 
   /**
    * Get chat history for a room
-   * @param roomCode - Room code
+   * @param roomId - Room UUID
    * @param limit - Maximum number of messages to return (default: 50)
    */
   async getRoomMessages(
-    roomCode: string,
+    roomId: string,
     limit: number = 50,
   ): Promise<ChatMessage[]> {
     try {
-      // First get the room ID from room code
-      const room = await this.db.db
-        .selectFrom('rooms')
-        .select('id')
-        .where('code', '=', roomCode)
-        .executeTakeFirst();
-
-      if (!room) {
-        return [];
-      }
-
       // Get messages with user information
       const messages = await this.db.db
         .selectFrom('chat_messages')
@@ -93,7 +82,7 @@ export class ChatService {
           'chat_messages.created_at',
           'users.username',
         ])
-        .where('chat_messages.room_id', '=', room.id)
+        .where('chat_messages.room_id', '=', roomId)
         .orderBy('chat_messages.created_at', 'desc')
         .limit(limit)
         .execute();
@@ -109,7 +98,7 @@ export class ChatService {
         username: msg.username || undefined,
       }));
     } catch (error) {
-      this.logger.error(`Failed to get room messages for ${roomCode}`, error);
+      this.logger.error(`Failed to get room messages for ${roomId}`, error);
       throw error;
     }
   }
