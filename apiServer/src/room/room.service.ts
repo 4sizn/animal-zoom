@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service.js';
 import {
@@ -11,10 +12,16 @@ import {
   RoomWithParticipantsDto,
 } from './dto/index.js';
 import { generateRoomCode } from './room-code.util.js';
+import { GracePeriodManager } from './grace-period-manager.js';
 
 @Injectable()
 export class RoomService {
-  constructor(private db: DatabaseService) {}
+  private readonly logger = new Logger(RoomService.name);
+
+  constructor(
+    private db: DatabaseService,
+    private gracePeriodManager: GracePeriodManager,
+  ) {}
 
   /**
    * Create a new room
@@ -135,6 +142,15 @@ export class RoomService {
       throw new BadRequestException('Room is full');
     }
 
+    // Cancel grace period if room was waiting to close
+    const gracePeriodCancelled =
+      this.gracePeriodManager.cancelGracePeriod(roomCode);
+    if (gracePeriodCancelled) {
+      this.logger.log(
+        `Grace period cancelled for room ${roomCode} - user ${userId} joined`,
+      );
+    }
+
     // Check if user is already in room
     const existingParticipant = await this.db.db
       .selectFrom('room_participants')
@@ -228,22 +244,24 @@ export class RoomService {
       .where('id', '=', room.id)
       .execute();
 
-    // If host left and room is empty, mark room as inactive
-    if (participant.role === 'host') {
-      const remainingParticipants = await this.db.db
-        .selectFrom('room_participants')
-        .select('id')
-        .where('roomId', '=', room.id)
-        .where('isActive', '=', true)
-        .executeTakeFirst();
+    // Check if room is now empty
+    const remainingParticipants = await this.db.db
+      .selectFrom('room_participants')
+      .select('id')
+      .where('roomId', '=', room.id)
+      .where('isActive', '=', true)
+      .executeTakeFirst();
 
-      if (!remainingParticipants) {
-        await this.db.db
-          .updateTable('rooms')
-          .set({ status: 'inactive', updatedAt: new Date() })
-          .where('id', '=', room.id)
-          .execute();
-      }
+    if (!remainingParticipants) {
+      // Start grace period instead of immediately marking as inactive
+      this.logger.log(
+        `Room ${roomCode} is empty, starting grace period (60 seconds)`,
+      );
+
+      this.gracePeriodManager.startGracePeriod(
+        roomCode,
+        async (code) => await this.finalizeRoomClosure(code),
+      );
     }
   }
 
@@ -333,5 +351,54 @@ export class RoomService {
       isActive: p.isActive,
       joinedAt: p.joinedAt,
     }));
+  }
+
+  /**
+   * Finalize room closure after grace period expires.
+   * This method is called by GracePeriodManager after 60 seconds.
+   *
+   * @param roomCode - The room code to finalize
+   * @private
+   */
+  private async finalizeRoomClosure(roomCode: string): Promise<void> {
+    const room = await this.db.db
+      .selectFrom('rooms')
+      .selectAll()
+      .where('code', '=', roomCode)
+      .executeTakeFirst();
+
+    if (!room) {
+      // Room already deleted or doesn't exist
+      this.logger.warn(
+        `finalizeRoomClosure: Room ${roomCode} not found, skipping`,
+      );
+      return;
+    }
+
+    // Double-check if room is still empty
+    const participants = await this.db.db
+      .selectFrom('room_participants')
+      .select('id')
+      .where('roomId', '=', room.id)
+      .where('isActive', '=', true)
+      .executeTakeFirst();
+
+    if (!participants) {
+      // Room is still empty after grace period, mark as inactive
+      await this.db.db
+        .updateTable('rooms')
+        .set({ status: 'inactive', updatedAt: new Date() })
+        .where('id', '=', room.id)
+        .execute();
+
+      this.logger.log(
+        `Room ${roomCode} marked as inactive after grace period (no participants rejoined)`,
+      );
+    } else {
+      // Participants rejoined during grace period, keep room active
+      this.logger.log(
+        `Room ${roomCode} has participants after grace period, keeping active`,
+      );
+    }
   }
 }

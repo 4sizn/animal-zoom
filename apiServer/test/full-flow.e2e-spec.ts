@@ -182,8 +182,12 @@ describe('Full Room Flow (e2e)', () => {
 
       expect(response.body).toHaveLength(2);
 
-      const userParticipant = response.body.find((p: any) => p.userId === registeredUserId);
-      const guestParticipant = response.body.find((p: any) => p.userId === guestUserId);
+      const userParticipant = response.body.find(
+        (p: any) => p.userId === registeredUserId,
+      );
+      const guestParticipant = response.body.find(
+        (p: any) => p.userId === guestUserId,
+      );
 
       expect(userParticipant).toBeDefined();
       expect(userParticipant.displayName).toBe('Test User');
@@ -485,9 +489,7 @@ describe('Full Room Flow (e2e)', () => {
     });
 
     it('should reject unauthenticated requests', async () => {
-      await request(httpServer)
-        .get('/auth/me')
-        .expect(401); // Unauthorized
+      await request(httpServer).get('/auth/me').expect(401); // Unauthorized
     });
 
     it('should reject invalid room code format', async () => {

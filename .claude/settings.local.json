@@ -85,7 +85,9 @@
       "Bash(find:*)",
       "Bash(done)",
       "Bash(node --version)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(pnpm run lint:*)",
+      "Bash(pnpm run build:*)"
     ]
   }
 }
