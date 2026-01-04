@@ -16,7 +16,7 @@ export function HostPreview() {
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { room, startRoom, isLoading } = useRoomStore();
+  const { room, currentUser, startRoom, isLoading } = useRoomStore();
   const [copied, setCopied] = useState(false);
 
   // Connect to WebSocket when entering preview (but don't sync yet)
@@ -45,16 +45,22 @@ export function HostPreview() {
   }, [room?.code]);
 
   useEffect(() => {
-    // Redirect if no room or wrong room
+    console.log('[HostPreview] Validation:', {
+      hasRoom: !!room,
+      roomId,
+      storeRoomId: room?.id,
+      match: room?.id === roomId,
+      currentUser: currentUser?.name,
+      isHost: currentUser?.isHost
+    });
+
     if (!room || room.id !== roomId) {
-      toast({
-        title: 'Room not found',
-        description: 'Redirecting to dashboard...',
-        variant: 'destructive',
-      });
+      console.log('[HostPreview] Validation FAILED - redirecting to home');
       navigate('/');
+    } else {
+      console.log('[HostPreview] Validation PASSED');
     }
-  }, [room, roomId, navigate, toast]);
+  }, [room, roomId, currentUser, navigate]);
 
   if (!room) {
     return (

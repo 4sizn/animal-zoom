@@ -17,7 +17,6 @@ import { SettingsModal } from '@/components/SettingsModal';
 import { LeaveConfirmDialog, EndRoomDialog } from '@/components/ConfirmDialogs';
 import { Loader2 } from 'lucide-react';
 import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
-import { DebugPanel } from '@animal-zoom/shared';
 
 export function LiveSession() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -67,47 +66,27 @@ export function LiveSession() {
   useParticipantSync(roomId, true);
 
   useEffect(() => {
-    // Redirect if no room or wrong room
     if (!room || room.id !== roomId) {
-      toast({
-        title: 'Room not found',
-        description: 'Redirecting to dashboard...',
-        variant: 'destructive',
-      });
       navigate('/');
       return;
     }
 
-    // Check if room is live
     if (room.state !== 'LIVE') {
-      toast({
-        title: 'Room not started',
-        description: 'Waiting for host to start the room...',
-      });
       navigate(`/room/${roomId}/host-preview`);
       return;
     }
 
-    // Check if user has joined
     if (currentUser?.joinState !== 'JOINED') {
-      toast({
-        title: 'Not in room',
-        description: 'Please join the room first',
-      });
       navigate(`/room/${roomId}/participant-preview`);
     }
-  }, [room, roomId, currentUser, navigate, toast]);
+  }, [room, roomId, currentUser, navigate]);
 
   // Handle room end
   useEffect(() => {
     if (room?.state === 'ENDED') {
-      toast({
-        title: 'Room ended',
-        description: 'The room has ended',
-      });
       navigate('/');
     }
-  }, [room?.state, navigate, toast]);
+  }, [room?.state, navigate]);
 
   if (!room || !currentUser) {
     return (
@@ -201,14 +180,6 @@ export function LiveSession() {
         open={showEndDialog}
         onOpenChange={setShowEndDialog}
       />
-
-      {/* Debug Panel - Development Only */}
-      {import.meta.env.DEV && (
-        <DebugPanel
-          userId={currentUser.id}
-          wsController={getWebSocketController()}
-        />
-      )}
     </div>
   );
 }

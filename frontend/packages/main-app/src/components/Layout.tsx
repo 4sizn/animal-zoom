@@ -1,7 +1,13 @@
 import { Outlet } from 'react-router-dom';
 import { Toaster } from './ui/toaster';
+import { DebugPanel } from '@animal-zoom/shared';
+import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
+import { useRoomStore } from '@/stores/roomStore';
 
 export function Layout() {
+  // Get current user ID from store (may be undefined)
+  const { currentUser } = useRoomStore();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -20,6 +26,14 @@ export function Layout() {
 
       {/* Toast notifications */}
       <Toaster />
+
+      {/* Debug Panel - Development Only, available on all pages */}
+      {import.meta.env.DEV && (
+        <DebugPanel
+          userId={currentUser?.id}
+          wsController={getWebSocketController()}
+        />
+      )}
     </div>
   );
 }

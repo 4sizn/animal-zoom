@@ -16,69 +16,13 @@ import { authApi } from '@animal-zoom/shared/api';
 export function SimpleGuest() {
   const [nickname, setNickname] = useState('');
   const [roomId, setRoomId] = useState('');
-  const [isJoining, setIsJoining] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
 
   const navigate = useNavigate();
   const { room, currentUser, createRoom, joinRoom, isLoading, error } = useRoomStore();
   const { toast } = useToast();
 
-  // Auto-populate room ID when room is created
-  useEffect(() => {
-    if (room && room.code) {
-      setRoomId(room.code);
-    }
-  }, [room]);
+  // Removed auto-populate - room code will be shown in host-preview page
 
-  // Navigate to host preview after creating room
-  useEffect(() => {
-    if (isCreating && room && room.id && currentUser?.isHost) {
-      toast({
-        title: 'Room created!',
-        description: 'Redirecting to host preview',
-      });
-      navigate(`/room/${room.id}/host-preview`);
-      setIsCreating(false);
-    }
-  }, [isCreating, room, currentUser, navigate, toast]);
-
-  // Navigate after joining - redirect based on host status
-  useEffect(() => {
-    console.log('Navigation useEffect:', {
-      isJoining,
-      room: !!room,
-      roomId: room?.id,
-      currentUser: !!currentUser,
-      isHost: currentUser?.isHost
-    });
-
-    if (isJoining && room && room.id && currentUser) {
-      console.log('Navigating...', { isHost: currentUser.isHost, roomId: room.id });
-
-      toast({
-        title: 'Joining room...',
-        description: currentUser.isHost ? 'Redirecting to host preview' : 'Redirecting to participant preview',
-      });
-
-      // Navigate to appropriate preview page based on role
-      if (currentUser.isHost) {
-        console.log('Navigating to host-preview');
-        navigate(`/room/${room.id}/host-preview`);
-      } else {
-        console.log('Navigating to participant-preview');
-        navigate(`/room/${room.id}/participant-preview`);
-      }
-
-      setIsJoining(false);
-    } else {
-      console.log('Navigation condition failed:', {
-        hasIsJoining: !!isJoining,
-        hasRoom: !!room,
-        hasRoomId: !!(room?.id),
-        hasCurrentUser: !!currentUser
-      });
-    }
-  }, [isJoining, room, currentUser, navigate, toast]);
 
   // Show error toast when error occurs
   useEffect(() => {
@@ -102,18 +46,30 @@ export function SimpleGuest() {
       return;
     }
 
+    if (isLoading) return; // Prevent double-click
+
+    console.log('[SimpleGuest] handleCreateRoom - START');
+
     try {
       // First, authenticate as guest to get token
       if (!authApi.isAuthenticated()) {
+        console.log('[SimpleGuest] Authenticating as guest...');
         await authApi.createGuest({ displayName: nickname.trim() });
       }
 
       // Then create the room with the token
-      setIsCreating(true);
+      console.log('[SimpleGuest] Creating room...');
       await createRoom({ title: 'Quick Room' });
-      // Navigation happens in useEffect after room is created
+
+      // Get the fresh state after creation
+      const { room: newRoom, currentUser: newUser } = useRoomStore.getState();
+      console.log('[SimpleGuest] Room created, navigating to:', newRoom?.id);
+
+      if (newRoom?.id && newUser?.isHost) {
+        navigate(`/room/${newRoom.id}/host-preview`);
+      }
     } catch (err) {
-      setIsCreating(false);
+      console.error('[SimpleGuest] Failed to create room:', err);
       toast({
         title: 'Failed to create room',
         description: err instanceof Error ? err.message : 'Unknown error',
@@ -142,9 +98,9 @@ export function SimpleGuest() {
       return;
     }
 
-    try {
-      setIsJoining(true);
+    if (isLoading) return; // Prevent double-click
 
+    try {
       // First, authenticate as guest to get token
       if (!authApi.isAuthenticated()) {
         await authApi.createGuest({ displayName: nickname.trim() });
@@ -152,9 +108,18 @@ export function SimpleGuest() {
 
       // Then join the room with the token
       await joinRoom(roomId.trim(), { userName: nickname.trim() });
-      // Navigation happens in useEffect after room is updated
+
+      // Get the fresh state after joining
+      const { room: joinedRoom, currentUser: joinedUser } = useRoomStore.getState();
+      console.log('[SimpleGuest] Joined room, navigating to:', joinedRoom?.id);
+
+      if (joinedRoom?.id && joinedUser) {
+        const path = joinedUser.isHost
+          ? `/room/${joinedRoom.id}/host-preview`
+          : `/room/${joinedRoom.id}/participant-preview`;
+        navigate(path);
+      }
     } catch (err) {
-      setIsJoining(false);
       toast({
         title: 'Failed to join room',
         description: err instanceof Error ? err.message : 'Unknown error',
@@ -204,12 +169,6 @@ export function SimpleGuest() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {roomId && (
-              <div className="p-3 bg-muted rounded-md">
-                <p className="text-sm text-muted-foreground mb-1">Room Code:</p>
-                <p className="text-lg font-mono font-semibold">{roomId}</p>
-              </div>
-            )}
             <Button
               onClick={handleCreateRoom}
               disabled={!nickname.trim() || isLoading}

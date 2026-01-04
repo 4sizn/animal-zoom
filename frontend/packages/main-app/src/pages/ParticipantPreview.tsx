@@ -44,16 +44,10 @@ export function ParticipantPreview() {
   }, [room?.code]);
 
   useEffect(() => {
-    // Redirect if no room or wrong room
     if (!room || room.id !== roomId) {
-      toast({
-        title: 'Room not found',
-        description: 'Redirecting to join page...',
-        variant: 'destructive',
-      });
       navigate('/join');
     }
-  }, [room, roomId, navigate, toast]);
+  }, [room, roomId, navigate]);
 
   if (!room || !currentUser) {
     return (
