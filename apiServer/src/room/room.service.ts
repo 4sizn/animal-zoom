@@ -255,10 +255,10 @@ export class RoomService {
       .executeTakeFirst();
 
     if (!remainingParticipants) {
-      // Skip grace period for demo room - keep it always active
+      // Skip grace period for demo room - keep it always active (INFINITE grace period)
       if (this.demoRoomService.isDemoRoom(roomCode)) {
         this.logger.log(
-          `Room ${roomCode} is demo room, keeping active (no grace period)`,
+          `🔒 Room ${roomCode} is demo room, staying ACTIVE forever (participant count: 0, grace period: INFINITE)`,
         );
         return;
       }
@@ -394,10 +394,10 @@ export class RoomService {
       .executeTakeFirst();
 
     if (!participants) {
-      // Skip marking demo room as inactive
+      // Skip marking demo room as inactive (INFINITE grace period protection)
       if (this.demoRoomService.isDemoRoom(roomCode)) {
         this.logger.log(
-          `Room ${roomCode} is demo room, keeping active (skipping finalization)`,
+          `🔒 Room ${roomCode} is demo room, NEVER marking as inactive (INFINITE grace period)`,
         );
         return;
       }
