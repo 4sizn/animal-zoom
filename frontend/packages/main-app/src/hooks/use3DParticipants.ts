@@ -5,6 +5,8 @@
 
 import { useEffect, useRef } from 'react';
 import { ParticipantInfo } from '@/types/room';
+import { MeshBuilder, StandardMaterial, Color3, Vector3 } from '@babylonjs/core';
+import type { Scene, Mesh } from '@babylonjs/core';
 
 /**
  * Hook to synchronize participants with 3D scene
@@ -18,21 +20,14 @@ import { ParticipantInfo } from '@/types/room';
  */
 export function use3DParticipants(
   participants: ParticipantInfo[],
-  scene: any, // TODO: Type as Babylon.Scene once integrated
+  scene: Scene | null,
   currentUserId: string
 ) {
   // Track which participants have been added to the scene
-  const participantAvatarsRef = useRef<Map<string, any>>(new Map());
+  const participantAvatarsRef = useRef<Map<string, Mesh>>(new Map());
 
   useEffect(() => {
     if (!scene) return;
-
-    // TODO: Integrate with ParticipantManager from @animal-zoom/3d-viewer
-    //
-    // Expected integration:
-    // import { ParticipantManager } from '@animal-zoom/3d-viewer';
-    //
-    // const participantManager = new ParticipantManager(scene);
 
     const currentAvatars = participantAvatarsRef.current;
     const currentParticipantIds = new Set(participants.map(p => p.id));
@@ -43,24 +38,46 @@ export function use3DParticipants(
       if (!existingAvatarIds.has(participant.id)) {
         console.log('[3D] Adding avatar for:', participant.name);
 
-        // TODO: Create 3D avatar using ParticipantManager
-        // const avatar = participantManager.createAvatar({
-        //   id: participant.id,
-        //   name: participant.name,
-        //   isCurrentUser: participant.id === currentUserId,
-        //   status: participant.status
-        // });
-        //
-        // // Position avatar in 3D space (circular arrangement)
-        // const angle = (currentAvatars.size * 2 * Math.PI) / (participants.length + 1);
-        // const radius = 5; // Distance from center
-        // avatar.position.x = Math.cos(angle) * radius;
-        // avatar.position.z = Math.sin(angle) * radius;
-        //
-        // currentAvatars.set(participant.id, avatar);
+        // Create sphere avatar
+        const avatar = MeshBuilder.CreateSphere(
+          `avatar-${participant.id}`,
+          { diameter: 1, segments: 32 },
+          scene
+        );
 
-        // Placeholder: Store participant in map
-        currentAvatars.set(participant.id, { participantId: participant.id });
+        // Create material
+        const material = new StandardMaterial(`material-${participant.id}`, scene);
+
+        // Set color based on status
+        switch (participant.status) {
+          case 'PRESENT':
+            material.diffuseColor = new Color3(0.2, 0.8, 0.2); // Green
+            break;
+          case 'AWAY':
+            material.diffuseColor = new Color3(0.8, 0.8, 0.2); // Yellow
+            break;
+          case 'DO_NOT_DISTURB':
+            material.diffuseColor = new Color3(0.8, 0.2, 0.2); // Red
+            break;
+          default:
+            material.diffuseColor = new Color3(0.5, 0.5, 0.8); // Default blue
+        }
+
+        avatar.material = material;
+
+        // Position avatar in 3D space (circular arrangement)
+        const angle = (currentAvatars.size * 2 * Math.PI) / Math.max(participants.length, 1);
+        const radius = 3; // Distance from center
+        avatar.position.x = Math.cos(angle) * radius;
+        avatar.position.y = 0.5; // Slightly above ground
+        avatar.position.z = Math.sin(angle) * radius;
+
+        // Highlight current user's avatar
+        if (participant.id === currentUserId) {
+          avatar.scaling = new Vector3(1.3, 1.3, 1.3); // Slightly larger
+        }
+
+        currentAvatars.set(participant.id, avatar);
       }
     }
 
@@ -71,36 +88,22 @@ export function use3DParticipants(
 
         const avatar = currentAvatars.get(avatarId);
         if (avatar) {
-          // TODO: Dispose avatar mesh
-          // avatar.dispose();
+          avatar.dispose();
         }
 
         currentAvatars.delete(avatarId);
       }
     }
 
-    // 3. Update existing avatars (status changes, highlighting, etc.)
-    for (const participant of participants) {
-      const avatar = currentAvatars.get(participant.id);
-      if (avatar) {
-        // TODO: Update avatar visual based on status
-        // switch (participant.status) {
-        //   case 'PRESENT':
-        //     avatar.material.diffuseColor = new Color3(0.2, 0.8, 0.2); // Green
-        //     break;
-        //   case 'AWAY':
-        //     avatar.material.diffuseColor = new Color3(0.8, 0.8, 0.2); // Yellow
-        //     break;
-        //   case 'DO_NOT_DISTURB':
-        //     avatar.material.diffuseColor = new Color3(0.8, 0.2, 0.2); // Red
-        //     break;
-        // }
-        //
-        // // Highlight current user's avatar
-        // if (participant.id === currentUserId) {
-        //   avatar.scaling = new Vector3(1.2, 1.2, 1.2); // Slightly larger
-        //   avatar.addGlow(); // Add glow effect
-        // }
+    // 3. Update existing avatars (position rearrangement when count changes)
+    if (currentAvatars.size > 0) {
+      let index = 0;
+      for (const [id, avatar] of currentAvatars.entries()) {
+        const angle = (index * 2 * Math.PI) / currentAvatars.size;
+        const radius = 3;
+        avatar.position.x = Math.cos(angle) * radius;
+        avatar.position.z = Math.sin(angle) * radius;
+        index++;
       }
     }
 

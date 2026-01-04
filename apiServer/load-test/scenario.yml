@@ -1,0 +1,224 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    # Warm-up phase: 10 users over 30 seconds
+    - duration: 30
+      arrivalRate: 1
+      name: "Warm-up"
+
+    # Ramp-up phase: gradually increase to 50 concurrent users
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 10
+      name: "Ramp-up"
+
+    # Sustained load: 50+ concurrent users for 2 minutes
+    - duration: 120
+      arrivalRate: 10
+      name: "Sustained load"
+
+    # Spike test: sudden increase to 100 users
+    - duration: 30
+      arrivalRate: 20
+      name: "Spike test"
+
+    # Cool-down phase
+    - duration: 30
+      arrivalRate: 2
+      name: "Cool-down"
+
+  processor: "./functions.js"
+
+  # Performance thresholds
+  ensure:
+    # p95 response time should be under 200ms
+    p95: 200
+
+    # p99 response time should be under 500ms
+    p99: 500
+
+    # Error rate should be under 1%
+    maxErrorRate: 1
+
+scenarios:
+  - name: "Complete User Journey"
+    weight: 70
+    flow:
+      # Step 1: Create guest user
+      - post:
+          url: "/auth/guest"
+          json:
+            displayName: "Load Test User {{ $randomString() }}"
+          capture:
+            - json: "$.accessToken"
+              as: "authToken"
+            - json: "$.user.id"
+              as: "userId"
+          expect:
+            - statusCode: 201
+
+      # Step 2: Create a room
+      - post:
+          url: "/rooms"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            maxParticipants: 100
+          capture:
+            - json: "$.roomCode"
+              as: "roomCode"
+            - json: "$.id"
+              as: "roomId"
+          expect:
+            - statusCode: 201
+
+      # Step 3: Join the room
+      - post:
+          url: "/rooms/{{ roomCode }}/join"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            displayName: "Load Test User"
+          expect:
+            - statusCode: 201
+
+      # Step 4: Get room info
+      - get:
+          url: "/rooms/{{ roomCode }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+
+      # Step 5: Get participants
+      - get:
+          url: "/rooms/{{ roomCode }}/participants"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+
+      # Step 6: Update avatar
+      - put:
+          url: "/avatars/me"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            modelUrl: "https://example.com/model.glb"
+            primaryColor: "#{{ $randomHexColor() }}"
+            secondaryColor: "#{{ $randomHexColor() }}"
+            accessories: ["hat", "glasses"]
+          expect:
+            - statusCode: 200
+
+      # Step 7: Get my avatar
+      - get:
+          url: "/avatars/me"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+
+      # Step 8: Leave room
+      - post:
+          url: "/rooms/{{ roomCode }}/leave"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+
+      # Think time between actions (simulate real user behavior)
+      - think: 1
+
+  - name: "Join Existing Room"
+    weight: 20
+    flow:
+      # Create guest user
+      - post:
+          url: "/auth/guest"
+          json:
+            displayName: "Guest {{ $randomString() }}"
+          capture:
+            - json: "$.accessToken"
+              as: "authToken"
+            - json: "$.user.id"
+              as: "userId"
+          expect:
+            - statusCode: 201
+
+      # Get a random room code (custom function)
+      - function: "getRandomRoomCode"
+
+      # Try to join room (may fail if room doesn't exist)
+      - post:
+          url: "/rooms/{{ roomCode }}/join"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            displayName: "Guest User"
+          # Don't fail on 404 - room might not exist
+          ifTrue: "roomCode"
+
+      - think: 2
+
+  - name: "Avatar Customization Focus"
+    weight: 10
+    flow:
+      # Create guest user
+      - post:
+          url: "/auth/guest"
+          json:
+            displayName: "Avatar User {{ $randomString() }}"
+          capture:
+            - json: "$.accessToken"
+              as: "authToken"
+          expect:
+            - statusCode: 201
+
+      # Update avatar multiple times (stress test avatar service)
+      - loop:
+        - put:
+            url: "/avatars/me"
+            headers:
+              Authorization: "Bearer {{ authToken }}"
+            json:
+              primaryColor: "#{{ $randomHexColor() }}"
+              secondaryColor: "#{{ $randomHexColor() }}"
+            expect:
+              - statusCode: 200
+        - think: 0.5
+        count: 5
+
+      # Get avatar
+      - get:
+          url: "/avatars/me"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+
+  - name: "Authentication Stress Test"
+    weight: 5
+    flow:
+      # Register user (may fail if email exists)
+      - post:
+          url: "/auth/register"
+          json:
+            email: "loadtest-{{ $randomString() }}@example.com"
+            password: "TestPassword123!"
+            displayName: "Load Test {{ $randomString() }}"
+          capture:
+            - json: "$.accessToken"
+              as: "authToken"
+            - json: "$.user.id"
+              as: "userId"
+
+      # Get my profile
+      - get:
+          url: "/auth/me"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+
+      - think: 1

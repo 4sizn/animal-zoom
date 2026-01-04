@@ -82,7 +82,10 @@
       "Bash(timeout 10 pnpm run dev:standalone:*)",
       "Bash(for f in /home/lotus/document/lotus/animal-zoom/docs/plans/PLAN_*.md)",
       "Bash(do)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(done)",
+      "Bash(node --version)",
+      "Bash(node:*)"
     ]
   }
 }
