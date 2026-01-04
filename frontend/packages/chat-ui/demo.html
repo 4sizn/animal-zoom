@@ -217,7 +217,7 @@
     let unsubscribeConnectionState = null;
 
     // Connect WebSocket
-    document.getElementById('connectWS').addEventListener('click', () => {
+    document.getElementById('connectWS').addEventListener('click', async () => {
       const userName = document.getElementById('userName').value;
       const roomId = document.getElementById('roomId').value;
 
@@ -231,22 +231,40 @@
         return;
       }
 
-      const userId = `user-${Date.now()}`;
+      setStatus('Guest 토큰 생성 중...');
 
-      // Set demo token for WebSocket authentication
-      const demoToken = 'demo-token-' + Date.now();
-      localStorage.setItem('animal-zoom:token', demoToken);
-      localStorage.setItem('animal-zoom:user', JSON.stringify({
-        id: userId,
-        name: userName,
-        isDemo: true
-      }));
+      try {
+        // Create guest user with valid token
+        const response = await fetch('http://localhost:3000/api/auth/guest', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            displayName: userName,
+          }),
+        });
 
-      useChatStore.getState().setUser(userId, userName);
-      useChatStore.getState().connectWebSocket();
-      useChatStore.getState().setIsOpen(true);
+        if (!response.ok) {
+          throw new Error('Failed to create guest user');
+        }
 
-      setStatus('WebSocket 연결 시도 중...');
+        const { accessToken, user } = await response.json();
+
+        // Store token and user info
+        localStorage.setItem('animal-zoom:token', accessToken);
+        localStorage.setItem('animal-zoom:user', JSON.stringify(user));
+
+        useChatStore.getState().setUser(user.id, user.displayName);
+        useChatStore.getState().connectWebSocket();
+        useChatStore.getState().setIsOpen(true);
+
+        setStatus('WebSocket 연결 시도 중...');
+      } catch (error) {
+        console.error('Guest token creation failed:', error);
+        setStatus('❌ Guest 토큰 생성 실패: ' + error.message, true);
+        return;
+      }
 
       // Subscribe to connection state for auto-join
       if (unsubscribeConnectionState) {
@@ -340,17 +358,10 @@
       setStatus(isOpen ? '채팅 열림' : '채팅 닫힘');
     });
 
-    // Auto-initialize on load (demo mode - no WebSocket)
+    // Auto-initialize on load (UI only - no WebSocket)
     setTimeout(() => {
-      const userName = document.getElementById('userName').value;
-      const roomId = document.getElementById('roomId').value;
-      const userId = `user-${Date.now()}`;
-
-      useChatStore.getState().setUser(userId, userName);
-      useChatStore.getState().setRoomId(roomId);
       useChatStore.getState().setIsOpen(true);
-
-      setStatus('✅ 채팅 UI 로드 완료 (오프라인 모드)');
+      setStatus('✅ 채팅 UI 로드 완료 - "WebSocket 연결" 버튼을 클릭하세요');
     }, 500);
 
     console.log('✅ Chat UI Demo initialized');

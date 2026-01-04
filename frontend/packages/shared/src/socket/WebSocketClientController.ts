@@ -346,7 +346,10 @@ export class WebSocketClientController implements IWebSocketClientController {
       console.log('[WebSocketClientController] Sending chat message:', message);
     }
 
-    this.socket.emit('chat:message', { message: message.trim() });
+    this.socket.emit('chat:message', {
+      roomCode: currentRoom,
+      message: message.trim()
+    });
   }
 
   /**

@@ -104,6 +104,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       // Notify client
       client.emit('room:joined', {
+        roomCode: result.room.code,
         room: result.room,
         isHost: result.isHost,
         participants,
@@ -206,9 +207,10 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // Broadcast to all in room (including sender)
       this.server.to(roomCode).emit('chat:message', {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        userId,
+        senderId: userId,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        username,
+        senderName: username,
+        roomId: roomData.room.id,
         message,
         timestamp: new Date(),
       });
