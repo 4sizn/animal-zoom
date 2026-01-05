@@ -3,14 +3,20 @@
  * Pre-room setup screen for host before starting the live session
  */
 
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { Copy, Users, Video, CheckCircle2, Loader2 } from 'lucide-react';
-import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
+import { getInstance as getWebSocketController } from "@animal-zoom/shared/socket";
+import { CheckCircle2, Copy, Loader2, Users, Video } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
 
 export function HostPreview() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -25,14 +31,17 @@ export function HostPreview() {
 
     // Connect to WebSocket if not already connected
     if (!wsController.isConnected()) {
-      console.log('[HostPreview] Connecting to WebSocket...');
+      console.log("[HostPreview] Connecting to WebSocket...");
       wsController.connect();
     }
 
     // Join room when connected
     const connectedSub = wsController.connected$.subscribe(() => {
       if (room?.code) {
-        console.log('[HostPreview] WebSocket connected, joining room:', room.code);
+        console.log(
+          "[HostPreview] WebSocket connected, joining room:",
+          room.code,
+        );
         wsController.joinRoom(room.code);
       }
     });
@@ -45,20 +54,20 @@ export function HostPreview() {
   }, [room?.code]);
 
   useEffect(() => {
-    console.log('[HostPreview] Validation:', {
+    console.log("[HostPreview] Validation:", {
       hasRoom: !!room,
       roomId,
       storeRoomId: room?.id,
       match: room?.id === roomId,
       currentUser: currentUser?.name,
-      isHost: currentUser?.isHost
+      isHost: currentUser?.isHost,
     });
 
     if (!room || room.id !== roomId) {
-      console.log('[HostPreview] Validation FAILED - redirecting to home');
-      navigate('/');
+      console.log("[HostPreview] Validation FAILED - redirecting to home");
+      navigate("/");
     } else {
-      console.log('[HostPreview] Validation PASSED');
+      console.log("[HostPreview] Validation PASSED");
     }
   }, [room, roomId, currentUser, navigate]);
 
@@ -77,15 +86,15 @@ export function HostPreview() {
       await navigator.clipboard.writeText(roomUrl);
       setCopied(true);
       toast({
-        title: 'Link copied!',
-        description: 'Room link has been copied to clipboard',
+        title: "Link copied!",
+        description: "Room link has been copied to clipboard",
       });
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       toast({
-        title: 'Failed to copy',
-        description: 'Please copy the link manually',
-        variant: 'destructive',
+        title: "Failed to copy",
+        description: "Please copy the link manually",
+        variant: "destructive",
       });
     }
   };
@@ -93,8 +102,8 @@ export function HostPreview() {
   const handleStartRoom = () => {
     startRoom();
     toast({
-      title: 'Room started!',
-      description: 'Entering live session...',
+      title: "Room started!",
+      description: "Entering live session...",
     });
     navigate(`/room/${room.id}/session`);
   };
@@ -141,7 +150,7 @@ export function HostPreview() {
                 <Users className="h-4 w-4" />
                 <span className="font-medium">Waiting Room:</span>
                 <span className="text-muted-foreground">
-                  {room.waitingRoomEnabled ? 'Enabled' : 'Disabled'}
+                  {room.waitingRoomEnabled ? "Enabled" : "Disabled"}
                 </span>
               </div>
             </div>
@@ -199,11 +208,7 @@ export function HostPreview() {
                 </>
               )}
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate('/')}
-            >
+            <Button size="lg" variant="outline" onClick={() => navigate("/")}>
               Cancel
             </Button>
           </div>
@@ -223,8 +228,14 @@ export function HostPreview() {
                 Participants wait for your approval
               </p>
             </div>
-            <span className={room.waitingRoomEnabled ? 'text-green-600' : 'text-muted-foreground'}>
-              {room.waitingRoomEnabled ? 'Enabled' : 'Disabled'}
+            <span
+              className={
+                room.waitingRoomEnabled
+                  ? "text-green-600"
+                  : "text-muted-foreground"
+              }
+            >
+              {room.waitingRoomEnabled ? "Enabled" : "Disabled"}
             </span>
           </div>
           <div className="flex items-center justify-between py-2 border-b">

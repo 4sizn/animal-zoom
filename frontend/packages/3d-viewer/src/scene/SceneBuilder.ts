@@ -5,20 +5,20 @@
  */
 
 import {
-  Scene,
-  Mesh,
-  Light,
-  Vector3,
-  StandardMaterial,
+  type AbstractMesh,
+  ArcRotateCamera,
   Color3,
   Color4,
-  HemisphericLight,
-  PointLight,
-  MeshBuilder,
-  SceneLoader,
-  AbstractMesh,
   Engine,
-  ArcRotateCamera,
+  HemisphericLight,
+  type Light,
+  Mesh,
+  MeshBuilder,
+  PointLight,
+  Scene,
+  SceneLoader,
+  StandardMaterial,
+  Vector3,
 } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF"; // Register GLB/GLTF loaders
 import type { CharacterConfig, RoomConfig } from "../resources/ResourceConfig";
@@ -70,7 +70,7 @@ export class SceneBuilder {
       Math.PI / 3,
       5,
       new Vector3(0, 1, 0),
-      this.scene
+      this.scene,
     );
     this.camera.attachControl(canvas, true);
 
@@ -78,7 +78,7 @@ export class SceneBuilder {
     const light = new HemisphericLight(
       "light",
       new Vector3(0, 1, 0),
-      this.scene
+      this.scene,
     );
     light.intensity = 0.7;
 
@@ -121,7 +121,7 @@ export class SceneBuilder {
    */
   static async buildCharacter(
     scene: Scene,
-    config: CharacterConfig
+    config: CharacterConfig,
   ): Promise<CharacterBuildResult> {
     if (!scene) {
       throw new Error("Invalid scene: scene is required");
@@ -140,7 +140,7 @@ export class SceneBuilder {
           "", // Load all meshes
           "", // Base URL (empty for absolute paths)
           config.modelUrl,
-          scene
+          scene,
         );
 
         if (!result.meshes || result.meshes.length === 0) {
@@ -152,7 +152,7 @@ export class SceneBuilder {
 
         // If first mesh is just a transform node, try to find actual geometry
         if (result.meshes.length > 1 && !mesh.getTotalVertices()) {
-          mesh = result.meshes.find(m => m.getTotalVertices() > 0) || mesh;
+          mesh = result.meshes.find((m) => m.getTotalVertices() > 0) || mesh;
         }
 
         // Normalize scale to ensure model is visible
@@ -166,7 +166,9 @@ export class SceneBuilder {
         if (maxDimension > 0) {
           const scaleFactor = targetSize / maxDimension;
           mesh.scaling.scaleInPlace(scaleFactor);
-          console.log(`Normalized model scale: ${scaleFactor.toFixed(3)}x (original size: ${maxDimension.toFixed(2)})`);
+          console.log(
+            `Normalized model scale: ${scaleFactor.toFixed(3)}x (original size: ${maxDimension.toFixed(2)})`,
+          );
         }
 
         // Recalculate bounding box after scaling
@@ -186,12 +188,12 @@ export class SceneBuilder {
             if (m instanceof Mesh && m.getTotalVertices() > 0) {
               const material = new StandardMaterial(
                 `${m.name}_material`,
-                scene
+                scene,
               );
 
               // Apply primary color if available
               if (colors.primary) {
-                const color = this.hexToColor3(colors.primary);
+                const color = SceneBuilder.hexToColor3(colors.primary);
                 material.diffuseColor = color;
               }
 
@@ -200,7 +202,9 @@ export class SceneBuilder {
           });
         }
 
-        console.log(`Successfully loaded model: ${result.meshes.length} meshes`);
+        console.log(
+          `Successfully loaded model: ${result.meshes.length} meshes`,
+        );
 
         return {
           mesh: mesh as Mesh,
@@ -215,7 +219,9 @@ export class SceneBuilder {
 
     // Fallback: Use serialized data or create default sphere
     if (!config.serializedData) {
-      throw new Error("Invalid config: either modelUrl or serializedData is required");
+      throw new Error(
+        "Invalid config: either modelUrl or serializedData is required",
+      );
     }
 
     try {
@@ -234,14 +240,14 @@ export class SceneBuilder {
         mesh = MeshBuilder.CreateSphere(
           meshData.name || "character",
           { diameter, segments: 16 },
-          scene
+          scene,
         );
       } else {
         // For other types or full serialized data, create a sphere as placeholder
         mesh = MeshBuilder.CreateSphere(
           meshData.name || "character",
           { diameter: 2 },
-          scene
+          scene,
         );
       }
 
@@ -250,7 +256,7 @@ export class SceneBuilder {
         mesh.position = new Vector3(
           meshData.position[0] || 0,
           meshData.position[1] || 0,
-          meshData.position[2] || 0
+          meshData.position[2] || 0,
         );
       }
 
@@ -258,7 +264,7 @@ export class SceneBuilder {
         mesh.rotation = new Vector3(
           meshData.rotation[0] || 0,
           meshData.rotation[1] || 0,
-          meshData.rotation[2] || 0
+          meshData.rotation[2] || 0,
         );
       }
 
@@ -266,7 +272,7 @@ export class SceneBuilder {
         mesh.scaling = new Vector3(
           meshData.scaling[0] || 1,
           meshData.scaling[1] || 1,
-          meshData.scaling[2] || 1
+          meshData.scaling[2] || 1,
         );
       }
 
@@ -275,7 +281,7 @@ export class SceneBuilder {
         const materialData = config.serializedData.material;
         const material = new StandardMaterial(
           materialData.name || `${mesh.name}_material`,
-          scene
+          scene,
         );
 
         // Apply diffuse color from serialized data
@@ -283,7 +289,7 @@ export class SceneBuilder {
           material.diffuseColor = new Color3(
             materialData.diffuseColor[0],
             materialData.diffuseColor[1],
-            materialData.diffuseColor[2]
+            materialData.diffuseColor[2],
           );
         }
 
@@ -292,15 +298,14 @@ export class SceneBuilder {
 
       // Apply customization (colors, materials) - overrides serializedData
       if (config.customization?.colors) {
-        const material = mesh.material as StandardMaterial || new StandardMaterial(
-          `${mesh.name}_material`,
-          scene
-        );
+        const material =
+          (mesh.material as StandardMaterial) ||
+          new StandardMaterial(`${mesh.name}_material`, scene);
 
         // Apply primary color if available
         if (config.customization.colors.primary) {
-          const color = this.hexToColor3(
-            config.customization.colors.primary
+          const color = SceneBuilder.hexToColor3(
+            config.customization.colors.primary,
           );
           material.diffuseColor = color;
         }
@@ -361,18 +366,18 @@ export class SceneBuilder {
             mesh = MeshBuilder.CreateGround(
               meshData.name || "ground",
               { width, height },
-              scene
+              scene,
             );
 
             // Apply floor material if available
             if (config.environment?.floorMaterial) {
               const material = new StandardMaterial(
                 `${mesh.name}_material`,
-                scene
+                scene,
               );
               if (config.environment.floorMaterial.color) {
-                material.diffuseColor = this.hexToColor3(
-                  config.environment.floorMaterial.color
+                material.diffuseColor = SceneBuilder.hexToColor3(
+                  config.environment.floorMaterial.color,
                 );
               }
               mesh.material = material;
@@ -382,7 +387,7 @@ export class SceneBuilder {
             mesh = MeshBuilder.CreateBox(
               meshData.name || "mesh",
               { size: 1 },
-              scene
+              scene,
             );
           }
 
@@ -392,9 +397,9 @@ export class SceneBuilder {
 
       // Apply lighting preset
       if (config.lighting?.preset) {
-        const presetLights = this.createLightingPreset(
+        const presetLights = SceneBuilder.createLightingPreset(
           scene,
-          config.lighting.preset
+          config.lighting.preset,
         );
         lights.push(...presetLights);
       }
@@ -410,9 +415,9 @@ export class SceneBuilder {
               new Vector3(
                 lightData.position?.[0] || 0,
                 lightData.position?.[1] || 5,
-                lightData.position?.[2] || 0
+                lightData.position?.[2] || 0,
               ),
-              scene
+              scene,
             );
             light.intensity = lightData.intensity || 1.0;
           } else {
@@ -420,7 +425,7 @@ export class SceneBuilder {
             light = new HemisphericLight(
               lightData.name || "light",
               new Vector3(0, 1, 0),
-              scene
+              scene,
             );
             light.intensity = lightData.intensity || 0.7;
           }
@@ -434,7 +439,7 @@ export class SceneBuilder {
         const defaultLight = new HemisphericLight(
           "defaultLight",
           new Vector3(0, 1, 0),
-          scene
+          scene,
         );
         defaultLight.intensity = 0.7;
         lights.push(defaultLight);
@@ -457,58 +462,62 @@ export class SceneBuilder {
     const lights: Light[] = [];
 
     switch (preset) {
-      case "bright":
+      case "bright": {
         // Bright preset: strong hemispheric light
         const brightLight = new HemisphericLight(
           "brightLight",
           new Vector3(0, 1, 0),
-          scene
+          scene,
         );
         brightLight.intensity = 1.2;
         lights.push(brightLight);
         break;
+      }
 
-      case "dim":
+      case "dim": {
         // Dim preset: low intensity light
         const dimLight = new HemisphericLight(
           "dimLight",
           new Vector3(0, 1, 0),
-          scene
+          scene,
         );
         dimLight.intensity = 0.4;
         lights.push(dimLight);
         break;
+      }
 
-      case "dramatic":
+      case "dramatic": {
         // Dramatic preset: directional with strong shadows
         const dramaticMain = new HemisphericLight(
           "dramaticMain",
           new Vector3(1, 1, 0),
-          scene
+          scene,
         );
         dramaticMain.intensity = 0.8;
 
         const dramaticFill = new PointLight(
           "dramaticFill",
           new Vector3(-5, 3, -5),
-          scene
+          scene,
         );
         dramaticFill.intensity = 0.3;
 
         lights.push(dramaticMain, dramaticFill);
         break;
+      }
 
       case "default":
-      default:
+      default: {
         // Default preset: standard hemispheric
         const defaultLight = new HemisphericLight(
           "defaultLight",
           new Vector3(0, 1, 0),
-          scene
+          scene,
         );
         defaultLight.intensity = 0.7;
         lights.push(defaultLight);
         break;
+      }
     }
 
     return lights;
@@ -532,4 +541,3 @@ export class SceneBuilder {
     return new Color3(r, g, b);
   }
 }
-

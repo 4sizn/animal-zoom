@@ -3,26 +3,21 @@
  * 실시간 통신을 위한 Socket.io 이벤트 타입 정의
  */
 
-import type {
-  User,
-  Participant,
-  AvatarConfig,
-  RoomConfig,
-} from '../api/types';
+import type { AvatarConfig, Participant, RoomConfig, User } from "../api/types";
 
 // ==================== Client -> Server Events ====================
 
 export interface ClientEvents {
   // Room Events
-  'room:join': (data: { roomCode: string }) => void;
-  'room:leave': () => void;
+  "room:join": (data: { roomCode: string }) => void;
+  "room:leave": () => void;
 
   // Chat Events
-  'chat:message': (data: { message: string }) => void;
+  "chat:message": (data: { message: string }) => void;
 
   // State Events
-  'state:update': (data: StateUpdateData) => void;
-  'avatar:update': (data: AvatarConfig) => void;
+  "state:update": (data: StateUpdateData) => void;
+  "avatar:update": (data: AvatarConfig) => void;
 }
 
 export interface StateUpdateData {
@@ -35,22 +30,22 @@ export interface StateUpdateData {
 
 export interface ServerEvents {
   // Connection Events
-  'connect': () => void;
-  'disconnect': (reason: string) => void;
-  'error': (error: Error) => void;
+  connect: () => void;
+  disconnect: (reason: string) => void;
+  error: (error: Error) => void;
 
   // Room Events
-  'room:joined': (data: RoomJoinedData) => void;
-  'user:joined': (data: UserJoinedData) => void;
-  'user:left': (data: UserLeftData) => void;
-  'room:updated': (data: RoomUpdatedData) => void;
+  "room:joined": (data: RoomJoinedData) => void;
+  "user:joined": (data: UserJoinedData) => void;
+  "user:left": (data: UserLeftData) => void;
+  "room:updated": (data: RoomUpdatedData) => void;
 
   // Chat Events
-  'chat:message': (data: ChatMessageData) => void;
+  "chat:message": (data: ChatMessageData) => void;
 
   // State Events
-  'state:update': (data: StateUpdateEventData) => void;
-  'avatar:updated': (data: AvatarUpdatedData) => void;
+  "state:update": (data: StateUpdateEventData) => void;
+  "avatar:updated": (data: AvatarUpdatedData) => void;
 }
 
 // ==================== Event Data Types ====================

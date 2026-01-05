@@ -2,15 +2,13 @@
  * MessageInput - Input field for sending messages with mention support
  */
 
-import React, { useState, useRef, useEffect } from 'react';
-import { useChatStore } from '../store/chatStore';
-import { EmojiPicker } from './EmojiPicker';
-import { MentionSuggestions } from './MentionSuggestions';
-import {
-  getMentionSuggestions,
-  completeMention,
-} from '../utils/mentionParser';
-import type { ChatMessage } from '@animal-zoom/shared/types';
+import type { ChatMessage } from "@animal-zoom/shared/types";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
+import { useChatStore } from "../store/chatStore";
+import { completeMention, getMentionSuggestions } from "../utils/mentionParser";
+import { EmojiPicker } from "./EmojiPicker";
+import { MentionSuggestions } from "./MentionSuggestions";
 
 export const MessageInput: React.FC = () => {
   const { inputValue, setInputValue, addMessage, roomId, userId, userName } =
@@ -23,7 +21,7 @@ export const MessageInput: React.FC = () => {
 
   // Get list of available users from recent messages
   const availableUsers = Array.from(
-    new Set(messages.map((msg) => msg.userName))
+    new Set(messages.map((msg) => msg.userName)),
   ).filter((name) => name !== userName);
 
   // Update mention suggestions when input changes
@@ -34,12 +32,12 @@ export const MessageInput: React.FC = () => {
     const suggestions = getMentionSuggestions(
       inputValue,
       cursorPosition,
-      availableUsers
+      availableUsers,
     );
 
     setMentionSuggestions(suggestions);
     setSelectedSuggestionIndex(0);
-  }, [inputValue, availableUsers.join(',')]);
+  }, [inputValue, availableUsers.join(",")]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,14 +47,14 @@ export const MessageInput: React.FC = () => {
 
     if (!inputValue.trim()) return;
     if (!roomId || !userId || !userName) {
-      console.warn('Cannot send message: missing room or user info');
+      console.warn("Cannot send message: missing room or user info");
       return;
     }
 
     // Send via WebSocket if connected, otherwise add locally
-    if (connectionState === 'connected') {
+    if (connectionState === "connected") {
       sendMessage(inputValue.trim());
-      setInputValue('');
+      setInputValue("");
     } else {
       // Fallback: add message locally for demo mode
       const message: ChatMessage = {
@@ -66,32 +64,32 @@ export const MessageInput: React.FC = () => {
         userName,
         message: inputValue.trim(),
         timestamp: new Date(),
-        type: 'text',
+        type: "text",
       };
 
       addMessage(message);
-      setInputValue('');
+      setInputValue("");
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     // Handle mention suggestion navigation
     if (mentionSuggestions.length > 0) {
-      if (e.key === 'ArrowDown') {
+      if (e.key === "ArrowDown") {
         e.preventDefault();
         setSelectedSuggestionIndex((prev) =>
-          Math.min(prev + 1, mentionSuggestions.length - 1)
+          Math.min(prev + 1, mentionSuggestions.length - 1),
         );
         return;
       }
 
-      if (e.key === 'ArrowUp') {
+      if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedSuggestionIndex((prev) => Math.max(prev - 1, 0));
         return;
       }
 
-      if (e.key === 'Tab' || e.key === 'Enter') {
+      if (e.key === "Tab" || e.key === "Enter") {
         if (mentionSuggestions[selectedSuggestionIndex]) {
           e.preventDefault();
           handleMentionSelect(mentionSuggestions[selectedSuggestionIndex]);
@@ -99,14 +97,14 @@ export const MessageInput: React.FC = () => {
         }
       }
 
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setMentionSuggestions([]);
         return;
       }
     }
 
     // Normal Enter to send (if no suggestions active)
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -119,7 +117,7 @@ export const MessageInput: React.FC = () => {
     const { text, newCursorPosition } = completeMention(
       inputValue,
       cursorPosition,
-      username
+      username,
     );
 
     setInputValue(text);
@@ -128,7 +126,10 @@ export const MessageInput: React.FC = () => {
     // Set cursor position after React updates
     setTimeout(() => {
       if (inputRef.current) {
-        inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition);
+        inputRef.current.setSelectionRange(
+          newCursorPosition,
+          newCursorPosition,
+        );
         inputRef.current.focus();
       }
     }, 0);
@@ -142,7 +143,7 @@ export const MessageInput: React.FC = () => {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: "relative" }}>
       {showEmojiPicker && (
         <EmojiPicker
           onEmojiSelect={handleEmojiSelect}

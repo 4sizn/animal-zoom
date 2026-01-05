@@ -5,8 +5,8 @@
  * with graceful error handling and corruption recovery.
  */
 
-import type { ParticipantResourceConfig } from "./ResourceConfig";
 import type { IResourceStorage } from "./IResourceStorage";
+import type { ParticipantResourceConfig } from "./ResourceConfig";
 
 /**
  * Manages storage and retrieval of participant resource configurations using LocalStorage.
@@ -37,7 +37,7 @@ export class ResourceStorage implements IResourceStorage {
       localStorage.setItem(key, serialized);
     } catch (error) {
       throw new Error(
-        `Failed to save config for ${config.participantId}: ${error}`
+        `Failed to save config for ${config.participantId}: ${error}`,
       );
     }
   }
@@ -62,7 +62,7 @@ export class ResourceStorage implements IResourceStorage {
       // Return null for corrupted data
       console.warn(
         `Failed to load config for ${participantId}, returning null:`,
-        error
+        error,
       );
       return null;
     }

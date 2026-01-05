@@ -1,6 +1,6 @@
-import { describe, expect, test, beforeEach, afterEach } from "bun:test";
-import { ResourceStorage } from "../ResourceStorage";
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import type { ParticipantResourceConfig } from "../ResourceConfig";
+import { ResourceStorage } from "../ResourceStorage";
 
 describe("ResourceStorage", () => {
   let storage: ResourceStorage;

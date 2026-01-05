@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { NewRoomDialog } from '@/components/NewRoomDialog';
-import { Video, LogIn } from 'lucide-react';
+import { LogIn, Video } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { NewRoomDialog } from "@/components/NewRoomDialog";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export function Dashboard() {
   const [showNewRoomDialog, setShowNewRoomDialog] = useState(false);
   const navigate = useNavigate();
 
   const handleJoinRoom = () => {
-    navigate('/join');
+    navigate("/join");
   };
 
   return (

@@ -13,9 +13,9 @@ export interface AssetCatalogApi {
  */
 export const assetCatalogApi: AssetCatalogApi = {
   async getAssetUrl(key: string): Promise<{ url: string }> {
-    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
     return {
-      url: `${apiBaseUrl}/assets/${encodeURIComponent(key)}`
+      url: `${apiBaseUrl}/assets/${encodeURIComponent(key)}`,
     };
-  }
+  },
 };

@@ -3,20 +3,20 @@
  * Main room view with 3D viewer and participant management
  */
 
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { useParticipantSync } from '@/hooks/useParticipantSync';
-import { ViewerArea } from '@/components/ViewerArea';
-import { WaitingRoomPanel } from '@/components/WaitingRoomPanel';
-import { ControlBar } from '@/components/ControlBar';
-import { ChatSidebar } from '@/components/ChatSidebar';
-import { ParticipantListSidebar } from '@/components/ParticipantListSidebar';
-import { SettingsModal } from '@/components/SettingsModal';
-import { LeaveConfirmDialog, EndRoomDialog } from '@/components/ConfirmDialogs';
-import { Loader2 } from 'lucide-react';
-import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
+import { getInstance as getWebSocketController } from "@animal-zoom/shared/socket";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ChatSidebar } from "@/components/ChatSidebar";
+import { EndRoomDialog, LeaveConfirmDialog } from "@/components/ConfirmDialogs";
+import { ControlBar } from "@/components/ControlBar";
+import { ParticipantListSidebar } from "@/components/ParticipantListSidebar";
+import { SettingsModal } from "@/components/SettingsModal";
+import { ViewerArea } from "@/components/ViewerArea";
+import { WaitingRoomPanel } from "@/components/WaitingRoomPanel";
+import { useToast } from "@/hooks/use-toast";
+import { useParticipantSync } from "@/hooks/useParticipantSync";
+import { useRoomStore } from "@/stores/roomStore";
 
 export function LiveSession() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -38,21 +38,24 @@ export function LiveSession() {
 
     const wsController = getWebSocketController();
 
-    console.log('[LiveSession] Checking WebSocket connection...');
+    console.log("[LiveSession] Checking WebSocket connection...");
 
     // Connect to WebSocket if not already connected
     if (!wsController.isConnected()) {
-      console.log('[LiveSession] Connecting to WebSocket...');
+      console.log("[LiveSession] Connecting to WebSocket...");
       wsController.connect();
     } else {
       // Already connected, join room immediately
-      console.log('[LiveSession] Already connected, joining room:', room.code);
+      console.log("[LiveSession] Already connected, joining room:", room.code);
       wsController.joinRoom(room.code);
     }
 
     // Join room when connected
     const connectedSub = wsController.connected$.subscribe(() => {
-      console.log('[LiveSession] WebSocket connected, joining room:', room.code);
+      console.log(
+        "[LiveSession] WebSocket connected, joining room:",
+        room.code,
+      );
       wsController.joinRoom(room.code);
     });
 
@@ -67,24 +70,24 @@ export function LiveSession() {
 
   useEffect(() => {
     if (!room || room.id !== roomId) {
-      navigate('/');
+      navigate("/");
       return;
     }
 
-    if (room.state !== 'LIVE') {
+    if (room.state !== "LIVE") {
       navigate(`/room/${roomId}/host-preview`);
       return;
     }
 
-    if (currentUser?.joinState !== 'JOINED') {
+    if (currentUser?.joinState !== "JOINED") {
       navigate(`/room/${roomId}/participant-preview`);
     }
   }, [room, roomId, currentUser, navigate]);
 
   // Handle room end
   useEffect(() => {
-    if (room?.state === 'ENDED') {
-      navigate('/');
+    if (room?.state === "ENDED") {
+      navigate("/");
     }
   }, [room?.state, navigate]);
 
@@ -114,11 +117,15 @@ export function LiveSession() {
             <h2 className="font-semibold text-sm">{room.title}</h2>
             {room.code && (
               <p className="text-xs text-muted-foreground font-mono">
-                Room Code: <span className="font-semibold text-foreground">{room.code}</span>
+                Room Code:{" "}
+                <span className="font-semibold text-foreground">
+                  {room.code}
+                </span>
               </p>
             )}
             <p className="text-xs text-muted-foreground">
-              {participants.length} {participants.length === 1 ? 'participant' : 'participants'}
+              {participants.length}{" "}
+              {participants.length === 1 ? "participant" : "participants"}
             </p>
           </div>
         </div>
@@ -133,7 +140,9 @@ export function LiveSession() {
         {/* Right Sidebar - Participants List */}
         {showParticipants && (
           <div className="w-80 border-l bg-background overflow-hidden">
-            <ParticipantListSidebar onClose={() => setShowParticipants(false)} />
+            <ParticipantListSidebar
+              onClose={() => setShowParticipants(false)}
+            />
           </div>
         )}
 
@@ -166,20 +175,14 @@ export function LiveSession() {
       />
 
       {/* Modals and Dialogs */}
-      <SettingsModal
-        open={showSettings}
-        onOpenChange={setShowSettings}
-      />
+      <SettingsModal open={showSettings} onOpenChange={setShowSettings} />
 
       <LeaveConfirmDialog
         open={showLeaveDialog}
         onOpenChange={setShowLeaveDialog}
       />
 
-      <EndRoomDialog
-        open={showEndDialog}
-        onOpenChange={setShowEndDialog}
-      />
+      <EndRoomDialog open={showEndDialog} onOpenChange={setShowEndDialog} />
     </div>
   );
 }

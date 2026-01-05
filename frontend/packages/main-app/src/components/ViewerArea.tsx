@@ -3,12 +3,18 @@
  * Wrapper for @animal-zoom/3d-viewer integration with Babylon.js
  */
 
-import { useRef, useEffect, useState } from 'react';
-import { ParticipantInfo } from '@/types/room';
-import { use3DParticipants } from '@/hooks/use3DParticipants';
-import { AlertCircle } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SceneBuilder } from '@animal-zoom/3d-viewer';
+import { SceneBuilder } from "@animal-zoom/3d-viewer";
+import { AlertCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { use3DParticipants } from "@/hooks/use3DParticipants";
+import type { ParticipantInfo } from "@/types/room";
 
 interface ViewerAreaProps {
   participants: ParticipantInfo[];
@@ -24,34 +30,38 @@ export function ViewerArea({ participants, currentUserId }: ViewerAreaProps) {
 
   // Check WebGL support
   useEffect(() => {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    const canvas = document.createElement("canvas");
+    const gl =
+      canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
     if (!gl) {
       setWebGLSupported(false);
-      setError('WebGL is not supported in your browser. 3D viewer requires WebGL.');
+      setError(
+        "WebGL is not supported in your browser. 3D viewer requires WebGL.",
+      );
     }
   }, []);
 
   // Initialize 3D scene with SceneBuilder
   useEffect(() => {
-    if (!canvasRef.current || !webGLSupported || sceneBuilderRef.current) return;
+    if (!canvasRef.current || !webGLSupported || sceneBuilderRef.current)
+      return;
 
-    console.log('[ViewerArea] Initializing 3D viewer with SceneBuilder...');
+    console.log("[ViewerArea] Initializing 3D viewer with SceneBuilder...");
 
     try {
       // Create SceneBuilder instance
       const sceneBuilder = new SceneBuilder(canvasRef.current);
       sceneBuilderRef.current = sceneBuilder;
 
-      console.log('[ViewerArea] 3D viewer initialized successfully');
+      console.log("[ViewerArea] 3D viewer initialized successfully");
     } catch (err) {
-      console.error('[ViewerArea] Failed to initialize 3D viewer:', err);
-      setError('Failed to initialize 3D viewer');
+      console.error("[ViewerArea] Failed to initialize 3D viewer:", err);
+      setError("Failed to initialize 3D viewer");
     }
 
     return () => {
       if (sceneBuilderRef.current) {
-        console.log('[ViewerArea] Disposing SceneBuilder');
+        console.log("[ViewerArea] Disposing SceneBuilder");
         sceneBuilderRef.current.dispose();
         sceneBuilderRef.current = null;
       }
@@ -70,9 +80,9 @@ export function ViewerArea({ participants, currentUserId }: ViewerAreaProps) {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -87,7 +97,8 @@ export function ViewerArea({ participants, currentUserId }: ViewerAreaProps) {
               WebGL Not Supported
             </CardTitle>
             <CardDescription>
-              Your browser doesn't support WebGL, which is required for the 3D viewer.
+              Your browser doesn't support WebGL, which is required for the 3D
+              viewer.
             </CardDescription>
           </CardHeader>
           <CardContent>

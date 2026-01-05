@@ -3,10 +3,10 @@
  * Manages chat messages, participants, and UI state with WebSocket integration
  */
 
-import { create } from 'zustand';
-import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
-import type { ChatMessage } from '@animal-zoom/shared/types';
-import type { ConnectionState } from '@animal-zoom/shared/socket';
+import type { ConnectionState } from "@animal-zoom/shared/socket";
+import { getInstance as getWebSocketController } from "@animal-zoom/shared/socket";
+import type { ChatMessage } from "@animal-zoom/shared/types";
+import { create } from "zustand";
 
 // Use the shared singleton WebSocket controller instance
 const wsController = getWebSocketController({
@@ -70,7 +70,7 @@ export const useChatStore = create<ChatState>((set) => ({
   toggleChat: () => set((state) => ({ isOpen: !state.isOpen })),
 
   // Input
-  inputValue: '',
+  inputValue: "",
   setInputValue: (inputValue) => set({ inputValue }),
 
   // Room info
@@ -83,7 +83,7 @@ export const useChatStore = create<ChatState>((set) => ({
   setUser: (userId, userName) => set({ userId, userName }),
 
   // WebSocket
-  connectionState: 'disconnected',
+  connectionState: "disconnected",
 
   connectWebSocket: () => {
     wsController.connect();
@@ -111,13 +111,13 @@ export const useChatStore = create<ChatState>((set) => ({
 
       // Require user info
       if (!userId || !userName) {
-        console.warn('Cannot add reaction: user info missing');
+        console.warn("Cannot add reaction: user info missing");
         return state;
       }
 
       // Validate emoji
-      if (!emoji || typeof emoji !== 'string') {
-        console.warn('Cannot add reaction: invalid emoji');
+      if (!emoji || typeof emoji !== "string") {
+        console.warn("Cannot add reaction: invalid emoji");
         return state;
       }
 
@@ -128,7 +128,7 @@ export const useChatStore = create<ChatState>((set) => ({
 
         // Check if user already reacted with this emoji
         const hasReacted = reactions.some(
-          (r) => r.userId === userId && r.emoji === emoji
+          (r) => r.userId === userId && r.emoji === emoji,
         );
 
         if (hasReacted) {
@@ -137,7 +137,7 @@ export const useChatStore = create<ChatState>((set) => ({
 
         // Check max reactions limit
         if (reactions.length >= state.MAX_REACTIONS_PER_MESSAGE) {
-          console.warn('Cannot add reaction: max reactions reached');
+          console.warn("Cannot add reaction: max reactions reached");
           return msg;
         }
 
@@ -164,7 +164,7 @@ export const useChatStore = create<ChatState>((set) => ({
       const { userId } = state;
 
       if (!userId) {
-        console.warn('Cannot remove reaction: user info missing');
+        console.warn("Cannot remove reaction: user info missing");
         return state;
       }
 
@@ -172,7 +172,7 @@ export const useChatStore = create<ChatState>((set) => ({
         if (msg.id !== messageId) return msg;
 
         const reactions = (msg.reactions || []).filter(
-          (r) => !(r.userId === userId && r.emoji === emoji)
+          (r) => !(r.userId === userId && r.emoji === emoji),
         );
 
         return {
@@ -226,7 +226,7 @@ export const useChatStore = create<ChatState>((set) => ({
     }
 
     return message.reactions.some(
-      (r) => r.userId === userId && r.emoji === emoji
+      (r) => r.userId === userId && r.emoji === emoji,
     );
   },
 }));
@@ -238,7 +238,7 @@ wsController.connectionState$.subscribe((state: ConnectionState) => {
 
 // Handle room joined - load message history
 wsController.roomJoined$.subscribe((data: any) => {
-  console.log('[ChatStore] Room joined, loading message history');
+  console.log("[ChatStore] Room joined, loading message history");
 
   // Clear existing messages
   useChatStore.getState().clearMessages();
@@ -249,14 +249,14 @@ wsController.roomJoined$.subscribe((data: any) => {
       id: msg.id,
       roomId: msg.roomId,
       userId: msg.userId,
-      userName: msg.username || 'Unknown User',
+      userName: msg.username || "Unknown User",
       message: msg.content,
       timestamp: new Date(msg.createdAt),
-      type: 'text',
+      type: "text",
     }));
 
     // Add all historical messages
-    messages.forEach(msg => useChatStore.getState().addMessage(msg));
+    messages.forEach((msg) => useChatStore.getState().addMessage(msg));
 
     console.log(`[ChatStore] Loaded ${messages.length} historical messages`);
   }
@@ -266,12 +266,12 @@ wsController.roomJoined$.subscribe((data: any) => {
 wsController.chatMessage$.subscribe((data: any) => {
   const message: ChatMessage = {
     id: `${Date.now()}-${Math.random()}`,
-    roomId: data.roomId || useChatStore.getState().roomId || '',
+    roomId: data.roomId || useChatStore.getState().roomId || "",
     userId: data.senderId,
     userName: data.senderName,
     message: data.message,
     timestamp: new Date(data.timestamp || Date.now()),
-    type: 'text',
+    type: "text",
   };
 
   useChatStore.getState().addMessage(message);

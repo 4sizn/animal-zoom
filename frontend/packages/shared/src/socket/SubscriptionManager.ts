@@ -3,7 +3,7 @@
  * Centralized subscription tracking and management for memory leak prevention
  */
 
-import type { Subscription } from 'rxjs';
+import type { Subscription } from "rxjs";
 
 /**
  * SubscriptionManager Class
@@ -42,18 +42,24 @@ export class SubscriptionManager {
    * );
    * ```
    */
-  public add(subscription: Subscription | null | undefined): Subscription | null | undefined {
+  public add(
+    subscription: Subscription | null | undefined,
+  ): Subscription | null | undefined {
     if (!subscription) {
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.warn('[SubscriptionManager] Attempted to add null/undefined subscription');
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.warn(
+          "[SubscriptionManager] Attempted to add null/undefined subscription",
+        );
       }
       return subscription;
     }
 
     this.subscriptions.add(subscription);
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log(`[SubscriptionManager] Added subscription (total: ${this.subscriptions.size})`);
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log(
+        `[SubscriptionManager] Added subscription (total: ${this.subscriptions.size})`,
+      );
     }
 
     return subscription;
@@ -78,8 +84,10 @@ export class SubscriptionManager {
   public remove(subscription: Subscription): boolean {
     const removed = this.subscriptions.delete(subscription);
 
-    if (removed && import.meta.env.VITE_DEBUG === 'true') {
-      console.log(`[SubscriptionManager] Removed subscription (total: ${this.subscriptions.size})`);
+    if (removed && import.meta.env.VITE_DEBUG === "true") {
+      console.log(
+        `[SubscriptionManager] Removed subscription (total: ${this.subscriptions.size})`,
+      );
     }
 
     return removed;
@@ -107,8 +115,10 @@ export class SubscriptionManager {
       return;
     }
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log(`[SubscriptionManager] Unsubscribing ${count} subscription(s)...`);
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log(
+        `[SubscriptionManager] Unsubscribing ${count} subscription(s)...`,
+      );
     }
 
     let errorCount = 0;
@@ -121,7 +131,7 @@ export class SubscriptionManager {
         }
       } catch (error) {
         errorCount++;
-        console.error('[SubscriptionManager] Error unsubscribing:', error);
+        console.error("[SubscriptionManager] Error unsubscribing:", error);
         // Continue unsubscribing other subscriptions even if one fails
       }
     }
@@ -129,13 +139,15 @@ export class SubscriptionManager {
     // Clear the set
     this.subscriptions.clear();
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
+    if (import.meta.env.VITE_DEBUG === "true") {
       if (errorCount > 0) {
         console.warn(
-          `[SubscriptionManager] Unsubscribed with ${errorCount} error(s)`
+          `[SubscriptionManager] Unsubscribed with ${errorCount} error(s)`,
         );
       } else {
-        console.log('[SubscriptionManager] All subscriptions unsubscribed successfully');
+        console.log(
+          "[SubscriptionManager] All subscriptions unsubscribed successfully",
+        );
       }
     }
   }

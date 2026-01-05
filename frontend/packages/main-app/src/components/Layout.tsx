@@ -1,8 +1,8 @@
-import { Outlet, Link } from 'react-router-dom';
-import { Toaster } from './ui/toaster';
-import { DebugPanel } from '@animal-zoom/shared';
-import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
-import { useRoomStore } from '@/stores/roomStore';
+import { DebugPanel } from "@animal-zoom/shared";
+import { getInstance as getWebSocketController } from "@animal-zoom/shared/socket";
+import { Link, Outlet } from "react-router-dom";
+import { useRoomStore } from "@/stores/roomStore";
+import { Toaster } from "./ui/toaster";
 
 export function Layout() {
   // Get current user ID from store (may be undefined)

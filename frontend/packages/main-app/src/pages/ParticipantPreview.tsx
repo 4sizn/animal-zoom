@@ -3,20 +3,27 @@
  * Pre-join screen for participants showing room info
  */
 
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2, Users, Video, Clock } from 'lucide-react';
-import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
+import { getInstance as getWebSocketController } from "@animal-zoom/shared/socket";
+import { Clock, Loader2, Users, Video } from "lucide-react";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
 
 export function ParticipantPreview() {
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { room, currentUser, participants, updateUserJoinState } = useRoomStore();
+  const { room, currentUser, participants, updateUserJoinState } =
+    useRoomStore();
 
   // Connect to WebSocket when entering preview (but don't sync yet)
   useEffect(() => {
@@ -24,14 +31,17 @@ export function ParticipantPreview() {
 
     // Connect to WebSocket if not already connected
     if (!wsController.isConnected()) {
-      console.log('[ParticipantPreview] Connecting to WebSocket...');
+      console.log("[ParticipantPreview] Connecting to WebSocket...");
       wsController.connect();
     }
 
     // Join room when connected
     const connectedSub = wsController.connected$.subscribe(() => {
       if (room?.code) {
-        console.log('[ParticipantPreview] WebSocket connected, joining room:', room.code);
+        console.log(
+          "[ParticipantPreview] WebSocket connected, joining room:",
+          room.code,
+        );
         wsController.joinRoom(room.code);
       }
     });
@@ -45,7 +55,7 @@ export function ParticipantPreview() {
 
   useEffect(() => {
     if (!room || room.id !== roomId) {
-      navigate('/join');
+      navigate("/join");
     }
   }, [room, roomId, navigate]);
 
@@ -60,18 +70,18 @@ export function ParticipantPreview() {
   const handleJoinRoom = () => {
     if (room.waitingRoomEnabled) {
       // Go to waiting room
-      updateUserJoinState('WAITING');
+      updateUserJoinState("WAITING");
       toast({
-        title: 'Entering waiting room',
-        description: 'Please wait for the host to admit you',
+        title: "Entering waiting room",
+        description: "Please wait for the host to admit you",
       });
       navigate(`/room/${room.id}/waiting`);
     } else {
       // Join directly
-      updateUserJoinState('JOINED');
+      updateUserJoinState("JOINED");
       toast({
-        title: 'Joining room',
-        description: 'Entering live session...',
+        title: "Joining room",
+        description: "Entering live session...",
       });
       navigate(`/room/${room.id}/session`);
     }
@@ -82,9 +92,7 @@ export function ParticipantPreview() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">{room.title}</h1>
-        <p className="text-muted-foreground">
-          You're about to join this room
-        </p>
+        <p className="text-muted-foreground">You're about to join this room</p>
       </div>
 
       {/* Main Preview Card */}
@@ -100,11 +108,10 @@ export function ParticipantPreview() {
           <div className="relative aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg flex items-center justify-center">
             <div className="text-center space-y-2">
               <Video className="h-16 w-16 mx-auto text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
-                3D viewer preview
-              </p>
+              <p className="text-sm text-muted-foreground">3D viewer preview</p>
               <p className="text-xs text-muted-foreground">
-                You'll join as: <span className="font-semibold">{currentUser.name}</span>
+                You'll join as:{" "}
+                <span className="font-semibold">{currentUser.name}</span>
               </p>
             </div>
           </div>
@@ -116,7 +123,9 @@ export function ParticipantPreview() {
                 <Users className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Host</p>
-                  <p className="text-sm text-muted-foreground">{room.hostName}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {room.hostName}
+                  </p>
                 </div>
               </div>
 
@@ -142,7 +151,8 @@ export function ParticipantPreview() {
               <div>
                 <p className="text-sm font-medium mb-1">Participants</p>
                 <p className="text-sm text-muted-foreground">
-                  {participants.length} {participants.length === 1 ? 'person' : 'people'} in room
+                  {participants.length}{" "}
+                  {participants.length === 1 ? "person" : "people"} in room
                 </p>
               </div>
             </div>
@@ -167,18 +177,14 @@ export function ParticipantPreview() {
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4">
-            <Button
-              size="lg"
-              onClick={handleJoinRoom}
-              className="flex-1"
-            >
+            <Button size="lg" onClick={handleJoinRoom} className="flex-1">
               <Video className="mr-2 h-4 w-4" />
-              {room.waitingRoomEnabled ? 'Join Waiting Room' : 'Join Room'}
+              {room.waitingRoomEnabled ? "Join Waiting Room" : "Join Room"}
             </Button>
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate('/join')}
+              onClick={() => navigate("/join")}
             >
               Cancel
             </Button>

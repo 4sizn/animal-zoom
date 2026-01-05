@@ -26,7 +26,7 @@ export interface User {
   id: string;
   email?: string;
   displayName: string;
-  type: 'registered' | 'guest';
+  type: "registered" | "guest";
   avatarCustomization?: AvatarConfig;
   createdAt: string;
   updatedAt: string;
@@ -58,7 +58,7 @@ export interface Room {
   id: string;
   code: string;
   name?: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   currentParticipants: number;
   maxParticipants: number;
   customization?: RoomConfig;
@@ -81,7 +81,7 @@ export interface Participant {
   userId: string;
   roomId: string;
   displayName: string;
-  role: 'host' | 'participant';
+  role: "host" | "participant";
   isActive: boolean;
   joinedAt: string;
   leftAt?: string;
@@ -129,30 +129,30 @@ export interface ResourceModel {
   id: string;
   name: string;
   url: string;
-  type: 'character' | 'room' | 'accessory';
+  type: "character" | "room" | "accessory";
   size: number;
   createdAt: string;
 }
 
 export interface UploadResourceRequest {
   file: File;
-  type: 'character' | 'room' | 'accessory';
+  type: "character" | "room" | "accessory";
 }
 
 // ==================== Asset Catalog Types ====================
 
 export enum AssetType {
-  AVATAR = 'avatar',
-  ROOM = 'room',
-  ACCESSORY = 'accessory',
-  FURNITURE = 'furniture',
-  PROP = 'prop',
+  AVATAR = "avatar",
+  ROOM = "room",
+  ACCESSORY = "accessory",
+  FURNITURE = "furniture",
+  PROP = "prop",
 }
 
 export enum AssetStatus {
-  ACTIVE = 'active',
-  DEPRECATED = 'deprecated',
-  PENDING = 'pending',
+  ACTIVE = "active",
+  DEPRECATED = "deprecated",
+  PENDING = "pending",
 }
 
 export interface AssetResponseDto {

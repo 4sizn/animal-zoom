@@ -3,11 +3,11 @@
  * TDD-based tests for OOP + RxJS WebSocket client
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import { WebSocketClientController } from '../WebSocketClientController';
-import type { WebSocketClientControllerOptions } from '../controller-types';
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
+import type { WebSocketClientControllerOptions } from "../controller-types";
+import { WebSocketClientController } from "../WebSocketClientController";
 
-describe('WebSocketClientController', () => {
+describe("WebSocketClientController", () => {
   let controller: WebSocketClientController;
 
   beforeEach(() => {
@@ -20,15 +20,15 @@ describe('WebSocketClientController', () => {
     controller.destroy();
   });
 
-  describe('Initialization', () => {
-    it('should create controller instance with default options', () => {
+  describe("Initialization", () => {
+    it("should create controller instance with default options", () => {
       expect(controller).toBeDefined();
       expect(controller instanceof WebSocketClientController).toBe(true);
     });
 
-    it('should accept custom configuration', () => {
+    it("should accept custom configuration", () => {
       const customOptions: WebSocketClientControllerOptions = {
-        url: 'http://localhost:9999',
+        url: "http://localhost:9999",
         autoConnect: false,
         reconnection: true,
         reconnectionAttempts: 10,
@@ -39,7 +39,7 @@ describe('WebSocketClientController', () => {
       customController.destroy();
     });
 
-    it('should have all required Observable properties', () => {
+    it("should have all required Observable properties", () => {
       // Connection observables
       expect(controller.connectionState$).toBeDefined();
       expect(controller.connected$).toBeDefined();
@@ -61,7 +61,7 @@ describe('WebSocketClientController', () => {
       expect(controller.avatarUpdated$).toBeDefined();
     });
 
-    it('should have all required methods', () => {
+    it("should have all required methods", () => {
       expect(controller.connect).toBeDefined();
       expect(controller.disconnect).toBeDefined();
       expect(controller.isConnected).toBeDefined();
@@ -73,19 +73,19 @@ describe('WebSocketClientController', () => {
       expect(controller.destroy).toBeDefined();
     });
 
-    it('should start in disconnected state', () => {
+    it("should start in disconnected state", () => {
       let initialState: string | undefined;
-      const subscription = controller.connectionState$.subscribe(state => {
+      const subscription = controller.connectionState$.subscribe((state) => {
         initialState = state;
       });
 
-      expect(initialState).toBe('disconnected');
+      expect(initialState).toBe("disconnected");
       subscription.unsubscribe();
     });
   });
 
-  describe('Type Safety', () => {
-    it('should have properly typed Observable properties', () => {
+  describe("Type Safety", () => {
+    it("should have properly typed Observable properties", () => {
       // This test verifies TypeScript compilation
       // If types are wrong, TypeScript will catch it at compile time
 
@@ -102,7 +102,7 @@ describe('WebSocketClientController', () => {
     });
   });
 
-  describe('Connection State Observable', () => {
+  describe("Connection State Observable", () => {
     it('should emit "disconnected" state initially', (done) => {
       const states: string[] = [];
 
@@ -110,13 +110,13 @@ describe('WebSocketClientController', () => {
         states.push(state);
 
         if (states.length === 1) {
-          expect(states[0]).toBe('disconnected');
+          expect(states[0]).toBe("disconnected");
           done();
         }
       });
     });
 
-    it('should emit connection state changes', (done) => {
+    it("should emit connection state changes", (done) => {
       const states: string[] = [];
       let callCount = 0;
 
@@ -127,27 +127,27 @@ describe('WebSocketClientController', () => {
         // We expect: disconnected (initial)
         // Future phases will test: disconnected → connecting → connected
         if (callCount === 1) {
-          expect(states[0]).toBe('disconnected');
+          expect(states[0]).toBe("disconnected");
           done();
         }
       });
     });
   });
 
-  describe('Connection Methods', () => {
-    it('should have isConnected() return false initially', () => {
+  describe("Connection Methods", () => {
+    it("should have isConnected() return false initially", () => {
       expect(controller.isConnected()).toBe(false);
     });
 
-    it('should have connect() method that can be called', () => {
+    it("should have connect() method that can be called", () => {
       expect(() => controller.connect()).not.toThrow();
     });
 
-    it('should have disconnect() method that can be called', () => {
+    it("should have disconnect() method that can be called", () => {
       expect(() => controller.disconnect()).not.toThrow();
     });
 
-    it('should prevent duplicate connect() calls', () => {
+    it("should prevent duplicate connect() calls", () => {
       // This test will be meaningful once we implement actual connection
       controller.connect();
       controller.connect(); // Should be ignored or logged
@@ -155,8 +155,8 @@ describe('WebSocketClientController', () => {
     });
   });
 
-  describe('currentRoom$ Observable', () => {
-    it('should emit null initially', (done) => {
+  describe("currentRoom$ Observable", () => {
+    it("should emit null initially", (done) => {
       controller.currentRoom$.subscribe((room) => {
         expect(room).toBeNull();
         done();

@@ -1,11 +1,11 @@
-import { apiClient, tokenManager } from './client';
+import { apiClient, tokenManager } from "./client";
 import type {
-  RegisterRequest,
-  LoginRequest,
-  GuestRequest,
   AuthResponse,
+  GuestRequest,
+  LoginRequest,
+  RegisterRequest,
   User,
-} from './types';
+} from "./types";
 
 /**
  * Authentication API
@@ -15,7 +15,7 @@ export const authApi = {
    * Register a new user
    */
   async register(data: RegisterRequest): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>('/auth/register', data);
+    const response = await apiClient.post<AuthResponse>("/auth/register", data);
 
     // Store token and user
     tokenManager.setToken(response.data.accessToken);
@@ -28,7 +28,7 @@ export const authApi = {
    * Login with email and password
    */
   async login(data: LoginRequest): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>('/auth/login', data);
+    const response = await apiClient.post<AuthResponse>("/auth/login", data);
 
     // Store token and user
     tokenManager.setToken(response.data.accessToken);
@@ -41,7 +41,7 @@ export const authApi = {
    * Create guest user
    */
   async createGuest(data: GuestRequest): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>('/auth/guest', data);
+    const response = await apiClient.post<AuthResponse>("/auth/guest", data);
 
     // Store token and user
     tokenManager.setToken(response.data.accessToken);
@@ -54,7 +54,7 @@ export const authApi = {
    * Get current user info
    */
   async getCurrentUser(): Promise<User> {
-    const response = await apiClient.get<User>('/auth/me');
+    const response = await apiClient.get<User>("/auth/me");
 
     // Update stored user
     tokenManager.setUser(response.data);

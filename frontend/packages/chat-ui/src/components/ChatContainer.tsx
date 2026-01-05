@@ -2,11 +2,11 @@
  * ChatContainer - Main chat UI container
  */
 
-import React from 'react';
-import { MessageList } from './MessageList';
-import { MessageInput } from './MessageInput';
-import { useChatStore } from '../store/chatStore';
-import '../styles/chat.css';
+import type React from "react";
+import { useChatStore } from "../store/chatStore";
+import { MessageInput } from "./MessageInput";
+import { MessageList } from "./MessageList";
+import "../styles/chat.css";
 
 export interface ChatContainerProps {
   className?: string;
@@ -30,21 +30,21 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ className }) => {
   // Connection status indicator
   const getConnectionStatus = () => {
     switch (connectionState) {
-      case 'connected':
-        return { text: '연결됨', color: '#4caf50' };
-      case 'connecting':
-        return { text: '연결 중...', color: '#ff9800' };
-      case 'error':
-        return { text: '오류', color: '#f44336' };
+      case "connected":
+        return { text: "연결됨", color: "#4caf50" };
+      case "connecting":
+        return { text: "연결 중...", color: "#ff9800" };
+      case "error":
+        return { text: "오류", color: "#f44336" };
       default:
-        return { text: '오프라인', color: '#9e9e9e' };
+        return { text: "오프라인", color: "#9e9e9e" };
     }
   };
 
   const status = getConnectionStatus();
 
   return (
-    <div className={`chat-container ${className || ''}`}>
+    <div className={`chat-container ${className || ""}`}>
       <div className="chat-header">
         <div className="chat-header-left">
           <h3>채팅</h3>

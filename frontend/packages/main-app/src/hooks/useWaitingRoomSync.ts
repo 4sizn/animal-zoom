@@ -3,9 +3,9 @@
  * Manages WebSocket synchronization for waiting room events
  */
 
-import { useEffect } from 'react';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
 
 /**
  * Hook to synchronize waiting room state via WebSocket
@@ -17,7 +17,8 @@ import { useToast } from '@/hooks/use-toast';
  */
 export function useWaitingRoomSync(roomId: string | undefined) {
   const { toast } = useToast();
-  const { addToWaitingRoom, admitParticipant, removeParticipant } = useRoomStore();
+  const { addToWaitingRoom, admitParticipant, removeParticipant } =
+    useRoomStore();
 
   useEffect(() => {
     if (!roomId) return;

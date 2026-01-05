@@ -3,9 +3,9 @@
  * WebSocketClientController의 가장 기본적인 사용 예제
  */
 
-import { useEffect, useState } from 'react';
-import { WebSocketClientController } from '../WebSocketClientController';
-import type { ConnectionState } from '../types';
+import { useEffect, useState } from "react";
+import type { ConnectionState } from "../types";
+import { WebSocketClientController } from "../WebSocketClientController";
 
 /**
  * 간단한 WebSocket 연결 예제
@@ -14,7 +14,8 @@ import type { ConnectionState } from '../types';
  */
 export function SimpleExample() {
   const [controller] = useState(() => new WebSocketClientController());
-  const [connectionState, setConnectionState] = useState<ConnectionState>('disconnected');
+  const [connectionState, setConnectionState] =
+    useState<ConnectionState>("disconnected");
   const [messageCount, setMessageCount] = useState(0);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export function SimpleExample() {
   }, [controller]);
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: "20px" }}>
       <h2>Simple WebSocket Example</h2>
       <p>
         <strong>Connection State:</strong> {connectionState}
@@ -48,7 +49,9 @@ export function SimpleExample() {
       <p>
         <strong>Messages Received:</strong> {messageCount}
       </p>
-      <button onClick={() => controller.joinRoom('DEMO')}>Join Demo Room</button>
+      <button onClick={() => controller.joinRoom("DEMO")}>
+        Join Demo Room
+      </button>
     </div>
   );
 }

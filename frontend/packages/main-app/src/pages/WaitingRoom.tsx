@@ -3,12 +3,18 @@
  * Screen shown to participants waiting for host admission
  */
 
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2, Clock, Users } from 'lucide-react';
+import { Clock, Loader2, Users } from "lucide-react";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
 
 export function WaitingRoom() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -20,21 +26,21 @@ export function WaitingRoom() {
     // Redirect if no room or wrong room
     if (!room || room.id !== roomId) {
       toast({
-        title: 'Room not found',
-        description: 'Redirecting to join page...',
-        variant: 'destructive',
+        title: "Room not found",
+        description: "Redirecting to join page...",
+        variant: "destructive",
       });
-      navigate('/join');
+      navigate("/join");
       return;
     }
 
     // Redirect if not in waiting state
-    if (currentUser?.joinState !== 'WAITING') {
+    if (currentUser?.joinState !== "WAITING") {
       toast({
-        title: 'Not in waiting room',
-        description: 'Redirecting...',
+        title: "Not in waiting room",
+        description: "Redirecting...",
       });
-      navigate('/join');
+      navigate("/join");
     }
   }, [room, roomId, currentUser, navigate, toast]);
 
@@ -46,10 +52,10 @@ export function WaitingRoom() {
     // When USER_ADMITTED event received, navigate to session
     // For now, this is a placeholder
     const checkAdmission = () => {
-      if (currentUser.joinState === 'JOINED') {
+      if (currentUser.joinState === "JOINED") {
         toast({
-          title: 'You have been admitted!',
-          description: 'Joining the room...',
+          title: "You have been admitted!",
+          description: "Joining the room...",
         });
         navigate(`/room/${roomId}/session`);
       }
@@ -76,9 +82,7 @@ export function WaitingRoom() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">Waiting for Host</h1>
-        <p className="text-muted-foreground">
-          The host will admit you shortly
-        </p>
+        <p className="text-muted-foreground">The host will admit you shortly</p>
       </div>
 
       {/* Waiting Card */}
@@ -127,7 +131,9 @@ export function WaitingRoom() {
               <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
                 <p className="font-medium text-sm">Your Name</p>
-                <p className="text-sm text-muted-foreground">{currentUser.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {currentUser.name}
+                </p>
               </div>
             </div>
           </div>
@@ -135,8 +141,8 @@ export function WaitingRoom() {
           {/* Info Message */}
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
             <p className="text-sm text-blue-900 dark:text-blue-200">
-              The host has been notified of your request to join. You'll be automatically
-              admitted to the room once the host approves.
+              The host has been notified of your request to join. You'll be
+              automatically admitted to the room once the host approves.
             </p>
           </div>
         </CardContent>

@@ -3,10 +3,15 @@
  * Manages synchronization between room store participants and 3D scene avatars
  */
 
-import { useEffect, useRef } from 'react';
-import { ParticipantInfo } from '@/types/room';
-import { MeshBuilder, StandardMaterial, Color3, Vector3 } from '@babylonjs/core';
-import type { Scene, Mesh } from '@babylonjs/core';
+import type { Mesh, Scene } from "@babylonjs/core";
+import {
+  Color3,
+  MeshBuilder,
+  StandardMaterial,
+  Vector3,
+} from "@babylonjs/core";
+import { useEffect, useRef } from "react";
+import type { ParticipantInfo } from "@/types/room";
 
 /**
  * Hook to synchronize participants with 3D scene
@@ -21,7 +26,7 @@ import type { Scene, Mesh } from '@babylonjs/core';
 export function use3DParticipants(
   participants: ParticipantInfo[],
   scene: Scene | null,
-  currentUserId: string
+  currentUserId: string,
 ) {
   // Track which participants have been added to the scene
   const participantAvatarsRef = useRef<Map<string, Mesh>>(new Map());
@@ -30,33 +35,36 @@ export function use3DParticipants(
     if (!scene) return;
 
     const currentAvatars = participantAvatarsRef.current;
-    const currentParticipantIds = new Set(participants.map(p => p.id));
+    const currentParticipantIds = new Set(participants.map((p) => p.id));
     const existingAvatarIds = new Set(currentAvatars.keys());
 
     // 1. Add new participants (create 3D avatars)
     for (const participant of participants) {
       if (!existingAvatarIds.has(participant.id)) {
-        console.log('[3D] Adding avatar for:', participant.name);
+        console.log("[3D] Adding avatar for:", participant.name);
 
         // Create sphere avatar
         const avatar = MeshBuilder.CreateSphere(
           `avatar-${participant.id}`,
           { diameter: 1, segments: 32 },
-          scene
+          scene,
         );
 
         // Create material
-        const material = new StandardMaterial(`material-${participant.id}`, scene);
+        const material = new StandardMaterial(
+          `material-${participant.id}`,
+          scene,
+        );
 
         // Set color based on status
         switch (participant.status) {
-          case 'PRESENT':
+          case "PRESENT":
             material.diffuseColor = new Color3(0.2, 0.8, 0.2); // Green
             break;
-          case 'AWAY':
+          case "AWAY":
             material.diffuseColor = new Color3(0.8, 0.8, 0.2); // Yellow
             break;
-          case 'DO_NOT_DISTURB':
+          case "DO_NOT_DISTURB":
             material.diffuseColor = new Color3(0.8, 0.2, 0.2); // Red
             break;
           default:
@@ -66,7 +74,9 @@ export function use3DParticipants(
         avatar.material = material;
 
         // Position avatar in 3D space (circular arrangement)
-        const angle = (currentAvatars.size * 2 * Math.PI) / Math.max(participants.length, 1);
+        const angle =
+          (currentAvatars.size * 2 * Math.PI) /
+          Math.max(participants.length, 1);
         const radius = 3; // Distance from center
         avatar.position.x = Math.cos(angle) * radius;
         avatar.position.y = 0.5; // Slightly above ground
@@ -84,7 +94,7 @@ export function use3DParticipants(
     // 2. Remove participants who left (dispose 3D avatars)
     for (const avatarId of existingAvatarIds) {
       if (!currentParticipantIds.has(avatarId)) {
-        console.log('[3D] Removing avatar for:', avatarId);
+        console.log("[3D] Removing avatar for:", avatarId);
 
         const avatar = currentAvatars.get(avatarId);
         if (avatar) {
@@ -118,7 +128,7 @@ export function use3DParticipants(
   useEffect(() => {
     return () => {
       const currentAvatars = participantAvatarsRef.current;
-      console.log('[3D] Cleaning up all avatars');
+      console.log("[3D] Cleaning up all avatars");
 
       // TODO: Dispose all avatars
       // for (const [id, avatar] of currentAvatars.entries()) {
@@ -132,6 +142,6 @@ export function use3DParticipants(
   // Return avatar count for debugging
   return {
     avatarCount: participantAvatarsRef.current.size,
-    avatars: participantAvatarsRef.current
+    avatars: participantAvatarsRef.current,
   };
 }

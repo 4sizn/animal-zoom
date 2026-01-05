@@ -52,17 +52,17 @@ export interface ChatMessage {
   userName: string;
   message: string;
   timestamp: Date;
-  type?: 'text' | 'system' | 'emoji';
+  type?: "text" | "system" | "emoji";
   reactions?: MessageReaction[];
 }
 
 // WebSocket event types
 export type WebSocketEventType =
-  | 'participant:join'
-  | 'participant:leave'
-  | 'participant:update'
-  | 'chat:message'
-  | 'room:update';
+  | "participant:join"
+  | "participant:leave"
+  | "participant:update"
+  | "chat:message"
+  | "room:update";
 
 export interface WebSocketEvent<T = any> {
   type: WebSocketEventType;
@@ -74,7 +74,7 @@ export interface WebSocketEvent<T = any> {
 export interface Asset {
   id: string;
   name: string;
-  assetType: 'avatar' | 'environment' | 'prop';
+  assetType: "avatar" | "environment" | "prop";
   key: string;
   url?: string;
   thumbnailKey?: string;

@@ -1,6 +1,14 @@
-import { describe, expect, test, beforeEach } from "bun:test";
+import { beforeEach, describe, expect, test } from "bun:test";
+import {
+  Color3,
+  HemisphericLight,
+  Mesh,
+  NullEngine,
+  Scene,
+  StandardMaterial,
+  Vector3,
+} from "@babylonjs/core";
 import { ResourceSerializer } from "../ResourceSerializer";
-import { Scene, NullEngine, Mesh, StandardMaterial, Color3, HemisphericLight, Vector3 } from "@babylonjs/core";
 
 describe("ResourceSerializer", () => {
   let engine: NullEngine;
@@ -30,7 +38,7 @@ describe("ResourceSerializer", () => {
       const result = ResourceSerializer.serializeCharacter(
         sphere,
         "https://example.com/model.glb",
-        customization
+        customization,
       );
 
       // Assert: Check structure
@@ -46,7 +54,7 @@ describe("ResourceSerializer", () => {
       const result = ResourceSerializer.serializeCharacter(
         sphere,
         "https://example.com/model.glb",
-        {}
+        {},
       );
 
       expect(result).toBeDefined();
@@ -58,7 +66,7 @@ describe("ResourceSerializer", () => {
         ResourceSerializer.serializeCharacter(
           null as any,
           "https://example.com/model.glb",
-          {}
+          {},
         );
       }).toThrow();
     });
@@ -87,7 +95,7 @@ describe("ResourceSerializer", () => {
       const result = ResourceSerializer.serializeRoom(
         scene,
         environment,
-        lighting
+        lighting,
       );
 
       // Assert
@@ -103,7 +111,7 @@ describe("ResourceSerializer", () => {
       const result = ResourceSerializer.serializeRoom(
         emptyScene,
         {},
-        { preset: "default" }
+        { preset: "default" },
       );
 
       expect(result).toBeDefined();
@@ -122,7 +130,7 @@ describe("ResourceSerializer", () => {
       const serialized = ResourceSerializer.serializeCharacter(
         sphere,
         "https://example.com/model.glb",
-        { colors: { primary: "#ff0000" } }
+        { colors: { primary: "#ff0000" } },
       );
 
       // Create new scene for deserialization
@@ -131,7 +139,7 @@ describe("ResourceSerializer", () => {
       // Act: Deserialize
       const result = ResourceSerializer.deserializeCharacter(
         newScene,
-        serialized
+        serialized,
       );
 
       // Assert
@@ -158,7 +166,7 @@ describe("ResourceSerializer", () => {
       const serialized = ResourceSerializer.serializeRoom(
         scene,
         { furniture: [], decorations: [] },
-        { preset: "default" }
+        { preset: "default" },
       );
 
       // Create new scene and add a mesh to it before deserializing

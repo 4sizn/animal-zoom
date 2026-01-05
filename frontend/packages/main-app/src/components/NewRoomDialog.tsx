@@ -3,8 +3,10 @@
  * Modal for creating a new room with settings
  */
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,12 +14,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
 
 interface NewRoomDialogProps {
   open: boolean;
@@ -25,7 +25,7 @@ interface NewRoomDialogProps {
 }
 
 export function NewRoomDialog({ open, onOpenChange }: NewRoomDialogProps) {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const [waitingRoomEnabled, setWaitingRoomEnabled] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -34,13 +34,13 @@ export function NewRoomDialog({ open, onOpenChange }: NewRoomDialogProps) {
   const handleCreate = async () => {
     try {
       await createRoom({
-        title: title || 'Quick Room',
+        title: title || "Quick Room",
         waitingRoomEnabled,
       });
 
       toast({
-        title: 'Room created!',
-        description: 'Redirecting to host preview...',
+        title: "Room created!",
+        description: "Redirecting to host preview...",
       });
 
       onOpenChange(false);
@@ -52,15 +52,15 @@ export function NewRoomDialog({ open, onOpenChange }: NewRoomDialogProps) {
       }
     } catch (error) {
       toast({
-        title: 'Failed to create room',
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to create room",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
       });
     }
   };
 
   const handleClose = () => {
-    setTitle('');
+    setTitle("");
     setWaitingRoomEnabled(true);
     onOpenChange(false);
   };
@@ -111,13 +111,13 @@ export function NewRoomDialog({ open, onOpenChange }: NewRoomDialogProps) {
                 relative inline-flex h-6 w-11 items-center rounded-full transition-colors
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
                 disabled:cursor-not-allowed disabled:opacity-50
-                ${waitingRoomEnabled ? 'bg-primary' : 'bg-input'}
+                ${waitingRoomEnabled ? "bg-primary" : "bg-input"}
               `}
             >
               <span
                 className={`
                   inline-block h-4 w-4 transform rounded-full bg-background transition-transform
-                  ${waitingRoomEnabled ? 'translate-x-6' : 'translate-x-1'}
+                  ${waitingRoomEnabled ? "translate-x-6" : "translate-x-1"}
                 `}
               />
             </button>
@@ -135,7 +135,7 @@ export function NewRoomDialog({ open, onOpenChange }: NewRoomDialogProps) {
                 Creating...
               </>
             ) : (
-              'Create Room'
+              "Create Room"
             )}
           </Button>
         </DialogFooter>

@@ -3,11 +3,12 @@
  * Real-time debugging UI for WebSocket connection, user, and room info
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
-import type { DebugPanelProps, ConnectionStatus } from './types';
-import { CONNECTION_EMOJI, CONNECTION_LABELS } from './types';
-import type { ChatMessageData } from '../socket/types';
-import './DebugPanel.css';
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { ChatMessageData } from "../socket/types";
+import type { ConnectionStatus, DebugPanelProps } from "./types";
+import { CONNECTION_EMOJI, CONNECTION_LABELS } from "./types";
+import "./DebugPanel.css";
 
 /**
  * DebugPanel - A collapsible debugging overlay for monitoring WebSocket state
@@ -28,32 +29,38 @@ import './DebugPanel.css';
 export const DebugPanel: React.FC<DebugPanelProps> = ({
   userId,
   wsController,
-  className = '',
+  className = "",
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   // WebSocket state
-  const [connectionState, setConnectionState] = useState<ConnectionStatus>('disconnected');
+  const [connectionState, setConnectionState] =
+    useState<ConnectionStatus>("disconnected");
   const [socketId, setSocketId] = useState<string | undefined>();
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
-  const [latestMessage, setLatestMessage] = useState<ChatMessageData | null>(null);
+  const [latestMessage, setLatestMessage] = useState<ChatMessageData | null>(
+    null,
+  );
 
   /**
    * Toggle panel visibility
    */
   const togglePanel = useCallback(() => {
-    setIsExpanded(prev => !prev);
+    setIsExpanded((prev) => !prev);
   }, []);
 
   /**
    * Handle keyboard navigation (Enter/Space)
    */
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      togglePanel();
-    }
-  }, [togglePanel]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        togglePanel();
+      }
+    },
+    [togglePanel],
+  );
 
   /**
    * Copy text to clipboard
@@ -62,7 +69,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
     try {
       await navigator.clipboard.writeText(text);
     } catch (err) {
-      console.error('Failed to copy to clipboard:', err);
+      console.error("Failed to copy to clipboard:", err);
     }
   }, []);
 
@@ -71,7 +78,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
    */
   useEffect(() => {
     if (!wsController) {
-      setConnectionState('disconnected');
+      setConnectionState("disconnected");
       setSocketId(undefined);
       setCurrentRoom(null);
       return;
@@ -82,8 +89,12 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
       setConnectionState(state as ConnectionStatus);
 
       // Update socket ID when connected
-      if (state === 'connected') {
-        setSocketId(wsController.isConnected() ? (wsController as any).socket?.id : undefined);
+      if (state === "connected") {
+        setSocketId(
+          wsController.isConnected()
+            ? (wsController as any).socket?.id
+            : undefined,
+        );
       } else {
         setSocketId(undefined);
       }
@@ -144,10 +155,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 
       {/* Panel Content */}
       {isExpanded && (
-        <div
-          data-testid="debug-panel-content"
-          className="debug-panel-content"
-        >
+        <div data-testid="debug-panel-content" className="debug-panel-content">
           <div className="debug-panel-header">
             <h3>🐛 Debug Panel</h3>
           </div>
@@ -157,14 +165,16 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
             <div className="debug-section">
               <div className="debug-section-title">WebSocket</div>
               <div className="debug-status">
-                <span className={`debug-status-indicator status-${connectionState}`}>
+                <span
+                  className={`debug-status-indicator status-${connectionState}`}
+                >
                   {CONNECTION_EMOJI[connectionState]}
                 </span>
                 <span>{CONNECTION_LABELS[connectionState]}</span>
               </div>
               <div className="debug-info-row">
                 <span className="debug-label">Socket ID:</span>
-                <span className="debug-value">{socketId || '-'}</span>
+                <span className="debug-value">{socketId || "-"}</span>
               </div>
             </div>
 
@@ -173,7 +183,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
               <div className="debug-section-title">👤 User</div>
               <div className="debug-info-row">
                 <span className="debug-label">User ID:</span>
-                <span className="debug-value">{userId || 'Guest'}</span>
+                <span className="debug-value">{userId || "Guest"}</span>
                 {userId && (
                   <button
                     className="debug-copy-button"
@@ -216,7 +226,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
                   <div>
                     <span className="debug-message-sender">
                       {latestMessage.senderName}:
-                    </span>{' '}
+                    </span>{" "}
                     {latestMessage.message}
                   </div>
                   <span className="debug-message-time">

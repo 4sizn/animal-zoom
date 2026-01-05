@@ -2,11 +2,11 @@
  * Debug Module Exports
  */
 
-export { DebugPanel } from './DebugPanel';
-export type { DebugPanelProps } from './types';
+export { DebugPanel } from "./DebugPanel";
+export type { DebugPanelProps } from "./types";
 export {
   CONNECTION_COLORS,
-  CONNECTION_LABELS,
   CONNECTION_EMOJI,
+  CONNECTION_LABELS,
   type ConnectionStatus,
-} from './types';
+} from "./types";

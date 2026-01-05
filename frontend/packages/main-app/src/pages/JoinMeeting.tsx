@@ -3,20 +3,26 @@
  * Entry point for participants to join a room
  */
 
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2, LogIn } from 'lucide-react';
-import { authApi } from '@animal-zoom/shared/api';
+import { authApi } from "@animal-zoom/shared/api";
+import { Loader2, LogIn } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
 
 export function JoinMeeting() {
   const { roomCode: urlRoomCode } = useParams<{ roomCode?: string }>();
-  const [roomId, setRoomId] = useState(urlRoomCode || '');
-  const [nickname, setNickname] = useState('');
+  const [roomId, setRoomId] = useState(urlRoomCode || "");
+  const [nickname, setNickname] = useState("");
   const [isJoining, setIsJoining] = useState(false);
 
   const navigate = useNavigate();
@@ -25,38 +31,43 @@ export function JoinMeeting() {
 
   // Navigate after joining - redirect based on host status
   useEffect(() => {
-    console.log('Navigation useEffect:', {
+    console.log("Navigation useEffect:", {
       isJoining,
       room: !!room,
       roomId: room?.id,
       currentUser: !!currentUser,
-      isHost: currentUser?.isHost
+      isHost: currentUser?.isHost,
     });
 
     if (isJoining && room && room.id && currentUser) {
-      console.log('Navigating...', { isHost: currentUser.isHost, roomId: room.id });
+      console.log("Navigating...", {
+        isHost: currentUser.isHost,
+        roomId: room.id,
+      });
 
       toast({
-        title: 'Joining room...',
-        description: currentUser.isHost ? 'Redirecting to host preview' : 'Redirecting to participant preview',
+        title: "Joining room...",
+        description: currentUser.isHost
+          ? "Redirecting to host preview"
+          : "Redirecting to participant preview",
       });
 
       // Navigate to appropriate preview page based on role
       if (currentUser.isHost) {
-        console.log('Navigating to host-preview');
+        console.log("Navigating to host-preview");
         navigate(`/room/${room.id}/host-preview`);
       } else {
-        console.log('Navigating to participant-preview');
+        console.log("Navigating to participant-preview");
         navigate(`/room/${room.id}/participant-preview`);
       }
 
       setIsJoining(false);
     } else {
-      console.log('Navigation condition failed:', {
+      console.log("Navigation condition failed:", {
         hasIsJoining: !!isJoining,
         hasRoom: !!room,
-        hasRoomId: !!(room?.id),
-        hasCurrentUser: !!currentUser
+        hasRoomId: !!room?.id,
+        hasCurrentUser: !!currentUser,
       });
     }
   }, [isJoining, room, currentUser, navigate, toast]);
@@ -65,9 +76,9 @@ export function JoinMeeting() {
   useEffect(() => {
     if (error) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error,
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   }, [error, toast]);
@@ -76,18 +87,18 @@ export function JoinMeeting() {
   const handleJoinRoom = async () => {
     if (!nickname.trim()) {
       toast({
-        title: 'Nickname required',
-        description: 'Please enter your nickname',
-        variant: 'destructive',
+        title: "Nickname required",
+        description: "Please enter your nickname",
+        variant: "destructive",
       });
       return;
     }
 
     if (!roomId.trim()) {
       toast({
-        title: 'Room ID required',
-        description: 'Please enter a room ID',
-        variant: 'destructive',
+        title: "Room ID required",
+        description: "Please enter a room ID",
+        variant: "destructive",
       });
       return;
     }
@@ -106,9 +117,9 @@ export function JoinMeeting() {
     } catch (err) {
       setIsJoining(false);
       toast({
-        title: 'Failed to join room',
-        description: err instanceof Error ? err.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to join room",
+        description: err instanceof Error ? err.message : "Unknown error",
+        variant: "destructive",
       });
     }
   };
@@ -127,9 +138,7 @@ export function JoinMeeting() {
       <Card>
         <CardHeader>
           <CardTitle>Your Nickname</CardTitle>
-          <CardDescription>
-            Enter your nickname to get started
-          </CardDescription>
+          <CardDescription>Enter your nickname to get started</CardDescription>
         </CardHeader>
         <CardContent>
           <Input
@@ -147,9 +156,7 @@ export function JoinMeeting() {
       <Card>
         <CardHeader>
           <CardTitle>Join Room</CardTitle>
-          <CardDescription>
-            Enter a room code to join
-          </CardDescription>
+          <CardDescription>Enter a room code to join</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -189,9 +196,9 @@ export function JoinMeeting() {
       <Card className="bg-muted/50">
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground text-center">
-            Don't have a room code?{' '}
+            Don't have a room code?{" "}
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="text-primary hover:underline font-medium"
             >
               Create a new room

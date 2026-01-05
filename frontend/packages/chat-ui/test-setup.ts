@@ -3,12 +3,12 @@
  * Configures testing environment for React components
  */
 
-import { Window } from 'happy-dom';
-import '@testing-library/jest-dom';
+import { Window } from "happy-dom";
+import "@testing-library/jest-dom";
 
 // Create happy-dom window and set up DOM globals
 const window = new Window({
-  url: 'http://localhost',
+  url: "http://localhost",
   width: 1024,
   height: 768,
 });
@@ -50,7 +50,7 @@ global.console = {
 };
 
 // Mock socket.io-client
-import { mock } from 'bun:test';
+import { mock } from "bun:test";
 
 const mockSocket = {
   on: mock(() => {}),
@@ -58,14 +58,14 @@ const mockSocket = {
   off: mock(() => {}),
   disconnect: mock(() => {}),
   connect: mock(() => {}),
-  id: 'mock-socket-id',
+  id: "mock-socket-id",
   connected: false,
 };
 
 const mockIo = mock(() => mockSocket);
 
 // Mock socket.io-client module
-mock.module('socket.io-client', () => ({
+mock.module("socket.io-client", () => ({
   io: mockIo,
   Socket: class MockSocket {
     on = mock(() => {});
@@ -73,7 +73,7 @@ mock.module('socket.io-client', () => ({
     off = mock(() => {});
     disconnect = mock(() => {});
     connect = mock(() => {});
-    id = 'mock-socket-id';
+    id = "mock-socket-id";
     connected = false;
   },
 }));

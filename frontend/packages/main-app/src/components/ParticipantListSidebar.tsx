@@ -3,26 +3,34 @@
  * Sidebar showing list of all participants
  */
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useRoomStore } from '@/stores/roomStore';
-import { ParticipantInfo, ParticipantStatus } from '@/types/room';
-import { Circle, Moon, MinusCircle, Crown, X } from 'lucide-react';
+import { Circle, Crown, MinusCircle, Moon, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useRoomStore } from "@/stores/roomStore";
+import type { ParticipantInfo, ParticipantStatus } from "@/types/room";
 
 interface ParticipantListSidebarProps {
   onClose?: () => void;
 }
 
-export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps) {
+export function ParticipantListSidebar({
+  onClose,
+}: ParticipantListSidebarProps) {
   const { participants, currentUser } = useRoomStore();
 
   const getStatusIcon = (status: ParticipantStatus) => {
     switch (status) {
-      case 'PRESENT':
+      case "PRESENT":
         return Circle;
-      case 'AWAY':
+      case "AWAY":
         return Moon;
-      case 'DO_NOT_DISTURB':
+      case "DO_NOT_DISTURB":
         return MinusCircle;
       default:
         return Circle;
@@ -31,27 +39,27 @@ export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps)
 
   const getStatusColor = (status: ParticipantStatus): string => {
     switch (status) {
-      case 'PRESENT':
-        return 'text-green-500 fill-green-500';
-      case 'AWAY':
-        return 'text-yellow-500 fill-yellow-500';
-      case 'DO_NOT_DISTURB':
-        return 'text-red-500 fill-red-500';
+      case "PRESENT":
+        return "text-green-500 fill-green-500";
+      case "AWAY":
+        return "text-yellow-500 fill-yellow-500";
+      case "DO_NOT_DISTURB":
+        return "text-red-500 fill-red-500";
       default:
-        return 'text-gray-500 fill-gray-500';
+        return "text-gray-500 fill-gray-500";
     }
   };
 
   const getStatusLabel = (status: ParticipantStatus): string => {
     switch (status) {
-      case 'PRESENT':
-        return 'Present';
-      case 'AWAY':
-        return 'Away';
-      case 'DO_NOT_DISTURB':
-        return 'Do Not Disturb';
+      case "PRESENT":
+        return "Present";
+      case "AWAY":
+        return "Away";
+      case "DO_NOT_DISTURB":
+        return "Do Not Disturb";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
@@ -62,7 +70,11 @@ export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps)
     return a.name.localeCompare(b.name);
   });
 
-  const ParticipantItem = ({ participant }: { participant: ParticipantInfo }) => {
+  const ParticipantItem = ({
+    participant,
+  }: {
+    participant: ParticipantInfo;
+  }) => {
     const StatusIcon = getStatusIcon(participant.status);
     const isCurrentUser = participant.id === currentUser?.id;
 
@@ -70,14 +82,14 @@ export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps)
       <div
         className={`
           flex items-center gap-3 p-3 rounded-lg transition-colors
-          ${isCurrentUser ? 'bg-primary/10 border border-primary/20' : 'hover:bg-muted/50'}
+          ${isCurrentUser ? "bg-primary/10 border border-primary/20" : "hover:bg-muted/50"}
         `}
       >
         {/* Avatar */}
         <div
           className={`
             h-10 w-10 rounded-full flex items-center justify-center font-semibold text-sm
-            ${isCurrentUser ? 'bg-primary text-primary-foreground' : 'bg-muted'}
+            ${isCurrentUser ? "bg-primary text-primary-foreground" : "bg-muted"}
           `}
         >
           {participant.name.charAt(0).toUpperCase()}
@@ -88,14 +100,21 @@ export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps)
           <div className="flex items-center gap-2">
             <p className="font-medium truncate">
               {participant.name}
-              {isCurrentUser && <span className="text-muted-foreground ml-1">(You)</span>}
+              {isCurrentUser && (
+                <span className="text-muted-foreground ml-1">(You)</span>
+              )}
             </p>
             {participant.isHost && (
-              <Crown className="h-4 w-4 text-yellow-500 flex-shrink-0" title="Host" />
+              <Crown
+                className="h-4 w-4 text-yellow-500 flex-shrink-0"
+                title="Host"
+              />
             )}
           </div>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <StatusIcon className={`h-3 w-3 ${getStatusColor(participant.status)}`} />
+            <StatusIcon
+              className={`h-3 w-3 ${getStatusColor(participant.status)}`}
+            />
             <span className="text-xs text-muted-foreground">
               {getStatusLabel(participant.status)}
             </span>
@@ -119,7 +138,8 @@ export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps)
           <div>
             <CardTitle className="text-lg">Participants</CardTitle>
             <CardDescription>
-              {participants.length} {participants.length === 1 ? 'person' : 'people'} in room
+              {participants.length}{" "}
+              {participants.length === 1 ? "person" : "people"} in room
             </CardDescription>
           </div>
           {onClose && (
@@ -134,7 +154,9 @@ export function ParticipantListSidebar({ onClose }: ParticipantListSidebarProps)
         <div className="space-y-2">
           {sortedParticipants.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-sm text-muted-foreground">No participants yet</p>
+              <p className="text-sm text-muted-foreground">
+                No participants yet
+              </p>
             </div>
           ) : (
             sortedParticipants.map((participant) => (

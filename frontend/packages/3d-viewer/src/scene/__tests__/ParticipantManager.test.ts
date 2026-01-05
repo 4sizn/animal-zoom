@@ -1,8 +1,8 @@
-import { describe, expect, test, beforeEach, afterEach } from "bun:test";
-import { ParticipantManager } from "../ParticipantManager";
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import { NullEngine } from "@babylonjs/core";
 import { ResourceLoader } from "../../resources/ResourceLoader";
 import { ResourceStorage } from "../../resources/ResourceStorage";
-import { NullEngine } from "@babylonjs/core";
+import { ParticipantManager } from "../ParticipantManager";
 
 describe("ParticipantManager", () => {
   let manager: ParticipantManager;
@@ -125,7 +125,7 @@ describe("ParticipantManager", () => {
       const cell = document.querySelector('[data-participant-id="user-1"]');
       expect(cell).toBeDefined();
       expect(cell?.querySelector(".participant-name")?.textContent).toBe(
-        "Alice"
+        "Alice",
       );
     });
 

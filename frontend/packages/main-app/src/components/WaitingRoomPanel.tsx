@@ -3,13 +3,19 @@
  * Sidebar panel for host to manage waiting participants
  */
 
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { UserCheck, UserX, Clock, ChevronDown, ChevronUp } from 'lucide-react';
-import { ParticipantInfo } from '@/types/room';
+import { ChevronDown, ChevronUp, Clock, UserCheck, UserX } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
+import type { ParticipantInfo } from "@/types/room";
 
 interface WaitingRoomPanelProps {
   /**
@@ -18,28 +24,31 @@ interface WaitingRoomPanelProps {
   collapsible?: boolean;
 }
 
-export function WaitingRoomPanel({ collapsible = false }: WaitingRoomPanelProps) {
+export function WaitingRoomPanel({
+  collapsible = false,
+}: WaitingRoomPanelProps) {
   const [isExpanded, setIsExpanded] = useState(!collapsible);
-  const { waitingParticipants, admitParticipant, rejectParticipant } = useRoomStore();
+  const { waitingParticipants, admitParticipant, rejectParticipant } =
+    useRoomStore();
   const { toast } = useToast();
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
   const handleAdmit = async (participant: ParticipantInfo) => {
-    setProcessingIds(prev => new Set(prev).add(participant.id));
+    setProcessingIds((prev) => new Set(prev).add(participant.id));
     try {
       admitParticipant(participant.id);
       toast({
-        title: 'Participant admitted',
+        title: "Participant admitted",
         description: `${participant.name} has joined the room`,
       });
     } catch (error) {
       toast({
-        title: 'Failed to admit participant',
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to admit participant",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
       });
     } finally {
-      setProcessingIds(prev => {
+      setProcessingIds((prev) => {
         const next = new Set(prev);
         next.delete(participant.id);
         return next;
@@ -48,21 +57,21 @@ export function WaitingRoomPanel({ collapsible = false }: WaitingRoomPanelProps)
   };
 
   const handleReject = async (participant: ParticipantInfo) => {
-    setProcessingIds(prev => new Set(prev).add(participant.id));
+    setProcessingIds((prev) => new Set(prev).add(participant.id));
     try {
       rejectParticipant(participant.id);
       toast({
-        title: 'Participant rejected',
+        title: "Participant rejected",
         description: `${participant.name} has been removed from the waiting room`,
       });
     } catch (error) {
       toast({
-        title: 'Failed to reject participant',
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to reject participant",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
       });
     } finally {
-      setProcessingIds(prev => {
+      setProcessingIds((prev) => {
         const next = new Set(prev);
         next.delete(participant.id);
         return next;
@@ -95,7 +104,9 @@ export function WaitingRoomPanel({ collapsible = false }: WaitingRoomPanelProps)
               </span>
             </CardTitle>
             <CardDescription>
-              {waitingParticipants.length} {waitingParticipants.length === 1 ? 'person' : 'people'} waiting to join
+              {waitingParticipants.length}{" "}
+              {waitingParticipants.length === 1 ? "person" : "people"} waiting
+              to join
             </CardDescription>
           </div>
           {collapsible && (
@@ -136,10 +147,10 @@ export function WaitingRoomPanel({ collapsible = false }: WaitingRoomPanelProps)
               const isProcessing = processingIds.has(participant.id);
               const joinedAt = participant.joinedAt
                 ? new Date(participant.joinedAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })
-                : 'Just now';
+                : "Just now";
 
               return (
                 <div
@@ -147,7 +158,9 @@ export function WaitingRoomPanel({ collapsible = false }: WaitingRoomPanelProps)
                   className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{participant.name}</p>
+                    <p className="font-medium text-sm truncate">
+                      {participant.name}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       Requested at {joinedAt}
                     </p>

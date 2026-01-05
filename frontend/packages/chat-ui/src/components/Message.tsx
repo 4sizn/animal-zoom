@@ -2,15 +2,16 @@
  * Message - Individual chat message component with reactions
  */
 
-import React, { useState } from 'react';
-import type { ChatMessage } from '@animal-zoom/shared/types';
-import { useChatStore } from '../store/chatStore';
+import type { ChatMessage } from "@animal-zoom/shared/types";
+import type React from "react";
+import { useState } from "react";
+import { useChatStore } from "../store/chatStore";
 
 export interface MessageProps {
   message: ChatMessage;
 }
 
-const QUICK_REACTIONS = ['👍', '❤️', '😂', '🎉', '😍', '🔥'];
+const QUICK_REACTIONS = ["👍", "❤️", "😂", "🎉", "😍", "🔥"];
 
 export const Message: React.FC<MessageProps> = ({ message }) => {
   const userId = useChatStore((state) => state.userId);
@@ -31,13 +32,13 @@ export const Message: React.FC<MessageProps> = ({ message }) => {
   };
 
   return (
-    <div className={`message ${isOwn ? 'message-own' : 'message-other'}`}>
+    <div className={`message ${isOwn ? "message-own" : "message-other"}`}>
       <div className="message-header">
         <span className="message-author">{message.userName}</span>
         <span className="message-time">
-          {new Date(message.timestamp).toLocaleTimeString('ko-KR', {
-            hour: '2-digit',
-            minute: '2-digit',
+          {new Date(message.timestamp).toLocaleTimeString("ko-KR", {
+            hour: "2-digit",
+            minute: "2-digit",
           })}
         </span>
       </div>
@@ -53,7 +54,7 @@ export const Message: React.FC<MessageProps> = ({ message }) => {
             return (
               <button
                 key={emoji}
-                className={`reaction-pill ${userReacted ? 'reaction-active' : ''}`}
+                className={`reaction-pill ${userReacted ? "reaction-active" : ""}`}
                 onClick={() => handleReactionClick(emoji)}
                 title={`${emoji} ${count}`}
               >

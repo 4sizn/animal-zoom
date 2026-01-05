@@ -1,7 +1,10 @@
-import { describe, expect, test, beforeEach } from "bun:test";
+import { beforeEach, describe, expect, test } from "bun:test";
+import { NullEngine, Scene } from "@babylonjs/core";
+import type {
+  CharacterConfig,
+  RoomConfig,
+} from "../../resources/ResourceConfig";
 import { SceneBuilder } from "../SceneBuilder";
-import { Scene, NullEngine } from "@babylonjs/core";
-import type { CharacterConfig, RoomConfig } from "../../resources/ResourceConfig";
 
 describe("SceneBuilder", () => {
   let engine: NullEngine;
@@ -365,7 +368,10 @@ describe("SceneBuilder", () => {
       };
 
       // Act
-      const character = await SceneBuilder.buildCharacter(scene, characterConfig);
+      const character = await SceneBuilder.buildCharacter(
+        scene,
+        characterConfig,
+      );
       const room = SceneBuilder.buildRoom(scene, roomConfig);
 
       // Assert

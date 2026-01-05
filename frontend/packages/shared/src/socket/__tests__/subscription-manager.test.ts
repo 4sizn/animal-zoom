@@ -3,19 +3,19 @@
  * Memory leak prevention through centralized subscription management
  */
 
-import { describe, it, expect, beforeEach } from 'bun:test';
-import { Subject } from 'rxjs';
-import { SubscriptionManager } from '../SubscriptionManager';
+import { beforeEach, describe, expect, it } from "bun:test";
+import { Subject } from "rxjs";
+import { SubscriptionManager } from "../SubscriptionManager";
 
-describe('SubscriptionManager', () => {
+describe("SubscriptionManager", () => {
   let manager: SubscriptionManager;
 
   beforeEach(() => {
     manager = new SubscriptionManager();
   });
 
-  describe('Subscription Tracking', () => {
-    it('should track added subscriptions', () => {
+  describe("Subscription Tracking", () => {
+    it("should track added subscriptions", () => {
       const subject = new Subject<number>();
       const subscription = subject.subscribe();
 
@@ -23,7 +23,7 @@ describe('SubscriptionManager', () => {
       expect(manager.size()).toBe(1);
     });
 
-    it('should track multiple subscriptions', () => {
+    it("should track multiple subscriptions", () => {
       const subject1 = new Subject<number>();
       const subject2 = new Subject<string>();
 
@@ -33,7 +33,7 @@ describe('SubscriptionManager', () => {
       expect(manager.size()).toBe(2);
     });
 
-    it('should handle adding null/undefined subscriptions gracefully', () => {
+    it("should handle adding null/undefined subscriptions gracefully", () => {
       manager.add(null as any);
       manager.add(undefined as any);
 
@@ -41,8 +41,8 @@ describe('SubscriptionManager', () => {
     });
   });
 
-  describe('Unsubscribe All', () => {
-    it('should unsubscribe all tracked subscriptions', () => {
+  describe("Unsubscribe All", () => {
+    it("should unsubscribe all tracked subscriptions", () => {
       const subject1 = new Subject<number>();
       const subject2 = new Subject<string>();
 
@@ -59,11 +59,11 @@ describe('SubscriptionManager', () => {
       expect(manager.size()).toBe(0);
     });
 
-    it('should handle empty subscription list', () => {
+    it("should handle empty subscription list", () => {
       expect(() => manager.unsubscribeAll()).not.toThrow();
     });
 
-    it('should handle already unsubscribed subscriptions', () => {
+    it("should handle already unsubscribed subscriptions", () => {
       const subject = new Subject<number>();
       const subscription = subject.subscribe();
 
@@ -74,8 +74,8 @@ describe('SubscriptionManager', () => {
     });
   });
 
-  describe('Memory Safety', () => {
-    it('should prevent memory leaks with multiple add/unsubscribe cycles', () => {
+  describe("Memory Safety", () => {
+    it("should prevent memory leaks with multiple add/unsubscribe cycles", () => {
       for (let i = 0; i < 100; i++) {
         const subject = new Subject<number>();
         manager.add(subject.subscribe());
@@ -85,7 +85,7 @@ describe('SubscriptionManager', () => {
       expect(manager.size()).toBe(0);
     });
 
-    it('should clear subscriptions after unsubscribeAll', () => {
+    it("should clear subscriptions after unsubscribeAll", () => {
       const subject = new Subject<number>();
       manager.add(subject.subscribe());
 
@@ -95,8 +95,8 @@ describe('SubscriptionManager', () => {
     });
   });
 
-  describe('Error Handling', () => {
-    it('should continue unsubscribing even if one subscription throws', () => {
+  describe("Error Handling", () => {
+    it("should continue unsubscribing even if one subscription throws", () => {
       const subject1 = new Subject<number>();
       const subject2 = new Subject<string>();
 
@@ -107,7 +107,7 @@ describe('SubscriptionManager', () => {
       const errorSub = {
         closed: false,
         unsubscribe: () => {
-          throw new Error('Unsubscribe error');
+          throw new Error("Unsubscribe error");
         },
       } as any;
 
@@ -123,8 +123,8 @@ describe('SubscriptionManager', () => {
     });
   });
 
-  describe('Individual Subscription Removal', () => {
-    it('should remove individual subscription', () => {
+  describe("Individual Subscription Removal", () => {
+    it("should remove individual subscription", () => {
       const subject1 = new Subject<number>();
       const subject2 = new Subject<string>();
 

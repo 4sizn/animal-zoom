@@ -26,7 +26,7 @@ const localStorageMock = {
   },
 };
 
-// @ts-ignore
+// @ts-expect-error
 globalThis.localStorage = localStorageMock;
 
 // Mock HTMLCanvasElement
@@ -50,12 +50,12 @@ class MockCanvas {
   }
 }
 
-// @ts-ignore
+// @ts-expect-error
 globalThis.HTMLCanvasElement = MockCanvas;
 
 // Mock window for tests
-if (typeof window === 'undefined') {
-  // @ts-ignore
+if (typeof window === "undefined") {
+  // @ts-expect-error
   globalThis.window = {
     innerWidth: 1024,
     innerHeight: 768,

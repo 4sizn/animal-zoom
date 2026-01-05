@@ -3,17 +3,17 @@
  * Bottom control bar with room controls (Zoom-like)
  */
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { useRoomStore } from '@/stores/roomStore';
 import {
-  MessageSquare,
-  Users,
-  Settings,
-  LogOut,
-  PhoneOff,
   ChevronUp,
-} from 'lucide-react';
+  LogOut,
+  MessageSquare,
+  PhoneOff,
+  Settings,
+  Users,
+} from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useRoomStore } from "@/stores/roomStore";
 
 interface ControlBarProps {
   onToggleChat: () => void;
@@ -42,13 +42,13 @@ export function ControlBar({
     label,
     onClick,
     badge,
-    variant = 'ghost',
+    variant = "ghost",
   }: {
     icon: any;
     label: string;
     onClick: () => void;
     badge?: number;
-    variant?: 'ghost' | 'destructive';
+    variant?: "ghost" | "destructive";
   }) => (
     <div className="relative">
       <Button
@@ -63,7 +63,7 @@ export function ControlBar({
           <Icon className="h-5 w-5" />
           {badge !== undefined && badge > 0 && (
             <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center font-semibold">
-              {badge > 9 ? '9+' : badge}
+              {badge > 9 ? "9+" : badge}
             </span>
           )}
         </div>
@@ -88,8 +88,9 @@ export function ControlBar({
         {/* Left Section - Room Info */}
         <div className="flex items-center gap-4">
           <div className="text-sm text-muted-foreground">
-            <span className="font-medium">{participants.length}</span> participant
-            {participants.length !== 1 ? 's' : ''}
+            <span className="font-medium">{participants.length}</span>{" "}
+            participant
+            {participants.length !== 1 ? "s" : ""}
           </div>
         </div>
 

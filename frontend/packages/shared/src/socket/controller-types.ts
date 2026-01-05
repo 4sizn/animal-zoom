@@ -3,21 +3,25 @@
  * Observable-based WebSocket client types
  */
 
-import type { Observable } from 'rxjs';
+import type { Observable } from "rxjs";
 import type {
+  AvatarUpdatedData,
+  ChatMessageData,
   RoomJoinedData,
+  RoomUpdatedData,
+  StateUpdateEventData,
   UserJoinedData,
   UserLeftData,
-  RoomUpdatedData,
-  ChatMessageData,
-  StateUpdateEventData,
-  AvatarUpdatedData,
-} from './types';
+} from "./types";
 
 /**
  * Connection State Enum
  */
-export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'error';
+export type ConnectionState =
+  | "disconnected"
+  | "connecting"
+  | "connected"
+  | "error";
 
 /**
  * WebSocket Client Controller Options
@@ -173,13 +177,13 @@ export interface IWebSocketMethods {
    * Update state (position, rotation, avatar state)
    * @param data - State update data
    */
-  updateState(data: import('./types').StateUpdateData): void;
+  updateState(data: import("./types").StateUpdateData): void;
 
   /**
    * Update avatar configuration
    * @param config - Avatar configuration
    */
-  updateAvatar(config: import('../api/types').AvatarConfig): void;
+  updateAvatar(config: import("../api/types").AvatarConfig): void;
 
   /**
    * Destroy the controller and cleanup resources

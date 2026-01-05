@@ -3,12 +3,12 @@
  * Tests for Zustand room state management
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useRoomStore } from '../roomStore';
-import type { RoomInfo, ParticipantInfo } from '@/types/room';
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { ParticipantInfo, RoomInfo } from "@/types/room";
+import { useRoomStore } from "../roomStore";
 
 // Mock @animal-zoom/shared/api
-vi.mock('@animal-zoom/shared/api', () => ({
+vi.mock("@animal-zoom/shared/api", () => ({
   roomsApi: {
     createRoom: vi.fn(),
     getRoom: vi.fn(),
@@ -18,54 +18,54 @@ vi.mock('@animal-zoom/shared/api', () => ({
   },
 }));
 
-describe('RoomStore', () => {
+describe("RoomStore", () => {
   beforeEach(() => {
     // Reset store before each test
     useRoomStore.getState().reset();
     vi.clearAllMocks();
   });
 
-  describe('Initial State', () => {
-    it('should have null room initially', () => {
+  describe("Initial State", () => {
+    it("should have null room initially", () => {
       const { room } = useRoomStore.getState();
       expect(room).toBeNull();
     });
 
-    it('should have null currentUser initially', () => {
+    it("should have null currentUser initially", () => {
       const { currentUser } = useRoomStore.getState();
       expect(currentUser).toBeNull();
     });
 
-    it('should have empty participants array', () => {
+    it("should have empty participants array", () => {
       const { participants } = useRoomStore.getState();
       expect(participants).toEqual([]);
     });
 
-    it('should have empty waiting room', () => {
+    it("should have empty waiting room", () => {
       const { waitingParticipants } = useRoomStore.getState();
       expect(waitingParticipants).toEqual([]);
     });
 
-    it('should not be loading', () => {
+    it("should not be loading", () => {
       const { isLoading } = useRoomStore.getState();
       expect(isLoading).toBe(false);
     });
 
-    it('should have no error', () => {
+    it("should have no error", () => {
       const { error } = useRoomStore.getState();
       expect(error).toBeNull();
     });
   });
 
-  describe('Room State Updates', () => {
-    it('should update room state', () => {
+  describe("Room State Updates", () => {
+    it("should update room state", () => {
       const mockRoom: RoomInfo = {
-        id: '1',
-        code: 'ABC123',
-        hostId: 'host-1',
-        hostName: 'Host User',
-        title: 'Test Room',
-        state: 'CREATED',
+        id: "1",
+        code: "ABC123",
+        hostId: "host-1",
+        hostName: "Host User",
+        title: "Test Room",
+        state: "CREATED",
         createdAt: new Date(),
         waitingRoomEnabled: true,
       };
@@ -75,52 +75,52 @@ describe('RoomStore', () => {
       expect(room).toEqual(mockRoom);
     });
 
-    it('should transition room state from CREATED to LIVE', () => {
+    it("should transition room state from CREATED to LIVE", () => {
       const mockRoom: RoomInfo = {
-        id: '1',
-        code: 'ABC123',
-        hostId: 'host-1',
-        hostName: 'Host User',
-        title: 'Test Room',
-        state: 'CREATED',
+        id: "1",
+        code: "ABC123",
+        hostId: "host-1",
+        hostName: "Host User",
+        title: "Test Room",
+        state: "CREATED",
         createdAt: new Date(),
         waitingRoomEnabled: true,
       };
 
       useRoomStore.getState().setRoom(mockRoom);
-      useRoomStore.getState().updateRoomState('LIVE');
+      useRoomStore.getState().updateRoomState("LIVE");
 
       const { room } = useRoomStore.getState();
-      expect(room?.state).toBe('LIVE');
+      expect(room?.state).toBe("LIVE");
     });
 
-    it('should transition room state from LIVE to ENDED', () => {
+    it("should transition room state from LIVE to ENDED", () => {
       const mockRoom: RoomInfo = {
-        id: '1',
-        code: 'ABC123',
-        hostId: 'host-1',
-        hostName: 'Host User',
-        title: 'Test Room',
-        state: 'LIVE',
+        id: "1",
+        code: "ABC123",
+        hostId: "host-1",
+        hostName: "Host User",
+        title: "Test Room",
+        state: "LIVE",
         createdAt: new Date(),
         waitingRoomEnabled: true,
       };
 
       useRoomStore.getState().setRoom(mockRoom);
-      useRoomStore.getState().updateRoomState('ENDED');
+      useRoomStore.getState().updateRoomState("ENDED");
 
       const { room } = useRoomStore.getState();
-      expect(room?.state).toBe('ENDED');
+      expect(room?.state).toBe("ENDED");
     });
   });
 
-  describe('Current User State', () => {
-    it('should set current user', () => {
+  describe("Current User State", () => {
+    it("should set current user", () => {
       const mockUser: ParticipantInfo = {
-        id: 'user-1',
-        name: 'Test User',
-        joinState: 'PREVIEW',
-        status: 'PRESENT',
+        id: "user-1",
+        name: "Test User",
+        joinState: "PREVIEW",
+        status: "PRESENT",
         isHost: false,
       };
 
@@ -129,46 +129,46 @@ describe('RoomStore', () => {
       expect(currentUser).toEqual(mockUser);
     });
 
-    it('should update user join state', () => {
+    it("should update user join state", () => {
       const mockUser: ParticipantInfo = {
-        id: 'user-1',
-        name: 'Test User',
-        joinState: 'PREVIEW',
-        status: 'PRESENT',
+        id: "user-1",
+        name: "Test User",
+        joinState: "PREVIEW",
+        status: "PRESENT",
         isHost: false,
       };
 
       useRoomStore.getState().setCurrentUser(mockUser);
-      useRoomStore.getState().updateUserJoinState('WAITING');
+      useRoomStore.getState().updateUserJoinState("WAITING");
 
       const { currentUser } = useRoomStore.getState();
-      expect(currentUser?.joinState).toBe('WAITING');
+      expect(currentUser?.joinState).toBe("WAITING");
     });
 
-    it('should update user status', () => {
+    it("should update user status", () => {
       const mockUser: ParticipantInfo = {
-        id: 'user-1',
-        name: 'Test User',
-        joinState: 'JOINED',
-        status: 'PRESENT',
+        id: "user-1",
+        name: "Test User",
+        joinState: "JOINED",
+        status: "PRESENT",
         isHost: false,
       };
 
       useRoomStore.getState().setCurrentUser(mockUser);
-      useRoomStore.getState().updateUserStatus('AWAY');
+      useRoomStore.getState().updateUserStatus("AWAY");
 
       const { currentUser } = useRoomStore.getState();
-      expect(currentUser?.status).toBe('AWAY');
+      expect(currentUser?.status).toBe("AWAY");
     });
   });
 
-  describe('Participants Management', () => {
-    it('should add participant', () => {
+  describe("Participants Management", () => {
+    it("should add participant", () => {
       const participant: ParticipantInfo = {
-        id: 'p-1',
-        name: 'Participant 1',
-        joinState: 'JOINED',
-        status: 'PRESENT',
+        id: "p-1",
+        name: "Participant 1",
+        joinState: "JOINED",
+        status: "PRESENT",
         isHost: false,
       };
 
@@ -178,71 +178,71 @@ describe('RoomStore', () => {
       expect(participants[0]).toEqual(participant);
     });
 
-    it('should remove participant', () => {
+    it("should remove participant", () => {
       const participant1: ParticipantInfo = {
-        id: 'p-1',
-        name: 'Participant 1',
-        joinState: 'JOINED',
-        status: 'PRESENT',
+        id: "p-1",
+        name: "Participant 1",
+        joinState: "JOINED",
+        status: "PRESENT",
         isHost: false,
       };
       const participant2: ParticipantInfo = {
-        id: 'p-2',
-        name: 'Participant 2',
-        joinState: 'JOINED',
-        status: 'PRESENT',
+        id: "p-2",
+        name: "Participant 2",
+        joinState: "JOINED",
+        status: "PRESENT",
         isHost: false,
       };
 
       useRoomStore.getState().addParticipant(participant1);
       useRoomStore.getState().addParticipant(participant2);
-      useRoomStore.getState().removeParticipant('p-1');
+      useRoomStore.getState().removeParticipant("p-1");
 
       const { participants } = useRoomStore.getState();
       expect(participants).toHaveLength(1);
-      expect(participants[0].id).toBe('p-2');
+      expect(participants[0].id).toBe("p-2");
     });
 
-    it('should update participant status', () => {
+    it("should update participant status", () => {
       const participant: ParticipantInfo = {
-        id: 'p-1',
-        name: 'Participant 1',
-        joinState: 'JOINED',
-        status: 'PRESENT',
+        id: "p-1",
+        name: "Participant 1",
+        joinState: "JOINED",
+        status: "PRESENT",
         isHost: false,
       };
 
       useRoomStore.getState().addParticipant(participant);
-      useRoomStore.getState().updateParticipantStatus('p-1', 'AWAY');
+      useRoomStore.getState().updateParticipantStatus("p-1", "AWAY");
 
       const { participants } = useRoomStore.getState();
-      expect(participants[0].status).toBe('AWAY');
+      expect(participants[0].status).toBe("AWAY");
     });
 
-    it('should update participant join state', () => {
+    it("should update participant join state", () => {
       const participant: ParticipantInfo = {
-        id: 'p-1',
-        name: 'Participant 1',
-        joinState: 'WAITING',
-        status: 'PRESENT',
+        id: "p-1",
+        name: "Participant 1",
+        joinState: "WAITING",
+        status: "PRESENT",
         isHost: false,
       };
 
       useRoomStore.getState().addParticipant(participant);
-      useRoomStore.getState().updateParticipantJoinState('p-1', 'JOINED');
+      useRoomStore.getState().updateParticipantJoinState("p-1", "JOINED");
 
       const { participants } = useRoomStore.getState();
-      expect(participants[0].joinState).toBe('JOINED');
+      expect(participants[0].joinState).toBe("JOINED");
     });
   });
 
-  describe('Waiting Room Management', () => {
-    it('should add participant to waiting room', () => {
+  describe("Waiting Room Management", () => {
+    it("should add participant to waiting room", () => {
       const participant: ParticipantInfo = {
-        id: 'p-1',
-        name: 'Waiting Participant',
-        joinState: 'WAITING',
-        status: 'PRESENT',
+        id: "p-1",
+        name: "Waiting Participant",
+        joinState: "WAITING",
+        status: "PRESENT",
         isHost: false,
       };
 
@@ -252,75 +252,75 @@ describe('RoomStore', () => {
       expect(waitingParticipants[0]).toEqual(participant);
     });
 
-    it('should remove participant from waiting room', () => {
+    it("should remove participant from waiting room", () => {
       const participant: ParticipantInfo = {
-        id: 'p-1',
-        name: 'Waiting Participant',
-        joinState: 'WAITING',
-        status: 'PRESENT',
+        id: "p-1",
+        name: "Waiting Participant",
+        joinState: "WAITING",
+        status: "PRESENT",
         isHost: false,
       };
 
       useRoomStore.getState().addToWaitingRoom(participant);
-      useRoomStore.getState().removeFromWaitingRoom('p-1');
+      useRoomStore.getState().removeFromWaitingRoom("p-1");
 
       const { waitingParticipants } = useRoomStore.getState();
       expect(waitingParticipants).toHaveLength(0);
     });
 
-    it('should admit participant (move from waiting to participants)', async () => {
+    it("should admit participant (move from waiting to participants)", async () => {
       const participant: ParticipantInfo = {
-        id: 'p-1',
-        name: 'Waiting Participant',
-        joinState: 'WAITING',
-        status: 'PRESENT',
+        id: "p-1",
+        name: "Waiting Participant",
+        joinState: "WAITING",
+        status: "PRESENT",
         isHost: false,
       };
 
       useRoomStore.getState().addToWaitingRoom(participant);
-      await useRoomStore.getState().admitParticipant('p-1');
+      await useRoomStore.getState().admitParticipant("p-1");
 
       const { waitingParticipants, participants } = useRoomStore.getState();
       expect(waitingParticipants).toHaveLength(0);
       expect(participants).toHaveLength(1);
-      expect(participants[0].joinState).toBe('JOINED');
+      expect(participants[0].joinState).toBe("JOINED");
     });
 
-    it('should reject participant (remove from waiting)', async () => {
+    it("should reject participant (remove from waiting)", async () => {
       const participant: ParticipantInfo = {
-        id: 'p-1',
-        name: 'Waiting Participant',
-        joinState: 'WAITING',
-        status: 'PRESENT',
+        id: "p-1",
+        name: "Waiting Participant",
+        joinState: "WAITING",
+        status: "PRESENT",
         isHost: false,
       };
 
       useRoomStore.getState().addToWaitingRoom(participant);
-      await useRoomStore.getState().rejectParticipant('p-1');
+      await useRoomStore.getState().rejectParticipant("p-1");
 
       const { waitingParticipants } = useRoomStore.getState();
       expect(waitingParticipants).toHaveLength(0);
     });
   });
 
-  describe('Start Room Action', () => {
-    it('should transition room to LIVE and user to JOINED', () => {
+  describe("Start Room Action", () => {
+    it("should transition room to LIVE and user to JOINED", () => {
       const mockRoom: RoomInfo = {
-        id: '1',
-        code: 'ABC123',
-        hostId: 'host-1',
-        hostName: 'Host User',
-        title: 'Test Room',
-        state: 'CREATED',
+        id: "1",
+        code: "ABC123",
+        hostId: "host-1",
+        hostName: "Host User",
+        title: "Test Room",
+        state: "CREATED",
         createdAt: new Date(),
         waitingRoomEnabled: true,
       };
 
       const mockUser: ParticipantInfo = {
-        id: 'host-1',
-        name: 'Host User',
-        joinState: 'PREVIEW',
-        status: 'PRESENT',
+        id: "host-1",
+        name: "Host User",
+        joinState: "PREVIEW",
+        status: "PRESENT",
         isHost: true,
       };
 
@@ -329,42 +329,42 @@ describe('RoomStore', () => {
       useRoomStore.getState().startRoom();
 
       const { room, currentUser } = useRoomStore.getState();
-      expect(room?.state).toBe('LIVE');
-      expect(currentUser?.joinState).toBe('JOINED');
+      expect(room?.state).toBe("LIVE");
+      expect(currentUser?.joinState).toBe("JOINED");
     });
   });
 
-  describe('Error Management', () => {
-    it('should set error', () => {
-      useRoomStore.getState().setError('Test error');
+  describe("Error Management", () => {
+    it("should set error", () => {
+      useRoomStore.getState().setError("Test error");
       const { error } = useRoomStore.getState();
-      expect(error).toBe('Test error');
+      expect(error).toBe("Test error");
     });
 
-    it('should clear error', () => {
-      useRoomStore.getState().setError('Test error');
+    it("should clear error", () => {
+      useRoomStore.getState().setError("Test error");
       useRoomStore.getState().clearError();
       const { error } = useRoomStore.getState();
       expect(error).toBeNull();
     });
   });
 
-  describe('Reset Action', () => {
-    it('should reset all state to initial values', () => {
+  describe("Reset Action", () => {
+    it("should reset all state to initial values", () => {
       // Set some state
       const mockRoom: RoomInfo = {
-        id: '1',
-        code: 'ABC123',
-        hostId: 'host-1',
-        hostName: 'Host User',
-        title: 'Test Room',
-        state: 'LIVE',
+        id: "1",
+        code: "ABC123",
+        hostId: "host-1",
+        hostName: "Host User",
+        title: "Test Room",
+        state: "LIVE",
         createdAt: new Date(),
         waitingRoomEnabled: true,
       };
 
       useRoomStore.getState().setRoom(mockRoom);
-      useRoomStore.getState().setError('Test error');
+      useRoomStore.getState().setError("Test error");
 
       // Reset
       useRoomStore.getState().reset();

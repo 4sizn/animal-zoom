@@ -262,14 +262,14 @@
   </div>
 
   <script type="module">
-    import { SceneBuilder } from './src/scene/SceneBuilder.ts';
-    import { ParticipantManager } from './src/scene/ParticipantManager.ts';
-    import { ResourceStorage } from './src/resources/ResourceStorage.ts';
-    import { ResourceLoader } from './src/resources/ResourceLoader.ts';
-    import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+    import { DirectionalLight, SpotLight } from '@babylonjs/core/Lights';
     import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
     import { Color3, Vector3 } from '@babylonjs/core/Maths/math';
-    import { DirectionalLight, SpotLight } from '@babylonjs/core/Lights';
+    import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+    import { ResourceLoader } from './src/resources/ResourceLoader.ts';
+    import { ResourceStorage } from './src/resources/ResourceStorage.ts';
+    import { ParticipantManager } from './src/scene/ParticipantManager.ts';
+    import { SceneBuilder } from './src/scene/SceneBuilder.ts';
 
     const canvas = document.getElementById('renderCanvas');
     const loading = document.getElementById('loading');

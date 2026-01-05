@@ -1,14 +1,14 @@
-import { apiClient } from './client';
+import { apiClient } from "./client";
 import type {
-  Room,
+  AvatarConfig,
   CreateRoomRequest,
   JoinRoomRequest,
   Participant,
-  AvatarConfig,
-  UpdateAvatarRequest,
+  Room,
   RoomConfig,
+  UpdateAvatarRequest,
   UpdateRoomConfigRequest,
-} from './types';
+} from "./types";
 
 /**
  * Rooms API
@@ -18,23 +18,38 @@ export const roomsApi = {
    * Create a new room
    */
   async createRoom(data?: CreateRoomRequest): Promise<Room> {
-    const response = await apiClient.post<{ room: Room; isHost: boolean }>('/rooms', data || {});
+    const response = await apiClient.post<{ room: Room; isHost: boolean }>(
+      "/rooms",
+      data || {},
+    );
     return response.data.room;
   },
 
   /**
    * Get room by code
    */
-  async getRoom(roomCode: string): Promise<{ room: Room; isHost: boolean; participants: Participant[] }> {
-    const response = await apiClient.get<{ room: Room; isHost: boolean; participants: Participant[] }>(`/rooms/${roomCode}`);
+  async getRoom(
+    roomCode: string,
+  ): Promise<{ room: Room; isHost: boolean; participants: Participant[] }> {
+    const response = await apiClient.get<{
+      room: Room;
+      isHost: boolean;
+      participants: Participant[];
+    }>(`/rooms/${roomCode}`);
     return response.data;
   },
 
   /**
    * Join a room
    */
-  async joinRoom(roomCode: string, data?: JoinRoomRequest): Promise<{ room: Room; isHost: boolean }> {
-    const response = await apiClient.post<{ room: Room; isHost: boolean }>(`/rooms/${roomCode}/join`, data || {});
+  async joinRoom(
+    roomCode: string,
+    data?: JoinRoomRequest,
+  ): Promise<{ room: Room; isHost: boolean }> {
+    const response = await apiClient.post<{ room: Room; isHost: boolean }>(
+      `/rooms/${roomCode}/join`,
+      data || {},
+    );
     return response.data;
   },
 
@@ -56,7 +71,9 @@ export const roomsApi = {
    * Get room participants
    */
   async getParticipants(roomCode: string): Promise<Participant[]> {
-    const response = await apiClient.get<Participant[]>(`/rooms/${roomCode}/participants`);
+    const response = await apiClient.get<Participant[]>(
+      `/rooms/${roomCode}/participants`,
+    );
     return response.data;
   },
 };
@@ -69,7 +86,7 @@ export const avatarApi = {
    * Get my avatar config
    */
   async getMyAvatar(): Promise<AvatarConfig> {
-    const response = await apiClient.get<AvatarConfig>('/avatars/me');
+    const response = await apiClient.get<AvatarConfig>("/avatars/me");
     return response.data;
   },
 
@@ -77,7 +94,7 @@ export const avatarApi = {
    * Update my avatar config
    */
   async updateMyAvatar(data: UpdateAvatarRequest): Promise<AvatarConfig> {
-    const response = await apiClient.put<AvatarConfig>('/avatars/me', data);
+    const response = await apiClient.put<AvatarConfig>("/avatars/me", data);
     return response.data;
   },
 
@@ -98,15 +115,23 @@ export const roomConfigApi = {
    * Get room config
    */
   async getRoomConfig(roomCode: string): Promise<RoomConfig> {
-    const response = await apiClient.get<RoomConfig>(`/room-configs/${roomCode}`);
+    const response = await apiClient.get<RoomConfig>(
+      `/room-configs/${roomCode}`,
+    );
     return response.data;
   },
 
   /**
    * Update room config (host only)
    */
-  async updateRoomConfig(roomCode: string, data: UpdateRoomConfigRequest): Promise<RoomConfig> {
-    const response = await apiClient.put<RoomConfig>(`/room-configs/${roomCode}`, data);
+  async updateRoomConfig(
+    roomCode: string,
+    data: UpdateRoomConfigRequest,
+  ): Promise<RoomConfig> {
+    const response = await apiClient.put<RoomConfig>(
+      `/room-configs/${roomCode}`,
+      data,
+    );
     return response.data;
   },
 };

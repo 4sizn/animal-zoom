@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import {
-  validateParticipantResourceConfig,
-  validateCharacterConfig,
-  validateRoomConfig,
   type ParticipantResourceConfig,
+  validateCharacterConfig,
+  validateParticipantResourceConfig,
+  validateRoomConfig,
 } from "../ResourceConfig";
 
 describe("ResourceConfig", () => {
@@ -76,7 +76,7 @@ describe("ResourceConfig", () => {
       const result = validateParticipantResourceConfig(invalid as any);
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some(err => err.includes("timestamp"))).toBe(true);
+      expect(result.errors.some((err) => err.includes("timestamp"))).toBe(true);
     });
 
     test("should reject config without character", () => {
@@ -224,7 +224,7 @@ describe("ResourceConfig", () => {
       const result = validateRoomConfig(config);
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some(err => err.includes("preset"))).toBe(true);
+      expect(result.errors.some((err) => err.includes("preset"))).toBe(true);
     });
 
     test("should allow optional furniture and decorations", () => {

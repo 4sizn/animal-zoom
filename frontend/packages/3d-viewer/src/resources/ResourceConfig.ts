@@ -72,7 +72,7 @@ export interface ValidationResult {
  * ```
  */
 export function validateParticipantResourceConfig(
-  config: any
+  config: any,
 ): ValidationResult {
   const errors: string[] = [];
 

@@ -3,34 +3,40 @@
  * Simplified interface for creating or joining rooms
  */
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2, LogIn } from 'lucide-react';
-import { authApi } from '@animal-zoom/shared/api';
+import { authApi } from "@animal-zoom/shared/api";
+import { Loader2, LogIn } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
 
 export function SimpleGuest() {
-  const [nickname, setNickname] = useState('');
-  const [roomId, setRoomId] = useState('');
+  const [nickname, setNickname] = useState("");
+  const [roomId, setRoomId] = useState("");
 
   const navigate = useNavigate();
-  const { room, currentUser, createRoom, joinRoom, isLoading, error } = useRoomStore();
+  const { room, currentUser, createRoom, joinRoom, isLoading, error } =
+    useRoomStore();
   const { toast } = useToast();
 
   // Removed auto-populate - room code will be shown in host-preview page
-
 
   // Show error toast when error occurs
   useEffect(() => {
     if (error) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error,
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   }, [error, toast]);
@@ -39,41 +45,41 @@ export function SimpleGuest() {
   const handleCreateRoom = async () => {
     if (!nickname.trim()) {
       toast({
-        title: 'Nickname required',
-        description: 'Please enter your nickname',
-        variant: 'destructive',
+        title: "Nickname required",
+        description: "Please enter your nickname",
+        variant: "destructive",
       });
       return;
     }
 
     if (isLoading) return; // Prevent double-click
 
-    console.log('[SimpleGuest] handleCreateRoom - START');
+    console.log("[SimpleGuest] handleCreateRoom - START");
 
     try {
       // First, authenticate as guest to get token
       if (!authApi.isAuthenticated()) {
-        console.log('[SimpleGuest] Authenticating as guest...');
+        console.log("[SimpleGuest] Authenticating as guest...");
         await authApi.createGuest({ displayName: nickname.trim() });
       }
 
       // Then create the room with the token
-      console.log('[SimpleGuest] Creating room...');
-      await createRoom({ title: 'Quick Room' });
+      console.log("[SimpleGuest] Creating room...");
+      await createRoom({ title: "Quick Room" });
 
       // Get the fresh state after creation
       const { room: newRoom, currentUser: newUser } = useRoomStore.getState();
-      console.log('[SimpleGuest] Room created, navigating to:', newRoom?.id);
+      console.log("[SimpleGuest] Room created, navigating to:", newRoom?.id);
 
       if (newRoom?.id && newUser?.isHost) {
         navigate(`/room/${newRoom.id}/host-preview`);
       }
     } catch (err) {
-      console.error('[SimpleGuest] Failed to create room:', err);
+      console.error("[SimpleGuest] Failed to create room:", err);
       toast({
-        title: 'Failed to create room',
-        description: err instanceof Error ? err.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to create room",
+        description: err instanceof Error ? err.message : "Unknown error",
+        variant: "destructive",
       });
     }
   };
@@ -82,18 +88,18 @@ export function SimpleGuest() {
   const handleJoinRoom = async () => {
     if (!nickname.trim()) {
       toast({
-        title: 'Nickname required',
-        description: 'Please enter your nickname',
-        variant: 'destructive',
+        title: "Nickname required",
+        description: "Please enter your nickname",
+        variant: "destructive",
       });
       return;
     }
 
     if (!roomId.trim()) {
       toast({
-        title: 'Room ID required',
-        description: 'Please enter a room ID',
-        variant: 'destructive',
+        title: "Room ID required",
+        description: "Please enter a room ID",
+        variant: "destructive",
       });
       return;
     }
@@ -110,8 +116,9 @@ export function SimpleGuest() {
       await joinRoom(roomId.trim(), { userName: nickname.trim() });
 
       // Get the fresh state after joining
-      const { room: joinedRoom, currentUser: joinedUser } = useRoomStore.getState();
-      console.log('[SimpleGuest] Joined room, navigating to:', joinedRoom?.id);
+      const { room: joinedRoom, currentUser: joinedUser } =
+        useRoomStore.getState();
+      console.log("[SimpleGuest] Joined room, navigating to:", joinedRoom?.id);
 
       if (joinedRoom?.id && joinedUser) {
         const path = joinedUser.isHost
@@ -121,9 +128,9 @@ export function SimpleGuest() {
       }
     } catch (err) {
       toast({
-        title: 'Failed to join room',
-        description: err instanceof Error ? err.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to join room",
+        description: err instanceof Error ? err.message : "Unknown error",
+        variant: "destructive",
       });
     }
   };
@@ -142,9 +149,7 @@ export function SimpleGuest() {
       <Card>
         <CardHeader>
           <CardTitle>Your Nickname</CardTitle>
-          <CardDescription>
-            Enter your nickname to get started
-          </CardDescription>
+          <CardDescription>Enter your nickname to get started</CardDescription>
         </CardHeader>
         <CardContent>
           <Input
@@ -164,9 +169,7 @@ export function SimpleGuest() {
         <Card>
           <CardHeader>
             <CardTitle>Create Room</CardTitle>
-            <CardDescription>
-              Start a new room
-            </CardDescription>
+            <CardDescription>Start a new room</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Button
@@ -181,7 +184,7 @@ export function SimpleGuest() {
                   Creating Room...
                 </>
               ) : (
-                'Create Room'
+                "Create Room"
               )}
             </Button>
           </CardContent>
@@ -191,9 +194,7 @@ export function SimpleGuest() {
         <Card>
           <CardHeader>
             <CardTitle>Join Room</CardTitle>
-            <CardDescription>
-              Enter a room code to join
-            </CardDescription>
+            <CardDescription>Enter a room code to join</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">

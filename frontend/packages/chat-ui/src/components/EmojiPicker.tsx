@@ -2,7 +2,8 @@
  * EmojiPicker - Emoji selection component
  */
 
-import React, { useState } from 'react';
+import type React from "react";
+import { useState } from "react";
 
 export interface EmojiPickerProps {
   onEmojiSelect: (emoji: string) => void;
@@ -11,21 +12,123 @@ export interface EmojiPickerProps {
 
 // Common emoji categories
 const EMOJI_DATA = {
-  smileys: ['😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘'],
-  gestures: ['👍', '👎', '👌', '✌️', '🤞', '🤝', '👏', '🙌', '👐', '🤲', '🙏', '✍️', '💪', '🦾', '🦿', '🦵'],
-  hearts: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖'],
-  animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔'],
-  food: ['🍕', '🍔', '🍟', '🌭', '🍿', '🧂', '🥓', '🥚', '🧇', '🥞', '🧈', '🍞', '🥐', '🥨', '🥯', '🍩'],
-  symbols: ['✅', '❌', '⭕', '💯', '💥', '💫', '✨', '🔥', '⚡', '💧', '🌟', '⭐', '🌈', '☀️', '🌙', '⚠️'],
+  smileys: [
+    "😀",
+    "😃",
+    "😄",
+    "😁",
+    "😅",
+    "😂",
+    "🤣",
+    "😊",
+    "😇",
+    "🙂",
+    "🙃",
+    "😉",
+    "😌",
+    "😍",
+    "🥰",
+    "😘",
+  ],
+  gestures: [
+    "👍",
+    "👎",
+    "👌",
+    "✌️",
+    "🤞",
+    "🤝",
+    "👏",
+    "🙌",
+    "👐",
+    "🤲",
+    "🙏",
+    "✍️",
+    "💪",
+    "🦾",
+    "🦿",
+    "🦵",
+  ],
+  hearts: [
+    "❤️",
+    "🧡",
+    "💛",
+    "💚",
+    "💙",
+    "💜",
+    "🖤",
+    "🤍",
+    "🤎",
+    "💔",
+    "❣️",
+    "💕",
+    "💞",
+    "💓",
+    "💗",
+    "💖",
+  ],
+  animals: [
+    "🐶",
+    "🐱",
+    "🐭",
+    "🐹",
+    "🐰",
+    "🦊",
+    "🐻",
+    "🐼",
+    "🐨",
+    "🐯",
+    "🦁",
+    "🐮",
+    "🐷",
+    "🐸",
+    "🐵",
+    "🐔",
+  ],
+  food: [
+    "🍕",
+    "🍔",
+    "🍟",
+    "🌭",
+    "🍿",
+    "🧂",
+    "🥓",
+    "🥚",
+    "🧇",
+    "🥞",
+    "🧈",
+    "🍞",
+    "🥐",
+    "🥨",
+    "🥯",
+    "🍩",
+  ],
+  symbols: [
+    "✅",
+    "❌",
+    "⭕",
+    "💯",
+    "💥",
+    "💫",
+    "✨",
+    "🔥",
+    "⚡",
+    "💧",
+    "🌟",
+    "⭐",
+    "🌈",
+    "☀️",
+    "🌙",
+    "⚠️",
+  ],
 };
 
 const CATEGORIES = [
-  { key: 'smileys', label: '😀 스마일', icon: '😀' },
-  { key: 'gestures', label: '👍 제스처', icon: '👍' },
-  { key: 'hearts', label: '❤️ 하트', icon: '❤️' },
-  { key: 'animals', label: '🐶 동물', icon: '🐶' },
-  { key: 'food', label: '🍕 음식', icon: '🍕' },
-  { key: 'symbols', label: '⭐ 기호', icon: '⭐' },
+  { key: "smileys", label: "😀 스마일", icon: "😀" },
+  { key: "gestures", label: "👍 제스처", icon: "👍" },
+  { key: "hearts", label: "❤️ 하트", icon: "❤️" },
+  { key: "animals", label: "🐶 동물", icon: "🐶" },
+  { key: "food", label: "🍕 음식", icon: "🍕" },
+  { key: "symbols", label: "⭐ 기호", icon: "⭐" },
 ] as const;
 
 export const EmojiPicker: React.FC<EmojiPickerProps> = ({
@@ -33,7 +136,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
   onClose,
 }) => {
   const [activeCategory, setActiveCategory] =
-    useState<keyof typeof EMOJI_DATA>('smileys');
+    useState<keyof typeof EMOJI_DATA>("smileys");
 
   const handleEmojiClick = (emoji: string) => {
     onEmojiSelect(emoji);
@@ -54,7 +157,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
           <button
             key={cat.key}
             className={`emoji-category-btn ${
-              activeCategory === cat.key ? 'active' : ''
+              activeCategory === cat.key ? "active" : ""
             }`}
             onClick={() => setActiveCategory(cat.key)}
             title={cat.label}

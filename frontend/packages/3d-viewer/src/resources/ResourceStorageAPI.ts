@@ -3,10 +3,10 @@
  * Stores participant configurations on the API server instead of localStorage
  */
 
-import { avatarApi } from '@animal-zoom/shared/api';
-import type { ParticipantResourceConfig } from './ResourceConfig';
-import type { AvatarConfig } from '@animal-zoom/shared/types';
-import type { IResourceStorage } from './IResourceStorage';
+import { avatarApi } from "@animal-zoom/shared/api";
+import type { AvatarConfig } from "@animal-zoom/shared/types";
+import type { IResourceStorage } from "./IResourceStorage";
+import type { ParticipantResourceConfig } from "./ResourceConfig";
 
 /**
  * Maps API AvatarConfig to local CharacterConfig customization
@@ -39,12 +39,12 @@ function mapAvatarConfigToCustomization(avatar: AvatarConfig | undefined): {
  */
 function mapCustomizationToAvatarConfig(
   customization: any,
-  modelUrl: string
+  modelUrl: string,
 ): AvatarConfig {
   return {
-    modelUrl: modelUrl || '',
-    primaryColor: customization?.colors?.primary || '#ffffff',
-    secondaryColor: customization?.colors?.secondary || '#000000',
+    modelUrl: modelUrl || "",
+    primaryColor: customization?.colors?.primary || "#ffffff",
+    secondaryColor: customization?.colors?.secondary || "#000000",
     accessories: customization?.accessories || [],
   };
 }
@@ -54,7 +54,7 @@ function mapCustomizationToAvatarConfig(
  * Stores configurations on the server, with localStorage fallback for offline support
  */
 export class ResourceStorageAPI implements IResourceStorage {
-  private readonly prefix = 'animal-zoom:resource:';
+  private readonly prefix = "animal-zoom:resource:";
 
   /**
    * Generates a storage key for a participant ID
@@ -72,7 +72,7 @@ export class ResourceStorageAPI implements IResourceStorage {
       // Convert to API format and save avatar config
       const avatarConfig = mapCustomizationToAvatarConfig(
         config.character.customization,
-        config.character.modelUrl
+        config.character.modelUrl,
       );
 
       await avatarApi.updateMyAvatar(avatarConfig);
@@ -83,13 +83,18 @@ export class ResourceStorageAPI implements IResourceStorage {
 
       console.log(`✅ Saved config for ${config.participantId} to API`);
     } catch (error) {
-      console.error(`Failed to save config to API for ${config.participantId}:`, error);
+      console.error(
+        `Failed to save config to API for ${config.participantId}:`,
+        error,
+      );
 
       // Fallback: save to localStorage only
       const key = this.getStorageKey(config.participantId);
       localStorage.setItem(key, JSON.stringify(config));
 
-      console.warn(`⚠️ Saved config for ${config.participantId} to localStorage only`);
+      console.warn(
+        `⚠️ Saved config for ${config.participantId} to localStorage only`,
+      );
     }
   }
 
@@ -104,20 +109,20 @@ export class ResourceStorageAPI implements IResourceStorage {
 
       // Convert API format to local format
       const config: ParticipantResourceConfig = {
-        version: '1.0.0',
+        version: "1.0.0",
         participantId,
         timestamp: Date.now(),
         character: {
-          modelUrl: avatarConfig.modelUrl || '',
+          modelUrl: avatarConfig.modelUrl || "",
           serializedData: {
             mesh: {
-              name: 'character',
-              type: 'sphere',
+              name: "character",
+              type: "sphere",
               diameter: 2,
               segments: 16,
             },
             material: {
-              name: 'characterMat',
+              name: "characterMat",
               diffuseColor: [0.5, 0.5, 1.0],
             },
           },
@@ -133,7 +138,7 @@ export class ResourceStorageAPI implements IResourceStorage {
             decorations: [],
           },
           lighting: {
-            preset: 'default',
+            preset: "default",
           },
         },
       };
@@ -144,7 +149,10 @@ export class ResourceStorageAPI implements IResourceStorage {
 
       return config;
     } catch (error) {
-      console.warn(`Failed to load config from API for ${participantId}, trying localStorage:`, error);
+      console.warn(
+        `Failed to load config from API for ${participantId}, trying localStorage:`,
+        error,
+      );
 
       // Fallback: try localStorage
       const key = this.getStorageKey(participantId);
@@ -157,7 +165,10 @@ export class ResourceStorageAPI implements IResourceStorage {
       try {
         return JSON.parse(stored) as ParticipantResourceConfig;
       } catch (parseError) {
-        console.error(`Failed to parse cached config for ${participantId}:`, parseError);
+        console.error(
+          `Failed to parse cached config for ${participantId}:`,
+          parseError,
+        );
         return null;
       }
     }

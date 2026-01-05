@@ -3,7 +3,7 @@
  * Common interface for both localStorage and API-backed storage implementations
  */
 
-import type { ParticipantResourceConfig } from './ResourceConfig';
+import type { ParticipantResourceConfig } from "./ResourceConfig";
 
 /**
  * Interface for resource storage implementations

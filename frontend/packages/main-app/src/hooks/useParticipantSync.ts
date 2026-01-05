@@ -3,11 +3,11 @@
  * Manages WebSocket synchronization for participant events in live session
  */
 
-import { useEffect } from 'react';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { ParticipantStatus } from '@/types/room';
-import { getInstance } from '@animal-zoom/shared/socket';
+import { getInstance } from "@animal-zoom/shared/socket";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
+import { ParticipantStatus } from "@/types/room";
 
 /**
  * Hook to synchronize participant state via WebSocket
@@ -24,7 +24,7 @@ export function useParticipantSync(roomId: string | undefined, enabled = true) {
     addParticipant,
     removeParticipant,
     updateParticipantStatus,
-    updateRoomState
+    updateRoomState,
   } = useRoomStore();
 
   useEffect(() => {
@@ -34,21 +34,27 @@ export function useParticipantSync(roomId: string | undefined, enabled = true) {
     const wsController = getInstance();
     const subscriptions: Array<{ unsubscribe: () => void }> = [];
 
-    console.log('[useParticipantSync] Starting synchronization for room:', roomId);
+    console.log(
+      "[useParticipantSync] Starting synchronization for room:",
+      roomId,
+    );
 
     // Subscribe to room joined events (includes initial participant list)
     const roomJoinedSub = wsController.roomJoined$.subscribe((data) => {
-      console.log('[useParticipantSync] Room joined with participants:', data);
+      console.log("[useParticipantSync] Room joined with participants:", data);
 
       // Validate data structure
       if (!data) {
-        console.error('[useParticipantSync] Invalid room joined data:', data);
+        console.error("[useParticipantSync] Invalid room joined data:", data);
         return;
       }
 
       // Check if participants array exists
       if (!Array.isArray(data.participants)) {
-        console.error('[useParticipantSync] Participants is not an array:', data.participants);
+        console.error(
+          "[useParticipantSync] Participants is not an array:",
+          data.participants,
+        );
         return;
       }
 
@@ -58,8 +64,8 @@ export function useParticipantSync(roomId: string | undefined, enabled = true) {
         .map((p) => ({
           id: p.id,
           name: p.displayName,
-          joinState: 'JOINED' as const,
-          status: 'PRESENT' as const,
+          joinState: "JOINED" as const,
+          status: "PRESENT" as const,
           isHost: false, // TODO: Determine from participant data
           joinedAt: new Date(),
         }));
@@ -68,37 +74,43 @@ export function useParticipantSync(roomId: string | undefined, enabled = true) {
       const { setParticipants } = useRoomStore.getState();
       setParticipants(participants);
 
-      console.log('[useParticipantSync] Updated participant list:', participants);
+      console.log(
+        "[useParticipantSync] Updated participant list:",
+        participants,
+      );
     });
     subscriptions.push(roomJoinedSub);
 
     // Subscribe to user joined events
     const userJoinedSub = wsController.userJoined$.subscribe((data) => {
-      console.log('[useParticipantSync] User joined:', data);
+      console.log("[useParticipantSync] User joined:", data);
 
       // Validate data structure
       if (!data || !data.participant) {
-        console.error('[useParticipantSync] Invalid user joined data:', data);
+        console.error("[useParticipantSync] Invalid user joined data:", data);
         return;
       }
 
       const participant = data.participant;
       if (!participant.id || !participant.displayName) {
-        console.error('[useParticipantSync] Missing required participant fields:', participant);
+        console.error(
+          "[useParticipantSync] Missing required participant fields:",
+          participant,
+        );
         return;
       }
 
       addParticipant({
         id: participant.id,
         name: participant.displayName,
-        joinState: 'JOINED',
-        status: 'PRESENT',
+        joinState: "JOINED",
+        status: "PRESENT",
         isHost: false,
         joinedAt: new Date(),
       });
 
       toast({
-        title: 'Participant joined',
+        title: "Participant joined",
         description: `${participant.displayName} joined the meeting`,
       });
     });
@@ -106,70 +118,74 @@ export function useParticipantSync(roomId: string | undefined, enabled = true) {
 
     // Subscribe to user left events
     const userLeftSub = wsController.userLeft$.subscribe((data) => {
-      console.log('[useParticipantSync] User left:', data);
+      console.log("[useParticipantSync] User left:", data);
 
       // Validate data structure
       if (!data || !data.participant) {
-        console.error('[useParticipantSync] Invalid user left data:', data);
+        console.error("[useParticipantSync] Invalid user left data:", data);
         return;
       }
 
       const participant = data.participant;
       if (!participant.id) {
-        console.error('[useParticipantSync] Missing participant id:', participant);
+        console.error(
+          "[useParticipantSync] Missing participant id:",
+          participant,
+        );
         return;
       }
 
       removeParticipant(participant.id);
 
       toast({
-        title: 'Participant left',
-        description: `${participant.displayName || 'A participant'} left the meeting`,
+        title: "Participant left",
+        description: `${participant.displayName || "A participant"} left the meeting`,
       });
     });
     subscriptions.push(userLeftSub);
 
     // Subscribe to room updated events (meeting state changes)
     const roomUpdatedSub = wsController.roomUpdated$.subscribe((data) => {
-      console.log('[useParticipantSync] Room updated:', data);
+      console.log("[useParticipantSync] Room updated:", data);
 
       toast({
-        title: 'Meeting updated',
-        description: 'Meeting settings have been changed',
+        title: "Meeting updated",
+        description: "Meeting settings have been changed",
       });
     });
     subscriptions.push(roomUpdatedSub);
 
     // Subscribe to connection errors
     const errorSub = wsController.error$.subscribe((error) => {
-      console.error('[useParticipantSync] WebSocket error:', error);
+      console.error("[useParticipantSync] WebSocket error:", error);
 
       toast({
-        title: 'Connection error',
-        description: 'Lost connection to the meeting. Attempting to reconnect...',
-        variant: 'destructive',
+        title: "Connection error",
+        description:
+          "Lost connection to the meeting. Attempting to reconnect...",
+        variant: "destructive",
       });
     });
     subscriptions.push(errorSub);
 
     // Subscribe to disconnection events
     const disconnectedSub = wsController.disconnected$.subscribe((reason) => {
-      console.log('[useParticipantSync] Disconnected:', reason);
+      console.log("[useParticipantSync] Disconnected:", reason);
 
-      if (reason === 'io server disconnect') {
+      if (reason === "io server disconnect") {
         toast({
-          title: 'Room ended',
-          description: 'The room has been ended by the host',
+          title: "Room ended",
+          description: "The room has been ended by the host",
         });
-        updateRoomState('ENDED');
+        updateRoomState("ENDED");
       }
     });
     subscriptions.push(disconnectedSub);
 
     return () => {
-      console.log('[useParticipantSync] Cleaning up subscriptions');
+      console.log("[useParticipantSync] Cleaning up subscriptions");
       // Unsubscribe from all events
-      subscriptions.forEach(sub => sub.unsubscribe());
+      subscriptions.forEach((sub) => sub.unsubscribe());
     };
   }, [
     roomId,
@@ -178,6 +194,6 @@ export function useParticipantSync(roomId: string | undefined, enabled = true) {
     removeParticipant,
     updateParticipantStatus,
     updateRoomState,
-    toast
+    toast,
   ]);
 }

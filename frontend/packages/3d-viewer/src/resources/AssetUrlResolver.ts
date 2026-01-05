@@ -4,7 +4,7 @@
  * Supports: local development, S3 presigned URLs, and CDN
  */
 
-type AssetMode = 'local' | 's3' | 'cdn';
+type AssetMode = "local" | "s3" | "cdn";
 
 interface AssetCatalogApi {
   getAssetUrl(key: string): Promise<{ url: string }>;
@@ -18,13 +18,14 @@ export class AssetUrlResolver {
   private assetCatalogApi?: AssetCatalogApi;
 
   constructor(
-    mode: AssetMode = 'local',
+    mode: AssetMode = "local",
     cdnBaseUrl?: string,
-    apiBaseUrl?: string
+    apiBaseUrl?: string,
   ) {
     this.mode = mode;
     this.cdnBaseUrl = cdnBaseUrl;
-    this.apiBaseUrl = apiBaseUrl || import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    this.apiBaseUrl =
+      apiBaseUrl || import.meta.env.VITE_API_URL || "http://localhost:3000";
     this.cache = new Map();
   }
 
@@ -47,20 +48,20 @@ export class AssetUrlResolver {
     let url: string;
 
     switch (this.mode) {
-      case 'local':
+      case "local":
         // Development: Direct access via API server
         url = `${this.apiBaseUrl}/assets/${encodeURIComponent(key)}`;
         break;
 
-      case 'cdn':
+      case "cdn":
         // Production with CDN
         if (!this.cdnBaseUrl) {
-          throw new Error('CDN base URL not configured');
+          throw new Error("CDN base URL not configured");
         }
         url = `${this.cdnBaseUrl}/${key}`;
         break;
 
-      case 's3':
+      case "s3":
       default:
         // Production: Get presigned URL from API
         url = await this.getPresignedUrl(key);
@@ -79,7 +80,7 @@ export class AssetUrlResolver {
   private async getPresignedUrl(key: string): Promise<string> {
     if (!this.assetCatalogApi) {
       // Use dynamic import to avoid circular dependency in tests
-      const { assetCatalogApi } = await import('../api/assetCatalog');
+      const { assetCatalogApi } = await import("../api/assetCatalog");
       this.assetCatalogApi = assetCatalogApi;
     }
 
@@ -107,7 +108,7 @@ export class AssetUrlResolver {
  * Create default resolver based on environment
  */
 export function createDefaultResolver(): AssetUrlResolver {
-  const mode = (import.meta.env.VITE_ASSET_MODE as AssetMode) || 'local';
+  const mode = (import.meta.env.VITE_ASSET_MODE as AssetMode) || "local";
   const cdnBaseUrl = import.meta.env.VITE_CDN_BASE_URL;
   const apiBaseUrl = import.meta.env.VITE_API_URL;
 

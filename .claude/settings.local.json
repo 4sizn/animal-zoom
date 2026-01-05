@@ -91,7 +91,9 @@
       "Bash(npm run start:dev:*)",
       "Bash(tail:*)",
       "Bash(npx nest build)",
-      "Bash(timeout 10 pnpm run dev:*)"
+      "Bash(timeout 10 pnpm run dev:*)",
+      "Bash(./node_modules/.bin/biome init:*)",
+      "Bash(./node_modules/.bin/biome check:*)"
     ]
   }
 }

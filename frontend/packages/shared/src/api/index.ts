@@ -3,14 +3,19 @@
  * Centralized exports for all API modules
  */
 
-// Core client and utilities
-export { apiClient, tokenManager, handleApiError, checkApiHealth } from './client';
+export { assetCatalogApi } from "./assetCatalog";
 
 // API modules
-export { authApi } from './auth';
-export { roomsApi, avatarApi, roomConfigApi } from './rooms';
-export { resourcesApi } from './resources';
-export { assetCatalogApi } from './assetCatalog';
+export { authApi } from "./auth";
+// Core client and utilities
+export {
+  apiClient,
+  checkApiHealth,
+  handleApiError,
+  tokenManager,
+} from "./client";
+export { resourcesApi } from "./resources";
+export { avatarApi, roomConfigApi, roomsApi } from "./rooms";
 
 // Types
-export type * from './types';
+export type * from "./types";

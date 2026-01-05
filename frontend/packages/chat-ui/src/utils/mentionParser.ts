@@ -31,7 +31,7 @@ const MENTION_REGEX = /(?:^|(?<=[\s(]))@([a-zA-Z0-9_]+)(?![a-zA-Z0-9_\-#.])/g;
  * // Returns: ['john', 'jane']
  */
 export function extractMentions(text: string | null | undefined): string[] {
-  if (!text || typeof text !== 'string') {
+  if (!text || typeof text !== "string") {
     return [];
   }
 
@@ -57,10 +57,8 @@ export function extractMentions(text: string | null | undefined): string[] {
  * parseMentions('Hello @john!')
  * // Returns: [{ username: 'john', start: 6, end: 11, match: '@john' }]
  */
-export function parseMentions(
-  text: string | null | undefined
-): MentionMatch[] {
-  if (!text || typeof text !== 'string') {
+export function parseMentions(text: string | null | undefined): MentionMatch[] {
+  if (!text || typeof text !== "string") {
     return [];
   }
 
@@ -88,11 +86,11 @@ export function parseMentions(
 function escapeHtml(text: string): string {
   // Use simple string replacement for HTML escaping (works in Node/Bun environment)
   return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 /**
@@ -107,10 +105,10 @@ function escapeHtml(text: string): string {
  */
 export function highlightMentions(
   text: string | null | undefined,
-  className: string = 'mention'
+  className: string = "mention",
 ): string {
-  if (!text || typeof text !== 'string') {
-    return text || '';
+  if (!text || typeof text !== "string") {
+    return text || "";
   }
 
   const mentions = parseMentions(text);
@@ -119,7 +117,7 @@ export function highlightMentions(
     return escapeHtml(text);
   }
 
-  let result = '';
+  let result = "";
   let lastIndex = 0;
 
   for (const mention of mentions) {
@@ -151,9 +149,14 @@ export function highlightMentions(
  */
 export function isMentioned(
   text: string | null | undefined,
-  username: string | null | undefined
+  username: string | null | undefined,
 ): boolean {
-  if (!text || !username || typeof text !== 'string' || typeof username !== 'string') {
+  if (
+    !text ||
+    !username ||
+    typeof text !== "string" ||
+    typeof username !== "string"
+  ) {
     return false;
   }
 
@@ -175,7 +178,7 @@ export function isMentioned(
 export function getMentionSuggestions(
   text: string,
   cursorPosition: number,
-  availableUsers: string[]
+  availableUsers: string[],
 ): string[] {
   if (!text || cursorPosition < 1) {
     return [];
@@ -183,7 +186,7 @@ export function getMentionSuggestions(
 
   // Find the last @ before cursor
   const textBeforeCursor = text.slice(0, cursorPosition);
-  const lastAtIndex = textBeforeCursor.lastIndexOf('@');
+  const lastAtIndex = textBeforeCursor.lastIndexOf("@");
 
   if (lastAtIndex === -1) {
     return [];
@@ -198,14 +201,14 @@ export function getMentionSuggestions(
   const partialUsername = textBeforeCursor.slice(lastAtIndex + 1);
 
   // If there's a space after @, don't suggest
-  if (partialUsername.includes(' ')) {
+  if (partialUsername.includes(" ")) {
     return [];
   }
 
   // Filter users by partial match (case-insensitive)
   const lowerPartial = partialUsername.toLowerCase();
   return availableUsers.filter((user) =>
-    user.toLowerCase().startsWith(lowerPartial)
+    user.toLowerCase().startsWith(lowerPartial),
   );
 }
 
@@ -223,12 +226,12 @@ export function getMentionSuggestions(
 export function completeMention(
   text: string,
   cursorPosition: number,
-  username: string
+  username: string,
 ): { text: string; newCursorPosition: number } {
   const textBeforeCursor = text.slice(0, cursorPosition);
   const textAfterCursor = text.slice(cursorPosition);
 
-  const lastAtIndex = textBeforeCursor.lastIndexOf('@');
+  const lastAtIndex = textBeforeCursor.lastIndexOf("@");
 
   if (lastAtIndex === -1) {
     return { text, newCursorPosition: cursorPosition };
@@ -236,9 +239,7 @@ export function completeMention(
 
   // Replace from @ to cursor with @username
   const newText =
-    text.slice(0, lastAtIndex) +
-    `@${username} ` +
-    textAfterCursor;
+    text.slice(0, lastAtIndex) + `@${username} ` + textAfterCursor;
 
   const newCursorPosition = lastAtIndex + username.length + 2; // +2 for @ and space
 

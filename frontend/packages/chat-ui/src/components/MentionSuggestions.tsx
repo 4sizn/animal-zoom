@@ -2,7 +2,8 @@
  * MentionSuggestions - Autocomplete suggestions for @mentions
  */
 
-import React, { useEffect, useRef } from 'react';
+import type React from "react";
+import { useEffect, useRef } from "react";
 
 export interface MentionSuggestionsProps {
   suggestions: string[];
@@ -23,10 +24,10 @@ export const MentionSuggestions: React.FC<MentionSuggestionsProps> = ({
     // Auto-scroll to selected item
     if (listRef.current) {
       const selectedElement = listRef.current.querySelector(
-        '.mention-suggestion-item.selected'
+        ".mention-suggestion-item.selected",
       );
       if (selectedElement) {
-        selectedElement.scrollIntoView({ block: 'nearest' });
+        selectedElement.scrollIntoView({ block: "nearest" });
       }
     }
   }, [selectedIndex]);
@@ -41,7 +42,7 @@ export const MentionSuggestions: React.FC<MentionSuggestionsProps> = ({
         <button
           key={username}
           className={`mention-suggestion-item ${
-            index === selectedIndex ? 'selected' : ''
+            index === selectedIndex ? "selected" : ""
           }`}
           onClick={() => onSelect(username)}
           onMouseDown={(e) => {

@@ -3,32 +3,32 @@
  * OOP + RxJS based WebSocket client with Observable event streams
  */
 
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { io, Socket } from 'socket.io-client';
-import { tokenManager } from '../api/client';
-import { SubscriptionManager } from './SubscriptionManager';
+import { BehaviorSubject, type Observable, Subject } from "rxjs";
+import { io, type Socket } from "socket.io-client";
+import { tokenManager } from "../api/client";
+import type { AvatarConfig } from "../api/types";
 import type {
-  WebSocketClientControllerOptions,
   ConnectionState,
   IWebSocketClientController,
-} from './controller-types';
+  WebSocketClientControllerOptions,
+} from "./controller-types";
+import { SubscriptionManager } from "./SubscriptionManager";
 import type {
+  AvatarUpdatedData,
+  ChatMessageData,
   RoomJoinedData,
+  RoomUpdatedData,
+  StateUpdateData,
+  StateUpdateEventData,
   UserJoinedData,
   UserLeftData,
-  RoomUpdatedData,
-  ChatMessageData,
-  StateUpdateEventData,
-  AvatarUpdatedData,
-  StateUpdateData,
-} from './types';
-import type { AvatarConfig } from '../api/types';
+} from "./types";
 
 /**
  * Default Configuration
  */
 const DEFAULT_OPTIONS: Required<WebSocketClientControllerOptions> = {
-  url: import.meta.env.VITE_WS_URL || 'http://localhost:3000',
+  url: import.meta.env.VITE_WS_URL || "http://localhost:3000",
   autoConnect: false,
   reconnection: true,
   reconnectionAttempts: 5,
@@ -176,7 +176,9 @@ export class WebSocketClientController implements IWebSocketClientController {
     this.subscriptionManager = new SubscriptionManager();
 
     // Initialize Connection Subjects
-    this.connectionStateSubject = new BehaviorSubject<ConnectionState>('disconnected');
+    this.connectionStateSubject = new BehaviorSubject<ConnectionState>(
+      "disconnected",
+    );
     this.connectedSubject = new Subject<void>();
     this.disconnectedSubject = new Subject<string>();
     this.errorSubject = new Subject<Error>();
@@ -228,28 +230,34 @@ export class WebSocketClientController implements IWebSocketClientController {
    */
   public connect(): void {
     if (!this.socket) {
-      console.error('[WebSocketClientController] Socket not initialized');
+      console.error("[WebSocketClientController] Socket not initialized");
       return;
     }
 
     if (this.isConnecting || this.socket.connected) {
-      console.warn('[WebSocketClientController] Already connected or connecting');
+      console.warn(
+        "[WebSocketClientController] Already connected or connecting",
+      );
       return;
     }
 
     const token = tokenManager.getToken();
     if (!token) {
-      console.error('[WebSocketClientController] No authentication token found');
-      this.errorSubject.next(new Error('No authentication token'));
+      console.error(
+        "[WebSocketClientController] No authentication token found",
+      );
+      this.errorSubject.next(new Error("No authentication token"));
       return;
     }
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log('[WebSocketClientController] Connecting to WebSocket server...');
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log(
+        "[WebSocketClientController] Connecting to WebSocket server...",
+      );
     }
 
     this.isConnecting = true;
-    this.connectionStateSubject.next('connecting');
+    this.connectionStateSubject.next("connecting");
     this.socket.connect();
   }
 
@@ -259,12 +267,14 @@ export class WebSocketClientController implements IWebSocketClientController {
   public disconnect(): void {
     if (!this.socket) return;
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log('[WebSocketClientController] Disconnecting from WebSocket server...');
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log(
+        "[WebSocketClientController] Disconnecting from WebSocket server...",
+      );
     }
 
     this.socket.disconnect();
-    this.connectionStateSubject.next('disconnected');
+    this.connectionStateSubject.next("disconnected");
     this.currentRoomSubject.next(null);
     this.isConnecting = false;
   }
@@ -282,20 +292,24 @@ export class WebSocketClientController implements IWebSocketClientController {
    */
   public joinRoom(roomCode: string): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocketClientController] Cannot join room: not connected');
+      console.error(
+        "[WebSocketClientController] Cannot join room: not connected",
+      );
       return;
     }
 
     if (!roomCode || roomCode.trim().length === 0) {
-      console.error('[WebSocketClientController] Cannot join room: invalid room code');
+      console.error(
+        "[WebSocketClientController] Cannot join room: invalid room code",
+      );
       return;
     }
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log('[WebSocketClientController] Joining room:', roomCode);
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log("[WebSocketClientController] Joining room:", roomCode);
     }
 
-    this.socket.emit('room:join', { roomCode: roomCode.trim() });
+    this.socket.emit("room:join", { roomCode: roomCode.trim() });
   }
 
   /**
@@ -303,21 +317,23 @@ export class WebSocketClientController implements IWebSocketClientController {
    */
   public leaveRoom(): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocketClientController] Cannot leave room: not connected');
+      console.error(
+        "[WebSocketClientController] Cannot leave room: not connected",
+      );
       return;
     }
 
     const currentRoom = this.currentRoomSubject.value;
     if (!currentRoom) {
-      console.warn('[WebSocketClientController] Not in a room');
+      console.warn("[WebSocketClientController] Not in a room");
       return;
     }
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log('[WebSocketClientController] Leaving room:', currentRoom);
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log("[WebSocketClientController] Leaving room:", currentRoom);
     }
 
-    this.socket.emit('room:leave');
+    this.socket.emit("room:leave");
     this.currentRoomSubject.next(null);
   }
 
@@ -327,28 +343,32 @@ export class WebSocketClientController implements IWebSocketClientController {
    */
   public sendChatMessage(message: string): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocketClientController] Cannot send message: not connected');
+      console.error(
+        "[WebSocketClientController] Cannot send message: not connected",
+      );
       return;
     }
 
     const currentRoom = this.currentRoomSubject.value;
     if (!currentRoom) {
-      console.error('[WebSocketClientController] Cannot send message: not in a room');
+      console.error(
+        "[WebSocketClientController] Cannot send message: not in a room",
+      );
       return;
     }
 
     if (!message || message.trim().length === 0) {
-      console.warn('[WebSocketClientController] Cannot send empty message');
+      console.warn("[WebSocketClientController] Cannot send empty message");
       return;
     }
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log('[WebSocketClientController] Sending chat message:', message);
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log("[WebSocketClientController] Sending chat message:", message);
     }
 
-    this.socket.emit('chat:message', {
+    this.socket.emit("chat:message", {
       roomCode: currentRoom,
-      message: message.trim()
+      message: message.trim(),
     });
   }
 
@@ -364,11 +384,11 @@ export class WebSocketClientController implements IWebSocketClientController {
 
     // Validate data
     if (!data.position || !data.rotation) {
-      console.error('[WebSocketClientController] Invalid state data');
+      console.error("[WebSocketClientController] Invalid state data");
       return;
     }
 
-    this.socket.emit('state:update', data);
+    this.socket.emit("state:update", data);
   }
 
   /**
@@ -377,21 +397,25 @@ export class WebSocketClientController implements IWebSocketClientController {
    */
   public updateAvatar(config: AvatarConfig): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocketClientController] Cannot update avatar: not connected');
+      console.error(
+        "[WebSocketClientController] Cannot update avatar: not connected",
+      );
       return;
     }
 
     const currentRoom = this.currentRoomSubject.value;
     if (!currentRoom) {
-      console.error('[WebSocketClientController] Cannot update avatar: not in a room');
+      console.error(
+        "[WebSocketClientController] Cannot update avatar: not in a room",
+      );
       return;
     }
 
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log('[WebSocketClientController] Updating avatar:', config);
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log("[WebSocketClientController] Updating avatar:", config);
     }
 
-    this.socket.emit('avatar:update', config);
+    this.socket.emit("avatar:update", config);
   }
 
   /**
@@ -399,8 +423,10 @@ export class WebSocketClientController implements IWebSocketClientController {
    * Completes all Subjects and cleans up subscriptions
    */
   public destroy(): void {
-    if (import.meta.env.VITE_DEBUG === 'true') {
-      console.log('[WebSocketClientController] Destroying controller and cleaning up resources');
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log(
+        "[WebSocketClientController] Destroying controller and cleaning up resources",
+      );
     }
 
     // Cleanup socket first
@@ -470,88 +496,88 @@ export class WebSocketClientController implements IWebSocketClientController {
     if (!this.socket) return;
 
     // Connection events
-    this.socket.on('connect', () => {
+    this.socket.on("connect", () => {
       this.isConnecting = false;
-      this.connectionStateSubject.next('connected');
+      this.connectionStateSubject.next("connected");
       this.connectedSubject.next();
 
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocketClientController] Connected', this.socket?.id);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] Connected", this.socket?.id);
       }
     });
 
-    this.socket.on('disconnect', (reason: string) => {
+    this.socket.on("disconnect", (reason: string) => {
       this.isConnecting = false;
-      this.connectionStateSubject.next('disconnected');
+      this.connectionStateSubject.next("disconnected");
       this.disconnectedSubject.next(reason);
 
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocketClientController] Disconnected', reason);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] Disconnected", reason);
       }
     });
 
-    this.socket.on('connect_error', (error: Error) => {
+    this.socket.on("connect_error", (error: Error) => {
       this.isConnecting = false;
-      this.connectionStateSubject.next('error');
+      this.connectionStateSubject.next("error");
       this.errorSubject.next(error);
 
-      console.error('[WebSocketClientController] Connection Error', error);
+      console.error("[WebSocketClientController] Connection Error", error);
     });
 
     // Room events - TODO Phase 3: Implement detailed event handling
-    this.socket.on('room:joined', (data: RoomJoinedData) => {
+    this.socket.on("room:joined", (data: RoomJoinedData) => {
       this.currentRoomSubject.next(data.roomCode);
       this.roomJoinedSubject.next(data);
 
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocketClientController] Room Joined', data);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] Room Joined", data);
       }
     });
 
-    this.socket.on('user:joined', (data: UserJoinedData) => {
+    this.socket.on("user:joined", (data: UserJoinedData) => {
       this.userJoinedSubject.next(data);
 
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocketClientController] User Joined', data);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] User Joined", data);
       }
     });
 
-    this.socket.on('user:left', (data: UserLeftData) => {
+    this.socket.on("user:left", (data: UserLeftData) => {
       this.userLeftSubject.next(data);
 
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocketClientController] User Left', data);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] User Left", data);
       }
     });
 
-    this.socket.on('room:updated', (data: RoomUpdatedData) => {
+    this.socket.on("room:updated", (data: RoomUpdatedData) => {
       this.roomUpdatedSubject.next(data);
 
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocketClientController] Room Updated', data);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] Room Updated", data);
       }
     });
 
     // Chat events
-    this.socket.on('chat:message', (data: ChatMessageData) => {
+    this.socket.on("chat:message", (data: ChatMessageData) => {
       this.chatMessageSubject.next(data);
 
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocketClientController] Chat Message', data);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] Chat Message", data);
       }
     });
 
     // State events
-    this.socket.on('state:update', (data: StateUpdateEventData) => {
+    this.socket.on("state:update", (data: StateUpdateEventData) => {
       // Don't log every state update (too noisy)
       this.stateUpdateSubject.next(data);
     });
 
-    this.socket.on('avatar:updated', (data: AvatarUpdatedData) => {
+    this.socket.on("avatar:updated", (data: AvatarUpdatedData) => {
       this.avatarUpdatedSubject.next(data);
 
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocketClientController] Avatar Updated', data);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] Avatar Updated", data);
       }
     });
   }
@@ -575,7 +601,7 @@ let singletonInstance: WebSocketClientController | null = null;
  * ```
  */
 export function getInstance(
-  options?: WebSocketClientControllerOptions
+  options?: WebSocketClientControllerOptions,
 ): WebSocketClientController {
   if (!singletonInstance) {
     singletonInstance = new WebSocketClientController(options);

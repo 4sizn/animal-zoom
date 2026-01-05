@@ -4,13 +4,13 @@
  */
 
 // Room lifecycle states
-export type RoomState = 'CREATED' | 'LIVE' | 'ENDED';
+export type RoomState = "CREATED" | "LIVE" | "ENDED";
 
 // User join states (participant journey)
-export type UserJoinState = 'PREVIEW' | 'WAITING' | 'JOINED' | 'LEFT';
+export type UserJoinState = "PREVIEW" | "WAITING" | "JOINED" | "LEFT";
 
 // Participant status indicators (for 3D avatars)
-export type ParticipantStatus = 'PRESENT' | 'AWAY' | 'DO_NOT_DISTURB';
+export type ParticipantStatus = "PRESENT" | "AWAY" | "DO_NOT_DISTURB";
 
 /**
  * Room information

@@ -3,12 +3,12 @@
  * Tests for the emoji selection component
  */
 
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { EmojiPicker } from '../../src/components/EmojiPicker';
+import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { fireEvent, render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { EmojiPicker } from "../../src/components/EmojiPicker";
 
-describe('EmojiPicker', () => {
+describe("EmojiPicker", () => {
   const mockOnEmojiSelect = mock(() => {});
   const mockOnClose = mock(() => {});
 
@@ -17,87 +17,78 @@ describe('EmojiPicker', () => {
     mockOnClose.mockReset();
   });
 
-  it('should render emoji picker', () => {
+  it("should render emoji picker", () => {
     render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Should render the picker container
-    const picker = screen.getByRole('dialog') || screen.getByTestId('emoji-picker');
+    const picker =
+      screen.getByRole("dialog") || screen.getByTestId("emoji-picker");
     expect(picker).toBeInTheDocument();
   });
 
-  it('should render emoji categories', () => {
+  it("should render emoji categories", () => {
     render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Check for category tabs/buttons
     expect(screen.getByText(/표정|웃음|Smileys/i)).toBeInTheDocument();
   });
 
-  it('should render emojis', () => {
+  it("should render emojis", () => {
     const { container } = render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Should render emoji buttons
-    const emojiButtons = container.querySelectorAll('.emoji-button, button[aria-label*="emoji"]');
+    const emojiButtons = container.querySelectorAll(
+      '.emoji-button, button[aria-label*="emoji"]',
+    );
     expect(emojiButtons.length).toBeGreaterThan(0);
   });
 
-  it('should call onEmojiSelect when emoji clicked', () => {
+  it("should call onEmojiSelect when emoji clicked", () => {
     const { container } = render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Click first emoji
-    const firstEmoji = container.querySelector('.emoji-button') || container.querySelector('button');
+    const firstEmoji =
+      container.querySelector(".emoji-button") ||
+      container.querySelector("button");
     if (firstEmoji) {
       fireEvent.click(firstEmoji);
       expect(mockOnEmojiSelect).toHaveBeenCalled();
     }
   });
 
-  it('should call onClose when close button clicked', () => {
+  it("should call onClose when close button clicked", () => {
     render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Look for close button (X, 닫기, Close, etc.)
-    const closeButton = screen.getByRole('button', { name: /close|닫기|×/i });
+    const closeButton = screen.getByRole("button", { name: /close|닫기|×/i });
     fireEvent.click(closeButton);
 
     expect(mockOnClose).toHaveBeenCalled();
   });
 
-  it('should switch between emoji categories', () => {
+  it("should switch between emoji categories", () => {
     render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Find category tabs
-    const categoryTabs = screen.getAllByRole('button');
-    const smileyTab = categoryTabs.find(tab => tab.textContent?.includes('표정'));
-    const heartTab = categoryTabs.find(tab => tab.textContent?.includes('하트'));
+    const categoryTabs = screen.getAllByRole("button");
+    const smileyTab = categoryTabs.find((tab) =>
+      tab.textContent?.includes("표정"),
+    );
+    const heartTab = categoryTabs.find((tab) =>
+      tab.textContent?.includes("하트"),
+    );
 
     if (smileyTab && heartTab) {
       // Click different category
@@ -108,117 +99,99 @@ describe('EmojiPicker', () => {
     }
   });
 
-  it('should have correct structure', () => {
+  it("should have correct structure", () => {
     const { container } = render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Check for picker structure
-    const picker = container.querySelector('.emoji-picker');
+    const picker = container.querySelector(".emoji-picker");
     expect(picker).toBeInTheDocument();
 
     // Check for category tabs section
-    const categories = container.querySelector('.emoji-categories, .category-tabs');
+    const categories = container.querySelector(
+      ".emoji-categories, .category-tabs",
+    );
     expect(categories).toBeInTheDocument();
 
     // Check for emoji grid section
-    const emojiGrid = container.querySelector('.emoji-grid, .emoji-list');
+    const emojiGrid = container.querySelector(".emoji-grid, .emoji-list");
     expect(emojiGrid).toBeInTheDocument();
   });
 
-  it('should render common emojis', () => {
+  it("should render common emojis", () => {
     const { container } = render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Check for common emojis
-    const content = container.textContent || '';
+    const content = container.textContent || "";
     expect(content).toMatch(/😀|😊|❤️|👍/);
   });
 
-  it('should pass selected emoji to callback', () => {
+  it("should pass selected emoji to callback", () => {
     const { container } = render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Find and click specific emoji
-    const emojiButton = Array.from(container.querySelectorAll('button')).find(
-      btn => btn.textContent === '😀'
+    const emojiButton = Array.from(container.querySelectorAll("button")).find(
+      (btn) => btn.textContent === "😀",
     );
 
     if (emojiButton) {
       fireEvent.click(emojiButton);
-      expect(mockOnEmojiSelect).toHaveBeenCalledWith('😀');
+      expect(mockOnEmojiSelect).toHaveBeenCalledWith("😀");
     }
   });
 
-  it('should have accessible labels', () => {
+  it("should have accessible labels", () => {
     render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Emoji picker should have appropriate ARIA attributes
-    const picker = screen.getByRole('dialog') || screen.getByTestId('emoji-picker');
+    const picker =
+      screen.getByRole("dialog") || screen.getByTestId("emoji-picker");
     expect(picker).toBeInTheDocument();
   });
 
-  it('should render all emoji categories', () => {
+  it("should render all emoji categories", () => {
     render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
     // Expected categories from implementation
-    const categories = ['표정', '제스처', '하트', '동물', '음식', '기호'];
+    const categories = ["표정", "제스처", "하트", "동물", "음식", "기호"];
 
-    categories.forEach(category => {
+    categories.forEach((category) => {
       // Check if category is present (might be in Korean or icons)
-      const categoryElement = screen.queryByText(new RegExp(category, 'i'));
+      const categoryElement = screen.queryByText(new RegExp(category, "i"));
       // Some categories might be represented by icons only
     });
   });
 
-  it('should close picker when clicking outside (if implemented)', () => {
+  it("should close picker when clicking outside (if implemented)", () => {
     const { container } = render(
       <div>
         <div data-testid="outside">Outside</div>
-        <EmojiPicker
-          onEmojiSelect={mockOnEmojiSelect}
-          onClose={mockOnClose}
-        />
-      </div>
+        <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />
+      </div>,
     );
 
-    const outside = screen.getByTestId('outside');
+    const outside = screen.getByTestId("outside");
     fireEvent.click(outside);
 
     // If click-outside-to-close is implemented
     // expect(mockOnClose).toHaveBeenCalled();
   });
 
-  it('should have smooth animations', () => {
+  it("should have smooth animations", () => {
     const { container } = render(
-      <EmojiPicker
-        onEmojiSelect={mockOnEmojiSelect}
-        onClose={mockOnClose}
-      />
+      <EmojiPicker onEmojiSelect={mockOnEmojiSelect} onClose={mockOnClose} />,
     );
 
-    const picker = container.querySelector('.emoji-picker');
+    const picker = container.querySelector(".emoji-picker");
     // Check if animation class is present
     expect(picker).toBeInTheDocument();
   });

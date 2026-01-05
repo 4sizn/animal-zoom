@@ -1,7 +1,7 @@
-import { describe, expect, test, beforeEach, afterEach, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
+import type { ParticipantResourceConfig } from "../ResourceConfig";
 import { ResourceLoader } from "../ResourceLoader";
 import { ResourceStorage } from "../ResourceStorage";
-import type { ParticipantResourceConfig } from "../ResourceConfig";
 
 describe("ResourceLoader", () => {
   let loader: ResourceLoader;
@@ -240,7 +240,7 @@ describe("ResourceLoader", () => {
 
       // user-1 should return default (was evicted from cache, not in storage)
       expect(loaded1?.character.modelUrl).toBe(
-        "https://example.com/default-character.glb"
+        "https://example.com/default-character.glb",
       );
     });
 

@@ -5,9 +5,9 @@
  * and reduce storage access.
  */
 
-import type { ParticipantResourceConfig } from "./ResourceConfig";
-import type { IResourceStorage } from "./IResourceStorage";
 import { DefaultConfigs } from "./DefaultConfigs";
+import type { IResourceStorage } from "./IResourceStorage";
+import type { ParticipantResourceConfig } from "./ResourceConfig";
 
 /**
  * Configuration options for ResourceLoader
@@ -45,7 +45,7 @@ export class ResourceLoader {
    * @returns The participant's configuration
    */
   async loadParticipantConfig(
-    participantId: string
+    participantId: string,
   ): Promise<ParticipantResourceConfig> {
     // Check cache first
     const cached = this.cache.get(participantId);
@@ -62,7 +62,7 @@ export class ResourceLoader {
       // If not found or corrupted, use default
       if (!config) {
         console.warn(
-          `Config not found for ${participantId}, using default config`
+          `Config not found for ${participantId}, using default config`,
         );
         config = DefaultConfigs.getDefaultFullConfig(participantId);
       }
@@ -74,7 +74,7 @@ export class ResourceLoader {
     } catch (error) {
       console.error(
         `Error loading config for ${participantId}, using default:`,
-        error
+        error,
       );
       const config = DefaultConfigs.getDefaultFullConfig(participantId);
       this.addToCache(participantId, config);
@@ -90,7 +90,7 @@ export class ResourceLoader {
    */
   async preloadConfigs(participantIds: string[]): Promise<void> {
     await Promise.all(
-      participantIds.map((id) => this.loadParticipantConfig(id))
+      participantIds.map((id) => this.loadParticipantConfig(id)),
     );
   }
 
@@ -132,7 +132,7 @@ export class ResourceLoader {
    */
   private addToCache(
     participantId: string,
-    config: ParticipantResourceConfig
+    config: ParticipantResourceConfig,
   ): void {
     // If cache is full, evict least recently used
     if (this.cache.size >= this.maxCacheSize) {

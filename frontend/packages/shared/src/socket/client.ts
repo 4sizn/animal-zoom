@@ -3,21 +3,21 @@
  * Socket.io 기반 실시간 통신 클라이언트
  */
 
-import { io, Socket } from 'socket.io-client';
-import { tokenManager } from '../api/client';
+import { io, type Socket } from "socket.io-client";
+import { tokenManager } from "../api/client";
+import type { AvatarConfig } from "../api/types";
 import type {
-  SocketClientOptions,
   EventListeners,
+  SocketClientOptions,
   StateUpdateData,
   // ClientEvents,
   // ServerEvents,
-} from './types';
-import type { AvatarConfig } from '../api/types';
+} from "./types";
 
 /**
  * WebSocket Client Configuration
  */
-const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3000';
+const WS_URL = import.meta.env.VITE_WS_URL || "http://localhost:3000";
 const DEFAULT_OPTIONS: SocketClientOptions = {
   autoConnect: false,
   reconnection: true,
@@ -63,75 +63,75 @@ export class SocketClient {
     if (!this.socket) return;
 
     // Connection events
-    this.socket.on('connect', () => {
+    this.socket.on("connect", () => {
       this.isConnecting = false;
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocket] Connected', this.socket?.id);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocket] Connected", this.socket?.id);
       }
       this.listeners.onConnect?.();
     });
 
-    this.socket.on('disconnect', (reason: string) => {
+    this.socket.on("disconnect", (reason: string) => {
       this.isConnecting = false;
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocket] Disconnected', reason);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocket] Disconnected", reason);
       }
       this.listeners.onDisconnect?.(reason);
     });
 
-    this.socket.on('connect_error', (error: Error) => {
+    this.socket.on("connect_error", (error: Error) => {
       this.isConnecting = false;
-      console.error('[WebSocket] Connection Error', error);
+      console.error("[WebSocket] Connection Error", error);
       this.listeners.onError?.(error);
     });
 
     // Room events
-    this.socket.on('room:joined', (data) => {
+    this.socket.on("room:joined", (data) => {
       this.currentRoom = data.roomCode;
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocket] Room Joined', data);
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocket] Room Joined", data);
       }
       this.listeners.onRoomJoined?.(data);
     });
 
-    this.socket.on('user:joined', (data) => {
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocket] User Joined', data);
+    this.socket.on("user:joined", (data) => {
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocket] User Joined", data);
       }
       this.listeners.onUserJoined?.(data);
     });
 
-    this.socket.on('user:left', (data) => {
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocket] User Left', data);
+    this.socket.on("user:left", (data) => {
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocket] User Left", data);
       }
       this.listeners.onUserLeft?.(data);
     });
 
-    this.socket.on('room:updated', (data) => {
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocket] Room Updated', data);
+    this.socket.on("room:updated", (data) => {
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocket] Room Updated", data);
       }
       this.listeners.onRoomUpdated?.(data);
     });
 
     // Chat events
-    this.socket.on('chat:message', (data) => {
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocket] Chat Message', data);
+    this.socket.on("chat:message", (data) => {
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocket] Chat Message", data);
       }
       this.listeners.onChatMessage?.(data);
     });
 
     // State events
-    this.socket.on('state:update', (data) => {
+    this.socket.on("state:update", (data) => {
       // Don't log every state update (too noisy)
       this.listeners.onStateUpdate?.(data);
     });
 
-    this.socket.on('avatar:updated', (data) => {
-      if (import.meta.env.VITE_DEBUG === 'true') {
-        console.log('[WebSocket] Avatar Updated', data);
+    this.socket.on("avatar:updated", (data) => {
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocket] Avatar Updated", data);
       }
       this.listeners.onAvatarUpdated?.(data);
     });
@@ -142,18 +142,18 @@ export class SocketClient {
    */
   connect(): void {
     if (!this.socket) {
-      console.error('[WebSocket] Socket not initialized');
+      console.error("[WebSocket] Socket not initialized");
       return;
     }
 
     if (this.isConnecting || this.socket.connected) {
-      console.warn('[WebSocket] Already connected or connecting');
+      console.warn("[WebSocket] Already connected or connecting");
       return;
     }
 
     const token = tokenManager.getToken();
     if (!token) {
-      console.error('[WebSocket] No authentication token found');
+      console.error("[WebSocket] No authentication token found");
       return;
     }
 
@@ -190,11 +190,11 @@ export class SocketClient {
    */
   joinRoom(roomCode: string): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocket] Not connected');
+      console.error("[WebSocket] Not connected");
       return;
     }
 
-    this.socket.emit('room:join', { roomCode });
+    this.socket.emit("room:join", { roomCode });
   }
 
   /**
@@ -202,11 +202,11 @@ export class SocketClient {
    */
   leaveRoom(): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocket] Not connected');
+      console.error("[WebSocket] Not connected");
       return;
     }
 
-    this.socket.emit('room:leave');
+    this.socket.emit("room:leave");
     this.currentRoom = null;
   }
 
@@ -215,16 +215,16 @@ export class SocketClient {
    */
   sendChatMessage(message: string): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocket] Not connected');
+      console.error("[WebSocket] Not connected");
       return;
     }
 
     if (!this.currentRoom) {
-      console.error('[WebSocket] Not in a room');
+      console.error("[WebSocket] Not in a room");
       return;
     }
 
-    this.socket.emit('chat:message', { message });
+    this.socket.emit("chat:message", { message });
   }
 
   /**
@@ -234,7 +234,7 @@ export class SocketClient {
     if (!this.socket?.connected) return;
     if (!this.currentRoom) return;
 
-    this.socket.emit('state:update', data);
+    this.socket.emit("state:update", data);
   }
 
   /**
@@ -242,16 +242,16 @@ export class SocketClient {
    */
   updateAvatar(config: AvatarConfig): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocket] Not connected');
+      console.error("[WebSocket] Not connected");
       return;
     }
 
     if (!this.currentRoom) {
-      console.error('[WebSocket] Not in a room');
+      console.error("[WebSocket] Not in a room");
       return;
     }
 
-    this.socket.emit('avatar:update', config);
+    this.socket.emit("avatar:update", config);
   }
 
   /**

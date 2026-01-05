@@ -2,30 +2,26 @@
  * Resources Module Barrel Export
  */
 
+// Asset URL Resolution
+export { AssetUrlResolver, createDefaultResolver } from "./AssetUrlResolver";
+// Utilities
+export { DefaultConfigs } from "./DefaultConfigs";
 // Interfaces
-export type { IResourceStorage } from './IResourceStorage';
+export type { IResourceStorage } from "./IResourceStorage";
 export type {
-  ParticipantResourceConfig,
   CharacterConfig,
+  ParticipantResourceConfig,
   RoomConfig,
   ValidationResult,
-} from './ResourceConfig';
-
-// Storage Implementations
-export { ResourceStorage } from './ResourceStorage';
-export { ResourceStorageAPI } from './ResourceStorageAPI';
-
-// Loader
-export { ResourceLoader } from './ResourceLoader';
-export type { ResourceLoaderOptions } from './ResourceLoader';
-
-// Utilities
-export { DefaultConfigs } from './DefaultConfigs';
+} from "./ResourceConfig";
 export {
-  validateParticipantResourceConfig,
   validateCharacterConfig,
+  validateParticipantResourceConfig,
   validateRoomConfig,
-} from './ResourceConfig';
-
-// Asset URL Resolution
-export { AssetUrlResolver, createDefaultResolver } from './AssetUrlResolver';
+} from "./ResourceConfig";
+export type { ResourceLoaderOptions } from "./ResourceLoader";
+// Loader
+export { ResourceLoader } from "./ResourceLoader";
+// Storage Implementations
+export { ResourceStorage } from "./ResourceStorage";
+export { ResourceStorageAPI } from "./ResourceStorageAPI";

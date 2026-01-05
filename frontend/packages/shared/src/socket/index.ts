@@ -3,18 +3,17 @@
  */
 
 // Legacy SocketClient (deprecated - use WebSocketClientController instead)
-export { SocketClient, getSocketClient, destroySocketClient } from './client';
-
-// New OOP + RxJS WebSocket Client Controller
-export {
-  WebSocketClientController,
-  getInstance,
-  destroyInstance,
-} from './WebSocketClientController';
+export { destroySocketClient, getSocketClient, SocketClient } from "./client";
+export type * from "./controller-types";
 
 // Subscription Manager (for advanced use cases)
-export { SubscriptionManager } from './SubscriptionManager';
+export { SubscriptionManager } from "./SubscriptionManager";
 
 // Type exports
-export type * from './types';
-export type * from './controller-types';
+export type * from "./types";
+// New OOP + RxJS WebSocket Client Controller
+export {
+	destroyInstance,
+	getInstance,
+	WebSocketClientController,
+} from "./WebSocketClientController";

@@ -5,7 +5,7 @@
  * storable JSON format, and deserialize them back into Babylon.js objects.
  */
 
-import { Scene, Mesh, SceneSerializer } from "@babylonjs/core";
+import { Mesh, type Scene, SceneSerializer } from "@babylonjs/core";
 import type { CharacterConfig, RoomConfig } from "./ResourceConfig";
 
 /**
@@ -24,7 +24,7 @@ export class ResourceSerializer {
   static serializeCharacter(
     mesh: Mesh,
     modelUrl: string,
-    customization: CharacterConfig["customization"]
+    customization: CharacterConfig["customization"],
   ): CharacterConfig {
     if (!mesh) {
       throw new Error("Invalid mesh: mesh is required");
@@ -59,7 +59,7 @@ export class ResourceSerializer {
   static serializeRoom(
     scene: Scene,
     environment: RoomConfig["environment"],
-    lighting: RoomConfig["lighting"]
+    lighting: RoomConfig["lighting"],
   ): RoomConfig {
     if (!scene) {
       throw new Error("Invalid scene: scene is required");
@@ -122,10 +122,7 @@ export class ResourceSerializer {
    * @returns Object containing array of reconstructed meshes
    * @throws Error if config is invalid or deserialization fails
    */
-  static deserializeRoom(
-    scene: Scene,
-    config: RoomConfig
-  ): { meshes: Mesh[] } {
+  static deserializeRoom(scene: Scene, config: RoomConfig): { meshes: Mesh[] } {
     if (!config.serializedData) {
       throw new Error("Invalid serialized data: serializedData is required");
     }
@@ -136,11 +133,16 @@ export class ResourceSerializer {
       const meshes: Mesh[] = [];
 
       // If there's actual scene data, we would deserialize it here
-      if (config.serializedData && Object.keys(config.serializedData).length > 0) {
+      if (
+        config.serializedData &&
+        Object.keys(config.serializedData).length > 0
+      ) {
         // In a real implementation, we'd use:
         // SceneLoader.ImportMesh or SceneSerializer.Parse
         // For now, return existing meshes
-        meshes.push(...scene.meshes.filter((m) => m instanceof Mesh) as Mesh[]);
+        meshes.push(
+          ...(scene.meshes.filter((m) => m instanceof Mesh) as Mesh[]),
+        );
       }
 
       return { meshes };

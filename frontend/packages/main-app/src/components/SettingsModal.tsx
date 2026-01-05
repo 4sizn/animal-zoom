@@ -3,7 +3,9 @@
  * User settings and status preferences
  */
 
-import { useState } from 'react';
+import { Circle, MinusCircle, Moon } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,12 +13,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { ParticipantStatus } from '@/types/room';
-import { Circle, Moon, MinusCircle } from 'lucide-react';
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
+import type { ParticipantStatus } from "@/types/room";
 
 interface SettingsModalProps {
   open: boolean;
@@ -27,7 +27,7 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
   const { currentUser, updateParticipantStatus } = useRoomStore();
   const { toast } = useToast();
   const [selectedStatus, setSelectedStatus] = useState<ParticipantStatus>(
-    currentUser?.status || 'PRESENT'
+    currentUser?.status || "PRESENT",
   );
 
   const handleSave = () => {
@@ -36,52 +36,52 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
     try {
       updateParticipantStatus(currentUser.id, selectedStatus);
       toast({
-        title: 'Status updated',
+        title: "Status updated",
         description: `Your status has been changed to ${getStatusLabel(selectedStatus)}`,
       });
       onOpenChange(false);
     } catch (error) {
       toast({
-        title: 'Failed to update status',
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to update status",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
       });
     }
   };
 
   const getStatusLabel = (status: ParticipantStatus): string => {
     switch (status) {
-      case 'PRESENT':
-        return 'Present';
-      case 'AWAY':
-        return 'Away';
-      case 'DO_NOT_DISTURB':
-        return 'Do Not Disturb';
+      case "PRESENT":
+        return "Present";
+      case "AWAY":
+        return "Away";
+      case "DO_NOT_DISTURB":
+        return "Do Not Disturb";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
   const getStatusDescription = (status: ParticipantStatus): string => {
     switch (status) {
-      case 'PRESENT':
-        return 'You are active and available in the room';
-      case 'AWAY':
-        return 'You are temporarily away from the room';
-      case 'DO_NOT_DISTURB':
-        return 'You prefer not to be disturbed during the session';
+      case "PRESENT":
+        return "You are active and available in the room";
+      case "AWAY":
+        return "You are temporarily away from the room";
+      case "DO_NOT_DISTURB":
+        return "You prefer not to be disturbed during the session";
       default:
-        return '';
+        return "";
     }
   };
 
   const getStatusIcon = (status: ParticipantStatus) => {
     switch (status) {
-      case 'PRESENT':
+      case "PRESENT":
         return Circle;
-      case 'AWAY':
+      case "AWAY":
         return Moon;
-      case 'DO_NOT_DISTURB':
+      case "DO_NOT_DISTURB":
         return MinusCircle;
       default:
         return Circle;
@@ -90,18 +90,18 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
 
   const getStatusColor = (status: ParticipantStatus): string => {
     switch (status) {
-      case 'PRESENT':
-        return 'text-green-500';
-      case 'AWAY':
-        return 'text-yellow-500';
-      case 'DO_NOT_DISTURB':
-        return 'text-red-500';
+      case "PRESENT":
+        return "text-green-500";
+      case "AWAY":
+        return "text-yellow-500";
+      case "DO_NOT_DISTURB":
+        return "text-red-500";
       default:
-        return 'text-gray-500';
+        return "text-gray-500";
     }
   };
 
-  const statuses: ParticipantStatus[] = ['PRESENT', 'AWAY', 'DO_NOT_DISTURB'];
+  const statuses: ParticipantStatus[] = ["PRESENT", "AWAY", "DO_NOT_DISTURB"];
 
   if (!currentUser) return null;
 
@@ -129,7 +129,7 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
                 <div>
                   <p className="font-medium">{currentUser.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {currentUser.isHost ? 'Host' : 'Participant'}
+                    {currentUser.isHost ? "Host" : "Participant"}
                   </p>
                 </div>
               </div>
@@ -152,16 +152,20 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
                       w-full p-3 rounded-lg border-2 transition-all text-left
                       ${
                         isSelected
-                          ? 'border-primary bg-primary/5'
-                          : 'border-transparent bg-muted hover:bg-muted/80'
+                          ? "border-primary bg-primary/5"
+                          : "border-transparent bg-muted hover:bg-muted/80"
                       }
                     `}
                   >
                     <div className="flex items-start gap-3">
-                      <Icon className={`h-5 w-5 mt-0.5 ${getStatusColor(status)}`} />
+                      <Icon
+                        className={`h-5 w-5 mt-0.5 ${getStatusColor(status)}`}
+                      />
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <p className="font-medium">{getStatusLabel(status)}</p>
+                          <p className="font-medium">
+                            {getStatusLabel(status)}
+                          </p>
                           {isSelected && (
                             <div className="h-2 w-2 rounded-full bg-primary" />
                           )}

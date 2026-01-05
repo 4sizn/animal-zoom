@@ -2,9 +2,10 @@
  * MessageList - Display chat messages
  */
 
-import React, { useEffect, useRef } from 'react';
-import { Message } from './Message';
-import { useChatStore } from '../store/chatStore';
+import type React from "react";
+import { useEffect, useRef } from "react";
+import { useChatStore } from "../store/chatStore";
+import { Message } from "./Message";
 
 export const MessageList: React.FC = () => {
   const messages = useChatStore((state) => state.messages);
@@ -12,7 +13,7 @@ export const MessageList: React.FC = () => {
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (

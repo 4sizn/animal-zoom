@@ -3,7 +3,9 @@
  * Confirmation dialogs for leave/end room actions
  */
 
-import { useNavigate } from 'react-router-dom';
+import { AlertCircle, PhoneOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,18 +13,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useRoomStore } from '@/stores/roomStore';
-import { useToast } from '@/hooks/use-toast';
-import { AlertCircle, PhoneOff } from 'lucide-react';
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useRoomStore } from "@/stores/roomStore";
 
 interface LeaveConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function LeaveConfirmDialog({ open, onOpenChange }: LeaveConfirmDialogProps) {
+export function LeaveConfirmDialog({
+  open,
+  onOpenChange,
+}: LeaveConfirmDialogProps) {
   const navigate = useNavigate();
   const { leaveRoom } = useRoomStore();
   const { toast } = useToast();
@@ -31,16 +34,16 @@ export function LeaveConfirmDialog({ open, onOpenChange }: LeaveConfirmDialogPro
     try {
       leaveRoom();
       toast({
-        title: 'Left room',
-        description: 'You have left the room',
+        title: "Left room",
+        description: "You have left the room",
       });
       onOpenChange(false);
-      navigate('/');
+      navigate("/");
     } catch (error) {
       toast({
-        title: 'Failed to leave',
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to leave",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
       });
     }
   };
@@ -91,19 +94,19 @@ export function EndRoomDialog({ open, onOpenChange }: EndRoomDialogProps) {
     try {
       endRoom();
       toast({
-        title: 'Room ended',
-        description: 'The room has been ended for all participants',
+        title: "Room ended",
+        description: "The room has been ended for all participants",
       });
       onOpenChange(false);
-      navigate('/');
+      navigate("/");
 
       // TODO: Send WebSocket event to notify all participants
       // wsController.emit('ROOM_ENDED', { roomId: room.id });
     } catch (error) {
       toast({
-        title: 'Failed to end room',
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: 'destructive',
+        title: "Failed to end room",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
       });
     }
   };
@@ -117,27 +120,33 @@ export function EndRoomDialog({ open, onOpenChange }: EndRoomDialogProps) {
             End Room for All?
           </DialogTitle>
           <DialogDescription>
-            This will end the room for all participants. This action cannot be undone.
+            This will end the room for all participants. This action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-4 space-y-3">
           <div className="p-3 bg-destructive/10 rounded-lg border border-destructive/20">
-            <p className="text-sm font-medium text-destructive mb-1">
-              Warning
-            </p>
+            <p className="text-sm font-medium text-destructive mb-1">Warning</p>
             <p className="text-sm text-muted-foreground">
-              All participants will be removed from the room and the room will be closed.
+              All participants will be removed from the room and the room will
+              be closed.
             </p>
           </div>
 
           {room && (
             <div className="text-sm">
               <p className="text-muted-foreground">
-                Room: <span className="font-medium text-foreground">{room.title}</span>
+                Room:{" "}
+                <span className="font-medium text-foreground">
+                  {room.title}
+                </span>
               </p>
               <p className="text-muted-foreground">
-                Code: <span className="font-mono font-medium text-foreground">{room.code}</span>
+                Code:{" "}
+                <span className="font-mono font-medium text-foreground">
+                  {room.code}
+                </span>
               </p>
             </div>
           )}

@@ -142,7 +142,7 @@ describe("DefaultConfigs", () => {
       const config1 = DefaultConfigs.getDefaultFullConfig("user-1");
 
       // Wait a small amount of time
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       const config2 = DefaultConfigs.getDefaultFullConfig("user-1");
 

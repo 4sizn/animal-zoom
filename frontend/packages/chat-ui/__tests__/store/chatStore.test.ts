@@ -3,34 +3,34 @@
  * Tests for Zustand state management and WebSocket integration
  */
 
-import { describe, it, expect, beforeEach } from 'bun:test';
-import { useChatStore } from '../../src/store/chatStore';
-import type { ChatMessage } from '@animal-zoom/shared/types';
+import { beforeEach, describe, expect, it } from "bun:test";
+import type { ChatMessage } from "@animal-zoom/shared/types";
+import { useChatStore } from "../../src/store/chatStore";
 
-describe('ChatStore', () => {
+describe("ChatStore", () => {
   beforeEach(() => {
     // Reset store before each test
     useChatStore.setState({
       messages: [],
       isOpen: true,
-      inputValue: '',
+      inputValue: "",
       roomId: null,
       userId: null,
       userName: null,
-      connectionState: 'disconnected',
+      connectionState: "disconnected",
     });
   });
 
-  describe('Messages', () => {
-    it('should add a message', () => {
+  describe("Messages", () => {
+    it("should add a message", () => {
       const message: ChatMessage = {
-        id: '1',
-        roomId: 'test-room',
-        userId: 'user-1',
-        userName: 'Test User',
-        message: 'Hello World',
+        id: "1",
+        roomId: "test-room",
+        userId: "user-1",
+        userName: "Test User",
+        message: "Hello World",
         timestamp: new Date(),
-        type: 'text',
+        type: "text",
       };
 
       useChatStore.getState().addMessage(message);
@@ -40,25 +40,25 @@ describe('ChatStore', () => {
       expect(state.messages[0]).toEqual(message);
     });
 
-    it('should add multiple messages', () => {
+    it("should add multiple messages", () => {
       const message1: ChatMessage = {
-        id: '1',
-        roomId: 'test-room',
-        userId: 'user-1',
-        userName: 'User 1',
-        message: 'First message',
+        id: "1",
+        roomId: "test-room",
+        userId: "user-1",
+        userName: "User 1",
+        message: "First message",
         timestamp: new Date(),
-        type: 'text',
+        type: "text",
       };
 
       const message2: ChatMessage = {
-        id: '2',
-        roomId: 'test-room',
-        userId: 'user-2',
-        userName: 'User 2',
-        message: 'Second message',
+        id: "2",
+        roomId: "test-room",
+        userId: "user-2",
+        userName: "User 2",
+        message: "Second message",
         timestamp: new Date(),
-        type: 'text',
+        type: "text",
       };
 
       useChatStore.getState().addMessage(message1);
@@ -70,15 +70,15 @@ describe('ChatStore', () => {
       expect(state.messages[1]).toEqual(message2);
     });
 
-    it('should clear all messages', () => {
+    it("should clear all messages", () => {
       const message: ChatMessage = {
-        id: '1',
-        roomId: 'test-room',
-        userId: 'user-1',
-        userName: 'Test User',
-        message: 'Test',
+        id: "1",
+        roomId: "test-room",
+        userId: "user-1",
+        userName: "Test User",
+        message: "Test",
         timestamp: new Date(),
-        type: 'text',
+        type: "text",
       };
 
       useChatStore.getState().addMessage(message);
@@ -89,8 +89,8 @@ describe('ChatStore', () => {
     });
   });
 
-  describe('UI State', () => {
-    it('should toggle chat open/close', () => {
+  describe("UI State", () => {
+    it("should toggle chat open/close", () => {
       const initialState = useChatStore.getState().isOpen;
 
       useChatStore.getState().toggleChat();
@@ -100,7 +100,7 @@ describe('ChatStore', () => {
       expect(useChatStore.getState().isOpen).toBe(initialState);
     });
 
-    it('should set chat open state directly', () => {
+    it("should set chat open state directly", () => {
       useChatStore.getState().setIsOpen(false);
       expect(useChatStore.getState().isOpen).toBe(false);
 
@@ -108,18 +108,18 @@ describe('ChatStore', () => {
       expect(useChatStore.getState().isOpen).toBe(true);
     });
 
-    it('should update input value', () => {
-      const testValue = 'Test input';
+    it("should update input value", () => {
+      const testValue = "Test input";
 
       useChatStore.getState().setInputValue(testValue);
       expect(useChatStore.getState().inputValue).toBe(testValue);
     });
   });
 
-  describe('User and Room Management', () => {
-    it('should set user information', () => {
-      const userId = 'user-123';
-      const userName = 'Test User';
+  describe("User and Room Management", () => {
+    it("should set user information", () => {
+      const userId = "user-123";
+      const userName = "Test User";
 
       useChatStore.getState().setUser(userId, userName);
 
@@ -128,15 +128,15 @@ describe('ChatStore', () => {
       expect(state.userName).toBe(userName);
     });
 
-    it('should set room ID', () => {
-      const roomId = 'room-456';
+    it("should set room ID", () => {
+      const roomId = "room-456";
 
       useChatStore.getState().setRoomId(roomId);
       expect(useChatStore.getState().roomId).toBe(roomId);
     });
 
-    it('should update room ID when joining room', () => {
-      const roomCode = 'TEST123';
+    it("should update room ID when joining room", () => {
+      const roomCode = "TEST123";
 
       // Note: joinRoom calls wsController.joinRoom which is mocked
       useChatStore.getState().joinRoom(roomCode);
@@ -144,61 +144,61 @@ describe('ChatStore', () => {
     });
   });
 
-  describe('Connection State', () => {
-    it('should have initial connection state as disconnected', () => {
+  describe("Connection State", () => {
+    it("should have initial connection state as disconnected", () => {
       const state = useChatStore.getState();
-      expect(state.connectionState).toBe('disconnected');
+      expect(state.connectionState).toBe("disconnected");
     });
 
-    it('should have WebSocket methods available', () => {
+    it("should have WebSocket methods available", () => {
       const state = useChatStore.getState();
 
-      expect(typeof state.connectWebSocket).toBe('function');
-      expect(typeof state.disconnectWebSocket).toBe('function');
-      expect(typeof state.joinRoom).toBe('function');
-      expect(typeof state.sendMessage).toBe('function');
+      expect(typeof state.connectWebSocket).toBe("function");
+      expect(typeof state.disconnectWebSocket).toBe("function");
+      expect(typeof state.joinRoom).toBe("function");
+      expect(typeof state.sendMessage).toBe("function");
     });
   });
 
-  describe('Store Integration', () => {
-    it('should maintain state consistency', () => {
+  describe("Store Integration", () => {
+    it("should maintain state consistency", () => {
       // Setup user and room
-      useChatStore.getState().setUser('user-1', 'Test User');
-      useChatStore.getState().setRoomId('room-1');
+      useChatStore.getState().setUser("user-1", "Test User");
+      useChatStore.getState().setRoomId("room-1");
 
       // Add message
       const message: ChatMessage = {
-        id: '1',
-        roomId: 'room-1',
-        userId: 'user-1',
-        userName: 'Test User',
-        message: 'Test message',
+        id: "1",
+        roomId: "room-1",
+        userId: "user-1",
+        userName: "Test User",
+        message: "Test message",
         timestamp: new Date(),
-        type: 'text',
+        type: "text",
       };
       useChatStore.getState().addMessage(message);
 
       // Verify all state
       const state = useChatStore.getState();
-      expect(state.userId).toBe('user-1');
-      expect(state.userName).toBe('Test User');
-      expect(state.roomId).toBe('room-1');
+      expect(state.userId).toBe("user-1");
+      expect(state.userName).toBe("Test User");
+      expect(state.roomId).toBe("room-1");
       expect(state.messages).toHaveLength(1);
-      expect(state.messages[0].userId).toBe('user-1');
+      expect(state.messages[0].userId).toBe("user-1");
     });
 
-    it('should handle multiple state updates', () => {
+    it("should handle multiple state updates", () => {
       // Multiple rapid state updates
-      useChatStore.getState().setUser('user-1', 'User 1');
-      useChatStore.getState().setRoomId('room-1');
-      useChatStore.getState().setInputValue('typing...');
+      useChatStore.getState().setUser("user-1", "User 1");
+      useChatStore.getState().setRoomId("room-1");
+      useChatStore.getState().setInputValue("typing...");
       useChatStore.getState().setIsOpen(true);
 
       const state = useChatStore.getState();
-      expect(state.userId).toBe('user-1');
-      expect(state.userName).toBe('User 1');
-      expect(state.roomId).toBe('room-1');
-      expect(state.inputValue).toBe('typing...');
+      expect(state.userId).toBe("user-1");
+      expect(state.userName).toBe("User 1");
+      expect(state.roomId).toBe("room-1");
+      expect(state.inputValue).toBe("typing...");
       expect(state.isOpen).toBe(true);
     });
   });

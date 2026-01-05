@@ -1,9 +1,9 @@
-import { apiClient } from './client';
+import { apiClient } from "./client";
 import type {
   AssetCatalogResponse,
-  AssetResponseDto,
   AssetFilterParams,
-} from './types';
+  AssetResponseDto,
+} from "./types";
 
 /**
  * Simple cache implementation for asset list
@@ -51,9 +51,9 @@ export const assetCatalogApi = {
    * Results are cached for 5 minutes
    */
   async listAssets(
-    filters: AssetFilterParams = {}
+    filters: AssetFilterParams = {},
   ): Promise<AssetCatalogResponse> {
-    const cacheKey = getCacheKey('listAssets', filters);
+    const cacheKey = getCacheKey("listAssets", filters);
     const cached = getFromCache<AssetCatalogResponse>(cacheKey);
 
     if (cached) {
@@ -61,10 +61,10 @@ export const assetCatalogApi = {
     }
 
     const response = await apiClient.get<AssetCatalogResponse>(
-      '/resources/catalog',
+      "/resources/catalog",
       {
         params: filters,
-      }
+      },
     );
 
     setCache(cacheKey, response.data);
@@ -76,7 +76,7 @@ export const assetCatalogApi = {
    */
   async getAsset(id: string): Promise<AssetResponseDto | null> {
     const response = await apiClient.get<AssetResponseDto | null>(
-      `/resources/catalog/${id}`
+      `/resources/catalog/${id}`,
     );
     return response.data;
   },
@@ -89,7 +89,7 @@ export const assetCatalogApi = {
     // Encode the key to handle special characters in URL
     const encodedKey = encodeURIComponent(key);
     const response = await apiClient.get<{ url: string }>(
-      `/resources/assets/${encodedKey}/url`
+      `/resources/assets/${encodedKey}/url`,
     );
     return response.data;
   },

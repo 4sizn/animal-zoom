@@ -1,26 +1,26 @@
-import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import { resolve } from "path";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   build: {
     lib: {
       entry: {
-        index: resolve(__dirname, 'src/index.ts'),
-        types: resolve(__dirname, 'src/types/index.ts'),
-        api: resolve(__dirname, 'src/api/index.ts'),
-        socket: resolve(__dirname, 'src/socket/index.ts'),
+        index: resolve(__dirname, "src/index.ts"),
+        types: resolve(__dirname, "src/types/index.ts"),
+        api: resolve(__dirname, "src/api/index.ts"),
+        socket: resolve(__dirname, "src/socket/index.ts"),
       },
-      formats: ['es'],
+      formats: ["es"],
       fileName: (format, entryName) => `${entryName}.js`,
     },
     rollupOptions: {
-      external: ['socket.io-client', 'axios', 'rxjs'],
+      external: ["socket.io-client", "axios", "rxjs"],
       output: {
         preserveModules: true,
-        preserveModulesRoot: 'src',
+        preserveModulesRoot: "src",
       },
     },
     sourcemap: true,
-    target: 'es2020',
+    target: "es2020",
   },
 });

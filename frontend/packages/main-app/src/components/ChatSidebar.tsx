@@ -3,14 +3,19 @@
  * Chat interface integrating @animal-zoom/chat-ui
  */
 
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useRoomStore } from '@/stores/roomStore';
-import { X } from 'lucide-react';
-import { useEffect } from 'react';
-import { ChatContainer, useChatStore } from '@animal-zoom/chat-ui';
-import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
-import '@animal-zoom/chat-ui/styles';
+import { ChatContainer, useChatStore } from "@animal-zoom/chat-ui";
+import { getInstance as getWebSocketController } from "@animal-zoom/shared/socket";
+import { X } from "lucide-react";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useRoomStore } from "@/stores/roomStore";
+import "@animal-zoom/chat-ui/styles";
 
 interface ChatSidebarProps {
   onClose?: () => void;
@@ -23,7 +28,12 @@ export function ChatSidebar({ onClose }: ChatSidebarProps) {
   // Initialize chat store when room/user are available
   useEffect(() => {
     if (currentUser && room) {
-      console.log('[ChatSidebar] Initializing chat with user:', currentUser.name, 'room:', room.code);
+      console.log(
+        "[ChatSidebar] Initializing chat with user:",
+        currentUser.name,
+        "room:",
+        room.code,
+      );
 
       // Set user info in chat store
       setUser(currentUser.id, currentUser.name);
@@ -33,12 +43,18 @@ export function ChatSidebar({ onClose }: ChatSidebarProps) {
 
       // If WebSocket is already connected, join immediately
       if (wsController.isConnected()) {
-        console.log('[ChatSidebar] WebSocket already connected, joining room:', room.code);
+        console.log(
+          "[ChatSidebar] WebSocket already connected, joining room:",
+          room.code,
+        );
         joinRoom(room.code);
       } else {
         // Otherwise wait for connection
         const subscription = wsController.connected$.subscribe(() => {
-          console.log('[ChatSidebar] WebSocket connected, joining room:', room.code);
+          console.log(
+            "[ChatSidebar] WebSocket connected, joining room:",
+            room.code,
+          );
           joinRoom(room.code);
         });
 
@@ -77,7 +93,9 @@ export function ChatSidebar({ onClose }: ChatSidebarProps) {
         <div className="flex items-center justify-between p-4 border-b">
           <div>
             <h3 className="text-lg font-semibold">Chat</h3>
-            <p className="text-sm text-muted-foreground">Send messages to everyone</p>
+            <p className="text-sm text-muted-foreground">
+              Send messages to everyone
+            </p>
           </div>
           <Button variant="ghost" size="sm" onClick={onClose}>
             <X className="h-4 w-4" />

@@ -1,26 +1,31 @@
 {
-  "name": "@animal-zoom/monorepo",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Animal Zoom Frontend Monorepo",
-  "scripts": {
-    "dev": "turbo run dev",
-    "dev:standalone": "turbo run dev:standalone",
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "lint": "turbo run lint",
-    "type-check": "turbo run type-check",
-    "clean": "turbo run clean && rm -rf node_modules"
-  },
-  "devDependencies": {
-    "turbo": "^2.0.0"
-  },
-  "packageManager": "bun@1.0.0",
-  "engines": {
-    "node": ">=18.0.0",
-    "bun": ">=1.0.0"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+	"name": "@animal-zoom/monorepo",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Animal Zoom Frontend Monorepo",
+	"scripts": {
+		"dev": "turbo run dev",
+		"dev:standalone": "turbo run dev:standalone",
+		"build": "turbo run build",
+		"test": "turbo run test",
+		"lint": "turbo run lint",
+		"type-check": "turbo run type-check",
+		"clean": "turbo run clean && rm -rf node_modules",
+		"format": "biome format .",
+		"format:write": "biome format --write .",
+		"check": "biome check .",
+		"check:write": "biome check --write ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.11",
+		"turbo": "^2.0.0"
+	},
+	"packageManager": "bun@1.0.0",
+	"engines": {
+		"node": ">=18.0.0",
+		"bun": ">=1.0.0"
+	},
+	"workspaces": [
+		"packages/*"
+	]
 }

@@ -19,7 +19,7 @@ export class DefaultConfigs {
    * @returns Default character configuration
    */
   static getDefaultCharacterConfig(
-    participantId: string
+    participantId: string,
   ): ParticipantResourceConfig {
     return {
       version: VERSION,
@@ -66,7 +66,7 @@ export class DefaultConfigs {
    * @returns Default room configuration
    */
   static getDefaultRoomConfig(
-    participantId: string
+    participantId: string,
   ): ParticipantResourceConfig {
     return {
       version: VERSION,
@@ -124,7 +124,7 @@ export class DefaultConfigs {
    * @returns Complete default configuration
    */
   static getDefaultFullConfig(
-    participantId: string
+    participantId: string,
   ): ParticipantResourceConfig {
     return {
       version: VERSION,

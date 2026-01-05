@@ -3,7 +3,7 @@
  * Type definitions for WebSocket debug UI component
  */
 
-import type { WebSocketClientController } from '../socket/WebSocketClientController';
+import type { WebSocketClientController } from "../socket/WebSocketClientController";
 
 /**
  * Debug Panel Props
@@ -28,34 +28,38 @@ export interface DebugPanelProps {
 /**
  * Connection state with color indicator
  */
-export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected' | 'error';
+export type ConnectionStatus =
+  | "connected"
+  | "connecting"
+  | "disconnected"
+  | "error";
 
 /**
  * Color mapping for connection states
  */
 export const CONNECTION_COLORS: Record<ConnectionStatus, string> = {
-  connected: '#22c55e', // green-500
-  connecting: '#eab308', // yellow-500
-  disconnected: '#ef4444', // red-500
-  error: '#ef4444', // red-500
+  connected: "#22c55e", // green-500
+  connecting: "#eab308", // yellow-500
+  disconnected: "#ef4444", // red-500
+  error: "#ef4444", // red-500
 };
 
 /**
  * Connection state display
  */
 export const CONNECTION_LABELS: Record<ConnectionStatus, string> = {
-  connected: 'Connected',
-  connecting: 'Connecting',
-  disconnected: 'Disconnected',
-  error: 'Error',
+  connected: "Connected",
+  connecting: "Connecting",
+  disconnected: "Disconnected",
+  error: "Error",
 };
 
 /**
  * Connection state emoji indicators
  */
 export const CONNECTION_EMOJI: Record<ConnectionStatus, string> = {
-  connected: '🟢',
-  connecting: '🟡',
-  disconnected: '🔴',
-  error: '🔴',
+  connected: "🟢",
+  connecting: "🟡",
+  disconnected: "🔴",
+  error: "🔴",
 };

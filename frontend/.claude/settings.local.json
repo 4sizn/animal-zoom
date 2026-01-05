@@ -1,9 +1,9 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(npm run dev:*)",
-      "WebFetch(domain:localhost)",
-      "Bash(curl:*)"
-    ]
-  }
+	"permissions": {
+		"allow": [
+			"Bash(npm run dev:*)",
+			"WebFetch(domain:localhost)",
+			"Bash(curl:*)"
+		]
+	}
 }
