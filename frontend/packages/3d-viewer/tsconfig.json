@@ -7,7 +7,12 @@
     "declarationMap": true,
     "composite": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@animal-zoom/shared": ["../shared/src"],
+      "@animal-zoom/shared/api": ["../shared/src/api"],
+      "@animal-zoom/shared/types": ["../shared/src/types"],
+      "@animal-zoom/shared/socket": ["../shared/src/socket"],
+      "@animal-zoom/shared/*": ["../shared/src/*"]
     }
   },
   "include": ["src/**/*"],

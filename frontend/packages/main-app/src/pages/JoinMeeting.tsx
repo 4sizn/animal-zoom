@@ -3,7 +3,7 @@
  * Entry point for participants to join a room
  */
 
-import { authApi } from "@animal-zoom/shared/api";
+
 import { Loader2, LogIn } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useRoomStore } from "@/stores/roomStore";
+import { authApi } from "@animal-zoom/shared";
 
 export function JoinMeeting() {
   const { roomCode: urlRoomCode } = useParams<{ roomCode?: string }>();

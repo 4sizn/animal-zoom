@@ -30,7 +30,16 @@
       "@/hooks/*": ["./src/hooks/*"],
       "@/stores/*": ["./src/stores/*"],
       "@/types/*": ["./src/types/*"],
-      "@/utils/*": ["./src/utils/*"]
+      "@/utils/*": ["./src/utils/*"],
+      "@animal-zoom/shared": ["../shared/src"],
+      "@animal-zoom/shared/api": ["../shared/src/api"],
+      "@animal-zoom/shared/types": ["../shared/src/types"],
+      "@animal-zoom/shared/socket": ["../shared/src/socket"],
+      "@animal-zoom/shared/*": ["../shared/src/*"],
+      "@animal-zoom/3d-viewer": ["../3d-viewer/src"],
+      "@animal-zoom/3d-viewer/*": ["../3d-viewer/src/*"],
+      "@animal-zoom/chat-ui": ["../chat-ui/src"],
+      "@animal-zoom/chat-ui/*": ["../chat-ui/src/*"]
     }
   },
   "include": ["src"],
