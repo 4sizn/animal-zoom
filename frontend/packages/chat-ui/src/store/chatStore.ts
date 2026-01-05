@@ -4,12 +4,12 @@
  */
 
 import { create } from 'zustand';
-import { WebSocketClientController } from '@animal-zoom/shared/socket';
+import { getInstance as getWebSocketController } from '@animal-zoom/shared/socket';
 import type { ChatMessage } from '@animal-zoom/shared/types';
 import type { ConnectionState } from '@animal-zoom/shared/socket';
 
-// Create WebSocket controller instance (singleton)
-const wsController = new WebSocketClientController({
+// Use the shared singleton WebSocket controller instance
+const wsController = getWebSocketController({
   autoConnect: false,
   reconnection: true,
   reconnectionAttempts: 5,

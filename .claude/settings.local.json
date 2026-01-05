@@ -90,7 +90,8 @@
       "Bash(pnpm run build:*)",
       "Bash(npm run start:dev:*)",
       "Bash(tail:*)",
-      "Bash(npx nest build)"
+      "Bash(npx nest build)",
+      "Bash(timeout 10 pnpm run dev:*)"
     ]
   }
 }

@@ -18,41 +18,36 @@ interface ChatSidebarProps {
 
 export function ChatSidebar({ onClose }: ChatSidebarProps) {
   const { room, currentUser } = useRoomStore();
-  const { setUser, setRoomId, connectWebSocket, joinRoom } = useChatStore();
+  const { setUser, joinRoom } = useChatStore();
 
   // Initialize chat store when room/user are available
   useEffect(() => {
     if (currentUser && room) {
+      console.log('[ChatSidebar] Initializing chat with user:', currentUser.name, 'room:', room.code);
+
       // Set user info in chat store
       setUser(currentUser.id, currentUser.name);
 
-      // Set room ID
-      setRoomId(room.id);
-
+      // Join the chat room (WebSocket is already managed by LiveSession)
       const wsController = getWebSocketController();
 
-      // Connect to WebSocket if not already connected
-      if (!wsController.isConnected()) {
-        connectWebSocket();
-      }
-
-      // Join the room when WebSocket is connected
-      const subscription = wsController.connected$.subscribe(() => {
-        console.log('[ChatSidebar] WebSocket connected, joining room:', room.code);
-        joinRoom(room.code);
-      });
-
-      // If already connected, join immediately
+      // If WebSocket is already connected, join immediately
       if (wsController.isConnected()) {
-        console.log('[ChatSidebar] Already connected, joining room:', room.code);
+        console.log('[ChatSidebar] WebSocket already connected, joining room:', room.code);
         joinRoom(room.code);
-      }
+      } else {
+        // Otherwise wait for connection
+        const subscription = wsController.connected$.subscribe(() => {
+          console.log('[ChatSidebar] WebSocket connected, joining room:', room.code);
+          joinRoom(room.code);
+        });
 
-      return () => {
-        subscription.unsubscribe();
-      };
+        return () => {
+          subscription.unsubscribe();
+        };
+      }
     }
-  }, [currentUser?.id, currentUser?.name, room?.id, room?.code, setUser, setRoomId, connectWebSocket, joinRoom]);
+  }, [currentUser?.id, currentUser?.name, room?.code, setUser, joinRoom]);
 
   // Don't render if no user or room
   if (!currentUser || !room) {

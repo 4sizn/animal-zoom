@@ -43,3 +43,6 @@ build/
 # Temporary
 tmp/
 temp/
+
+# Turbo
+frontend/.turbo
