@@ -34,9 +34,12 @@ function wrappedPromise<T>(promise: Promise<T>) {
  * @param procedure 데이터를 가져오는 함수
  * @returns 래핑된 컴포넌트
  */
-export function withProcedure<T, P extends Record<string, unknown> = Record<string, unknown>>(
+export function withProcedure<
+  T,
+  P extends Record<string, unknown> = Record<string, unknown>,
+>(
   WrappedComponent: ComponentType<P & { output: T }>,
-  procedure: () => Promise<T> | T
+  procedure: () => Promise<T> | T,
 ): React.FC<P> {
   // 컴포넌트 외부에서 resource를 캐싱하여 재사용
   let resource: ReturnType<typeof wrappedPromise<T>> | null = null;

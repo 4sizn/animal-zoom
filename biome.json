@@ -6,7 +6,8 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false
+    "include": ["frontend/**/*"],
+    "ignore": ["**/node_modules", "**/dist", "**/build", "apiServer/**", "web_core/**", "docs/**"]
   },
   "formatter": {
     "enabled": true,

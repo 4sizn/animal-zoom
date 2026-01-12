@@ -3,7 +3,6 @@
  * Entry point for participants to join a room
  */
 
-
 import { Loader2, LogIn } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";

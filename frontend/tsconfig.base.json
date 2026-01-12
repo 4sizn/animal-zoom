@@ -1,34 +1,34 @@
 {
-	"compilerOptions": {
-		"target": "ES2020",
-		"useDefineForClassFields": true,
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"module": "ESNext",
-		"skipLibCheck": true,
-		"strict": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react-jsx",
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
-		"forceConsistentCasingInFileNames": true,
-		"baseUrl": ".",
-		"paths": {
-			"@animal-zoom/shared": ["./packages/shared/src"],
-			"@animal-zoom/shared/api": ["./packages/shared/src/api"],
-			"@animal-zoom/shared/types": ["./packages/shared/src/types"],
-			"@animal-zoom/shared/socket": ["./packages/shared/src/socket"],
-			"@animal-zoom/shared/*": ["./packages/shared/src/*"],
-			"@animal-zoom/3d-viewer": ["./packages/3d-viewer/src"],
-			"@animal-zoom/3d-viewer/*": ["./packages/3d-viewer/src/*"],
-			"@animal-zoom/chat-ui": ["./packages/chat-ui/src"],
-			"@animal-zoom/chat-ui/*": ["./packages/chat-ui/src/*"]
-		}
-	},
-	"include": [],
-	"exclude": ["node_modules", "dist", "build"]
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "strict": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@animal-zoom/shared": ["./packages/shared/src"],
+      "@animal-zoom/shared/api": ["./packages/shared/src/api"],
+      "@animal-zoom/shared/types": ["./packages/shared/src/types"],
+      "@animal-zoom/shared/socket": ["./packages/shared/src/socket"],
+      "@animal-zoom/shared/*": ["./packages/shared/src/*"],
+      "@animal-zoom/3d-viewer": ["./packages/3d-viewer/src"],
+      "@animal-zoom/3d-viewer/*": ["./packages/3d-viewer/src/*"],
+      "@animal-zoom/chat-ui": ["./packages/chat-ui/src"],
+      "@animal-zoom/chat-ui/*": ["./packages/chat-ui/src/*"]
+    }
+  },
+  "include": [],
+  "exclude": ["node_modules", "dist", "build"]
 }

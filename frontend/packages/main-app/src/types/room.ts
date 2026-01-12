@@ -16,39 +16,39 @@ export type ParticipantStatus = "PRESENT" | "AWAY" | "DO_NOT_DISTURB";
  * Room information
  */
 export interface RoomInfo {
-	id: string; // roomId
-	code: string; // roomCode
-	hostId: string;
-	hostName: string;
-	title: string;
-	state: RoomState;
-	createdAt: Date;
-	waitingRoomEnabled: boolean;
+  id: string; // roomId
+  code: string; // roomCode
+  hostId: string;
+  hostName: string;
+  title: string;
+  state: RoomState;
+  createdAt: Date;
+  waitingRoomEnabled: boolean;
 }
 
 /**
  * Participant information
  */
 export interface ParticipantInfo {
-	id: string;
-	name: string;
-	joinState: UserJoinState;
-	status: ParticipantStatus;
-	isHost: boolean;
-	joinedAt?: Date;
+  id: string;
+  name: string;
+  joinState: UserJoinState;
+  status: ParticipantStatus;
+  isHost: boolean;
+  joinedAt?: Date;
 }
 
 /**
  * Create room request
  */
 export interface CreateRoomRequest {
-	title?: string;
-	waitingRoomEnabled?: boolean;
+  title?: string;
+  waitingRoomEnabled?: boolean;
 }
 
 /**
  * Join room request
  */
 export interface JoinRoomRequest {
-	userName: string;
+  userName: string;
 }

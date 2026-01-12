@@ -13,7 +13,7 @@ export { SubscriptionManager } from "./SubscriptionManager";
 export type * from "./types";
 // New OOP + RxJS WebSocket Client Controller
 export {
-	destroyInstance,
-	getInstance,
-	WebSocketClientController,
+  destroyInstance,
+  getInstance,
+  WebSocketClientController,
 } from "./WebSocketClientController";
