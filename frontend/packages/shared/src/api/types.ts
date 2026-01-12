@@ -61,6 +61,7 @@ export interface Room {
   status: "active" | "inactive";
   currentParticipants: number;
   maxParticipants: number;
+  waiting_room_enabled?: boolean;
   customization?: RoomConfig;
   lastActivityAt: string;
   createdAt: string;
@@ -70,6 +71,7 @@ export interface Room {
 export interface CreateRoomRequest {
   name?: string;
   maxParticipants?: number;
+  waitingRoomEnabled?: boolean;
 }
 
 export interface JoinRoomRequest {

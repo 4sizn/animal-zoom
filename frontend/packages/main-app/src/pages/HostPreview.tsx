@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useRoomStore } from "@/stores/roomStore";
+import { useWaitingRoomSync } from "@/hooks/useWaitingRoomSync";
 
 export function HostPreview() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -24,6 +25,9 @@ export function HostPreview() {
   const { toast } = useToast();
   const { room, currentUser, startRoom, isLoading } = useRoomStore();
   const [copied, setCopied] = useState(false);
+
+  // Sync waiting room participants
+  useWaitingRoomSync(roomId);
 
   // Connect to WebSocket when entering preview (but don't sync yet)
   useEffect(() => {

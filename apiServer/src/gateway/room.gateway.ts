@@ -288,6 +288,164 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+  @SubscribeMessage('room:joinWaitingRoom')
+  async handleJoinWaitingRoom(
+    @MessageBody() data: JoinRoomEventDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const userId = client.data.user.sub as string;
+      const { roomCode } = data;
+
+      // Join waiting room via service
+      const result = await this.roomService.joinWaitingRoom(userId, roomCode);
+
+      // Join Socket.IO room
+      await client.join(roomCode);
+      this.userRooms.set(client.id, roomCode);
+
+      // Get waiting participants
+      const waitingParticipants =
+        await this.roomService.getWaitingParticipants(roomCode);
+
+      this.logger.log(
+        `Waiting participants for room ${roomCode}: ${JSON.stringify(waitingParticipants)}`,
+      );
+
+      // Notify client
+      client.emit('room:joined', {
+        roomCode: result.room.code,
+        room: result.room,
+        isHost: result.isHost,
+        status: 'waiting',
+      });
+
+      // Notify host about new waiting participant
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const displayName =
+        client.data.user.displayName || client.data.user.username || 'Guest';
+      client.to(roomCode).emit('user:waiting', {
+        user: {
+          userId,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          displayName,
+        },
+        roomCode,
+        waitingParticipants,
+      });
+
+      this.logger.log(`User ${userId} joined waiting room ${roomCode}`);
+
+      return { success: true };
+    } catch (error) {
+      this.logger.error('Join waiting room error:', error);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const errorMessage = error.message || 'Unknown error';
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      client.emit('error', { message: errorMessage });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  @SubscribeMessage('room:admitUser')
+  async handleAdmitUser(
+    @MessageBody() data: { roomCode: string; userId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const hostUserId = client.data.user.sub as string;
+      const { roomCode, userId } = data;
+
+      // Admit participant via service
+      await this.roomService.admitParticipant(hostUserId, roomCode, userId);
+
+      // Get updated participants list
+      const participants =
+        await this.roomService.getRoomParticipants(roomCode);
+
+      // Notify admitted user
+      this.server.to(roomCode).emit('user:admitted', {
+        userId,
+        roomCode,
+      });
+
+      // Notify all participants of updated list
+      this.server.to(roomCode).emit('user:joined', {
+        user: {
+          id: userId,
+        },
+        roomCode,
+        participants,
+      });
+
+      this.logger.log(`User ${userId} admitted to room ${roomCode}`);
+
+      return { success: true };
+    } catch (error) {
+      this.logger.error('Admit user error:', error);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const errorMessage = error.message || 'Unknown error';
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      client.emit('error', { message: errorMessage });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  @SubscribeMessage('room:rejectUser')
+  async handleRejectUser(
+    @MessageBody() data: { roomCode: string; userId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const hostUserId = client.data.user.sub as string;
+      const { roomCode, userId } = data;
+
+      // Reject participant via service
+      await this.roomService.rejectParticipant(hostUserId, roomCode, userId);
+
+      // Notify rejected user
+      this.server.to(roomCode).emit('user:rejected', {
+        userId,
+        roomCode,
+      });
+
+      this.logger.log(`User ${userId} rejected from room ${roomCode}`);
+
+      return { success: true };
+    } catch (error) {
+      this.logger.error('Reject user error:', error);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const errorMessage = error.message || 'Unknown error';
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      client.emit('error', { message: errorMessage });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  @SubscribeMessage('room:getWaitingParticipants')
+  async handleGetWaitingParticipants(
+    @MessageBody() data: { roomCode: string },
+  ) {
+    try {
+      const waitingParticipants =
+        await this.roomService.getWaitingParticipants(data.roomCode);
+
+      return { success: true, waitingParticipants };
+    } catch (error) {
+      this.logger.error('Get waiting participants error:', error);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const errorMessage = error.message || 'Unknown error';
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      return { success: false, error: errorMessage };
+    }
+  }
+
   // Broadcast methods for external use
 
   broadcastAvatarUpdate(userId: string, avatarConfig: any): void {

@@ -3,6 +3,7 @@
  * Screen shown to participants waiting for host admission
  */
 
+import { getInstance as getWebSocketController } from "@animal-zoom/shared/socket";
 import { Clock, Loader2, Users } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,6 +22,39 @@ export function WaitingRoom() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { room, currentUser } = useRoomStore();
+
+  // Connect to WebSocket and join waiting room
+  useEffect(() => {
+    const wsController = getWebSocketController();
+
+    // Connect to WebSocket if not already connected
+    if (!wsController.isConnected()) {
+      console.log("[WaitingRoom] Connecting to WebSocket...");
+      wsController.connect();
+    }
+
+    // Join waiting room when connected
+    const connectedSub = wsController.connected$.subscribe(() => {
+      if (room?.code) {
+        console.log(
+          "[WaitingRoom] WebSocket connected, joining waiting room:",
+          room.code,
+        );
+        wsController.joinWaitingRoom(room.code);
+      }
+    });
+
+    // If already connected, join immediately
+    if (wsController.isConnected() && room?.code) {
+      console.log("[WaitingRoom] Already connected, joining waiting room:", room.code);
+      wsController.joinWaitingRoom(room.code);
+    }
+
+    return () => {
+      connectedSub.unsubscribe();
+      // Keep connection alive - don't disconnect
+    };
+  }, [room?.code]);
 
   useEffect(() => {
     // Redirect if no room or wrong room
@@ -48,24 +82,39 @@ export function WaitingRoom() {
   useEffect(() => {
     if (!currentUser) return;
 
-    // TODO: Subscribe to WebSocket events
-    // When USER_ADMITTED event received, navigate to session
-    // For now, this is a placeholder
-    const checkAdmission = () => {
-      if (currentUser.joinState === "JOINED") {
-        toast({
-          title: "You have been admitted!",
-          description: "Joining the room...",
-        });
-        navigate(`/room/${roomId}/session`);
-      }
-    };
+    const wsController = getWebSocketController();
 
-    // Poll for state changes (temporary until WebSocket integration)
-    const interval = setInterval(checkAdmission, 1000);
+    // Subscribe to admission event
+    const admittedSub = wsController.userAdmitted$.subscribe((data) => {
+      console.log("[WaitingRoom] User admitted:", data);
+
+      // Navigate to session
+      toast({
+        title: "You have been admitted!",
+        description: "Joining the room...",
+      });
+      navigate(`/room/${roomId}/session`);
+    });
+
+    // Subscribe to rejection event
+    const rejectedSub = wsController.userRejected$.subscribe((data) => {
+      console.log("[WaitingRoom] User rejected:", data);
+
+      // Show rejection message and redirect
+      toast({
+        title: "Access denied",
+        description: "The host has declined your request to join",
+        variant: "destructive",
+      });
+
+      setTimeout(() => {
+        navigate("/join");
+      }, 2000);
+    });
 
     return () => {
-      clearInterval(interval);
+      admittedSub.unsubscribe();
+      rejectedSub.unsubscribe();
     };
   }, [currentUser, roomId, navigate, toast]);
 

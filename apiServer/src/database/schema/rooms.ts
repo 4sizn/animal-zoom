@@ -9,6 +9,7 @@ export interface RoomsTable {
   status: RoomStatus;
   currentParticipants: number;
   maxParticipants: number;
+  waiting_room_enabled: boolean;
   customization: {
     environment?: {
       furniture?: any[];

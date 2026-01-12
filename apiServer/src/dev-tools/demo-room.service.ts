@@ -61,6 +61,7 @@ export class DemoRoomService implements OnModuleInit {
             status: 'active',
             currentParticipants: 0,
             maxParticipants: 50,
+            waiting_room_enabled: false,
             lastActivityAt: new Date(),
             updatedAt: new Date(),
           })

@@ -3,6 +3,7 @@
  * Sidebar panel for host to manage waiting participants
  */
 
+import { getInstance as getWebSocketController } from "@animal-zoom/shared/socket";
 import { ChevronDown, ChevronUp, Clock, UserCheck, UserX } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -28,18 +29,32 @@ export function WaitingRoomPanel({
   collapsible = false,
 }: WaitingRoomPanelProps) {
   const [isExpanded, setIsExpanded] = useState(!collapsible);
-  const { waitingParticipants, admitParticipant, rejectParticipant } =
+  const { room, waitingParticipants, admitParticipant, rejectParticipant } =
     useRoomStore();
   const { toast } = useToast();
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
   const handleAdmit = async (participant: ParticipantInfo) => {
+    if (!room?.code) {
+      toast({
+        title: "Error",
+        description: "Room not found",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setProcessingIds((prev) => new Set(prev).add(participant.id));
     try {
+      const wsController = getWebSocketController();
+      wsController.admitUser(room.code, participant.id);
+
+      // Update local state (will be synced by WebSocket event)
       admitParticipant(participant.id);
+
       toast({
         title: "Participant admitted",
-        description: `${participant.name} has joined the room`,
+        description: `${participant.name} is joining the room`,
       });
     } catch (error) {
       toast({
@@ -57,9 +72,23 @@ export function WaitingRoomPanel({
   };
 
   const handleReject = async (participant: ParticipantInfo) => {
+    if (!room?.code) {
+      toast({
+        title: "Error",
+        description: "Room not found",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setProcessingIds((prev) => new Set(prev).add(participant.id));
     try {
+      const wsController = getWebSocketController();
+      wsController.rejectUser(room.code, participant.id);
+
+      // Update local state (will be synced by WebSocket event)
       rejectParticipant(participant.id);
+
       toast({
         title: "Participant rejected",
         description: `${participant.name} has been removed from the waiting room`,

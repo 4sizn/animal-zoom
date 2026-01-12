@@ -93,7 +93,9 @@
       "Bash(npx nest build)",
       "Bash(timeout 10 pnpm run dev:*)",
       "Bash(./node_modules/.bin/biome init:*)",
-      "Bash(./node_modules/.bin/biome check:*)"
+      "Bash(./node_modules/.bin/biome check:*)",
+      "Bash(PGPASSWORD=postgres psql:*)",
+      "Bash(^DB\" /Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/apiServer/.env 2>/dev/null | head -1\\)\")"
     ]
   }
 }

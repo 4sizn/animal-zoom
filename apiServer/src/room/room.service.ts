@@ -55,6 +55,7 @@ export class RoomService {
         status: 'active',
         currentParticipants: 1,
         maxParticipants: dto.maxParticipants || 50,
+        waiting_room_enabled: dto.waitingRoomEnabled || false,
         lastActivityAt: new Date(),
         updatedAt: new Date(),
       })
@@ -68,6 +69,7 @@ export class RoomService {
         userId,
         roomId: room.id,
         role: 'host',
+        status: 'joined',
         isActive: true,
         joinedAt: new Date(),
       })
@@ -125,7 +127,7 @@ export class RoomService {
   }
 
   /**
-   * Join a room
+   * Join a room (bypasses waiting room for hosts or when waiting room is disabled)
    */
   async joinRoom(userId: string, roomCode: string): Promise<RoomResponseDto> {
     const room = await this.db.db
@@ -163,19 +165,24 @@ export class RoomService {
       .executeTakeFirst();
 
     if (existingParticipant) {
+      // If already in waiting, cannot directly join
+      if (existingParticipant.status === 'waiting') {
+        throw new BadRequestException('User is in waiting room');
+      }
       return {
         room,
         isHost: existingParticipant.role === 'host',
       };
     }
 
-    // Add participant
+    // Add participant with 'joined' status
     await this.db.db
       .insertInto('room_participants')
       .values({
         userId,
         roomId: room.id,
         role: 'participant',
+        status: 'joined',
         isActive: true,
         joinedAt: new Date(),
       })
@@ -197,6 +204,260 @@ export class RoomService {
       room: updatedRoom,
       isHost: false,
     };
+  }
+
+  /**
+   * Join waiting room
+   */
+  async joinWaitingRoom(
+    userId: string,
+    roomCode: string,
+  ): Promise<RoomResponseDto> {
+    const room = await this.db.db
+      .selectFrom('rooms')
+      .selectAll()
+      .where('code', '=', roomCode)
+      .where('status', '=', 'active')
+      .executeTakeFirst();
+
+    if (!room) {
+      throw new NotFoundException('Room not found');
+    }
+
+    // Check if waiting room is enabled
+    if (!room.waiting_room_enabled) {
+      // If waiting room is not enabled, join directly
+      return this.joinRoom(userId, roomCode);
+    }
+
+    // Check if user is already in room or waiting
+    const existingParticipant = await this.db.db
+      .selectFrom('room_participants')
+      .selectAll()
+      .where('userId', '=', userId)
+      .where('roomId', '=', room.id)
+      .where('isActive', '=', true)
+      .executeTakeFirst();
+
+    if (existingParticipant) {
+      // If already joined, return room info
+      if (existingParticipant.status === 'joined') {
+        return {
+          room,
+          isHost: existingParticipant.role === 'host',
+        };
+      }
+      // If already waiting, return current state
+      if (existingParticipant.status === 'waiting') {
+        this.logger.log(`User ${userId} is already in waiting room ${roomCode}`);
+        return {
+          room,
+          isHost: false,
+        };
+      }
+    }
+
+    // Add participant to waiting room
+    const result = await this.db.db
+      .insertInto('room_participants')
+      .values({
+        userId,
+        roomId: room.id,
+        role: 'participant',
+        status: 'waiting',
+        isActive: true,
+        joinedAt: new Date(),
+      })
+      .returningAll()
+      .executeTakeFirst();
+
+    this.logger.log(
+      `User ${userId} joined waiting room for ${roomCode}, participant record: ${JSON.stringify(result)}`,
+    );
+
+    return {
+      room,
+      isHost: false,
+    };
+  }
+
+  /**
+   * Admit a participant from waiting room
+   */
+  async admitParticipant(
+    hostUserId: string,
+    roomCode: string,
+    participantUserId: string,
+  ): Promise<void> {
+    const room = await this.db.db
+      .selectFrom('rooms')
+      .selectAll()
+      .where('code', '=', roomCode)
+      .where('status', '=', 'active')
+      .executeTakeFirst();
+
+    if (!room) {
+      throw new NotFoundException('Room not found');
+    }
+
+    // Verify host
+    const host = await this.db.db
+      .selectFrom('room_participants')
+      .selectAll()
+      .where('userId', '=', hostUserId)
+      .where('roomId', '=', room.id)
+      .where('role', '=', 'host')
+      .where('isActive', '=', true)
+      .executeTakeFirst();
+
+    if (!host) {
+      throw new ForbiddenException('Only host can admit participants');
+    }
+
+    // Find waiting participant
+    const participant = await this.db.db
+      .selectFrom('room_participants')
+      .selectAll()
+      .where('userId', '=', participantUserId)
+      .where('roomId', '=', room.id)
+      .where('status', '=', 'waiting')
+      .where('isActive', '=', true)
+      .executeTakeFirst();
+
+    if (!participant) {
+      throw new NotFoundException('Participant not in waiting room');
+    }
+
+    // Update participant status to joined
+    await this.db.db
+      .updateTable('room_participants')
+      .set({
+        status: 'joined',
+      })
+      .where('id', '=', participant.id)
+      .execute();
+
+    // Update room participant count
+    await this.db.db
+      .updateTable('rooms')
+      .set({
+        currentParticipants: room.currentParticipants + 1,
+        lastActivityAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where('id', '=', room.id)
+      .execute();
+
+    this.logger.log(
+      `User ${participantUserId} admitted to room ${roomCode} by host ${hostUserId}`,
+    );
+  }
+
+  /**
+   * Reject a participant from waiting room
+   */
+  async rejectParticipant(
+    hostUserId: string,
+    roomCode: string,
+    participantUserId: string,
+  ): Promise<void> {
+    const room = await this.db.db
+      .selectFrom('rooms')
+      .selectAll()
+      .where('code', '=', roomCode)
+      .where('status', '=', 'active')
+      .executeTakeFirst();
+
+    if (!room) {
+      throw new NotFoundException('Room not found');
+    }
+
+    // Verify host
+    const host = await this.db.db
+      .selectFrom('room_participants')
+      .selectAll()
+      .where('userId', '=', hostUserId)
+      .where('roomId', '=', room.id)
+      .where('role', '=', 'host')
+      .where('isActive', '=', true)
+      .executeTakeFirst();
+
+    if (!host) {
+      throw new ForbiddenException('Only host can reject participants');
+    }
+
+    // Find waiting participant
+    const participant = await this.db.db
+      .selectFrom('room_participants')
+      .selectAll()
+      .where('userId', '=', participantUserId)
+      .where('roomId', '=', room.id)
+      .where('status', '=', 'waiting')
+      .where('isActive', '=', true)
+      .executeTakeFirst();
+
+    if (!participant) {
+      throw new NotFoundException('Participant not in waiting room');
+    }
+
+    // Update participant status to rejected and mark as inactive
+    await this.db.db
+      .updateTable('room_participants')
+      .set({
+        status: 'rejected',
+        isActive: false,
+        leftAt: new Date(),
+      })
+      .where('id', '=', participant.id)
+      .execute();
+
+    this.logger.log(
+      `User ${participantUserId} rejected from room ${roomCode} by host ${hostUserId}`,
+    );
+  }
+
+  /**
+   * Get waiting participants
+   */
+  async getWaitingParticipants(roomCode: string) {
+    const room = await this.db.db
+      .selectFrom('rooms')
+      .select('id')
+      .where('code', '=', roomCode)
+      .where('status', '=', 'active')
+      .executeTakeFirst();
+
+    if (!room) {
+      throw new NotFoundException('Room not found');
+    }
+
+    this.logger.log(`Getting waiting participants for room ${roomCode} (id: ${room.id})`);
+
+    const waitingParticipants = await this.db.db
+      .selectFrom('room_participants')
+      .innerJoin('users', 'users.id', 'room_participants.userId')
+      .select([
+        'room_participants.id',
+        'room_participants.userId',
+        'users.displayName',
+        'users.username',
+        'room_participants.joinedAt',
+      ])
+      .where('room_participants.roomId', '=', room.id)
+      .where('room_participants.status', '=', 'waiting')
+      .where('room_participants.isActive', '=', true)
+      .execute();
+
+    this.logger.log(
+      `Found ${waitingParticipants.length} waiting participants: ${JSON.stringify(waitingParticipants)}`,
+    );
+
+    return waitingParticipants.map((p) => ({
+      id: p.id,
+      userId: p.userId,
+      displayName: p.displayName || p.username || 'Guest',
+      joinedAt: p.joinedAt,
+    }));
   }
 
   /**

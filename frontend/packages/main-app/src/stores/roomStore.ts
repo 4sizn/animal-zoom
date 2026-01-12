@@ -77,7 +77,7 @@ function roomToRoomInfo(room: Room, hostName: string): RoomInfo {
     title: room.name || "Quick Room",
     state: "CREATED", // Initial state
     createdAt: room.createdAt,
-    waitingRoomEnabled: true, // Default
+    waitingRoomEnabled: room.waiting_room_enabled ?? false,
   };
 }
 
@@ -198,6 +198,7 @@ export const useRoomStore = create<RoomStore>()(
           try {
             const room = await roomsApi.createRoom({
               name: request.title || "Quick Room",
+              waitingRoomEnabled: request.waitingRoomEnabled ?? true,
             });
 
             const roomInfo: RoomInfo = roomToRoomInfo(room, "Me"); // TODO: Get actual user name

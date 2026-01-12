@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNumber, Min, Max } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsBoolean, Min, Max } from 'class-validator';
 
 export class CreateRoomDto {
   @IsOptional()
@@ -10,4 +10,8 @@ export class CreateRoomDto {
   @Min(2)
   @Max(100)
   maxParticipants?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  waitingRoomEnabled?: boolean;
 }

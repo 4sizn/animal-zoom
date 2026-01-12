@@ -91,6 +91,11 @@ export class WebSocketClientController implements IWebSocketClientController {
   private stateUpdateSubject: Subject<StateUpdateEventData>;
   private avatarUpdatedSubject: Subject<AvatarUpdatedData>;
 
+  // Waiting Room Subjects
+  private userWaitingSubject: Subject<any>;
+  private userAdmittedSubject: Subject<any>;
+  private userRejectedSubject: Subject<any>;
+
   // ==================== Public Observable Streams ====================
 
   /**
@@ -166,6 +171,24 @@ export class WebSocketClientController implements IWebSocketClientController {
    */
   public readonly avatarUpdated$: Observable<AvatarUpdatedData>;
 
+  /**
+   * User waiting stream
+   * Emits when a user joins the waiting room
+   */
+  public readonly userWaiting$: Observable<any>;
+
+  /**
+   * User admitted stream
+   * Emits when a user is admitted from waiting room
+   */
+  public readonly userAdmitted$: Observable<any>;
+
+  /**
+   * User rejected stream
+   * Emits when a user is rejected from waiting room
+   */
+  public readonly userRejected$: Observable<any>;
+
   // ==================== Constructor ====================
 
   constructor(options: WebSocketClientControllerOptions = {}) {
@@ -197,6 +220,11 @@ export class WebSocketClientController implements IWebSocketClientController {
     this.stateUpdateSubject = new Subject<StateUpdateEventData>();
     this.avatarUpdatedSubject = new Subject<AvatarUpdatedData>();
 
+    // Initialize Waiting Room Subjects
+    this.userWaitingSubject = new Subject<any>();
+    this.userAdmittedSubject = new Subject<any>();
+    this.userRejectedSubject = new Subject<any>();
+
     // Expose public Observable streams (read-only)
     this.connectionState$ = this.connectionStateSubject.asObservable();
     this.connected$ = this.connectedSubject.asObservable();
@@ -213,6 +241,10 @@ export class WebSocketClientController implements IWebSocketClientController {
 
     this.stateUpdate$ = this.stateUpdateSubject.asObservable();
     this.avatarUpdated$ = this.avatarUpdatedSubject.asObservable();
+
+    this.userWaiting$ = this.userWaitingSubject.asObservable();
+    this.userAdmitted$ = this.userAdmittedSubject.asObservable();
+    this.userRejected$ = this.userRejectedSubject.asObservable();
 
     // Initialize Socket.io connection (but don't connect yet unless autoConnect is true)
     this.initializeSocket();
@@ -419,6 +451,88 @@ export class WebSocketClientController implements IWebSocketClientController {
   }
 
   /**
+   * Join waiting room
+   * @param roomCode - The room code to join
+   */
+  public joinWaitingRoom(roomCode: string): void {
+    if (!this.socket?.connected) {
+      console.error(
+        "[WebSocketClientController] Cannot join waiting room: not connected",
+      );
+      return;
+    }
+
+    if (!roomCode || roomCode.trim().length === 0) {
+      console.error(
+        "[WebSocketClientController] Cannot join waiting room: invalid room code",
+      );
+      return;
+    }
+
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log("[WebSocketClientController] Joining waiting room:", roomCode);
+    }
+
+    this.socket.emit("room:joinWaitingRoom", { roomCode: roomCode.trim() });
+  }
+
+  /**
+   * Admit a user from waiting room (host only)
+   * @param roomCode - The room code
+   * @param userId - The user ID to admit
+   */
+  public admitUser(roomCode: string, userId: string): void {
+    if (!this.socket?.connected) {
+      console.error(
+        "[WebSocketClientController] Cannot admit user: not connected",
+      );
+      return;
+    }
+
+    const currentRoom = this.currentRoomSubject.value;
+    if (!currentRoom) {
+      console.error(
+        "[WebSocketClientController] Cannot admit user: not in a room",
+      );
+      return;
+    }
+
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log("[WebSocketClientController] Admitting user:", userId);
+    }
+
+    this.socket.emit("room:admitUser", { roomCode, userId });
+  }
+
+  /**
+   * Reject a user from waiting room (host only)
+   * @param roomCode - The room code
+   * @param userId - The user ID to reject
+   */
+  public rejectUser(roomCode: string, userId: string): void {
+    if (!this.socket?.connected) {
+      console.error(
+        "[WebSocketClientController] Cannot reject user: not connected",
+      );
+      return;
+    }
+
+    const currentRoom = this.currentRoomSubject.value;
+    if (!currentRoom) {
+      console.error(
+        "[WebSocketClientController] Cannot reject user: not in a room",
+      );
+      return;
+    }
+
+    if (import.meta.env.VITE_DEBUG === "true") {
+      console.log("[WebSocketClientController] Rejecting user:", userId);
+    }
+
+    this.socket.emit("room:rejectUser", { roomCode, userId });
+  }
+
+  /**
    * Destroy controller and cleanup resources
    * Completes all Subjects and cleans up subscriptions
    */
@@ -454,6 +568,10 @@ export class WebSocketClientController implements IWebSocketClientController {
 
     this.stateUpdateSubject.complete();
     this.avatarUpdatedSubject.complete();
+
+    this.userWaitingSubject.complete();
+    this.userAdmittedSubject.complete();
+    this.userRejectedSubject.complete();
 
     // Reset internal state
     this.isConnecting = false;
@@ -578,6 +696,31 @@ export class WebSocketClientController implements IWebSocketClientController {
 
       if (import.meta.env.VITE_DEBUG === "true") {
         console.log("[WebSocketClientController] Avatar Updated", data);
+      }
+    });
+
+    // Waiting room events
+    this.socket.on("user:waiting", (data: any) => {
+      this.userWaitingSubject.next(data);
+
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] User Waiting", data);
+      }
+    });
+
+    this.socket.on("user:admitted", (data: any) => {
+      this.userAdmittedSubject.next(data);
+
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] User Admitted", data);
+      }
+    });
+
+    this.socket.on("user:rejected", (data: any) => {
+      this.userRejectedSubject.next(data);
+
+      if (import.meta.env.VITE_DEBUG === "true") {
+        console.log("[WebSocketClientController] User Rejected", data);
       }
     });
   }
