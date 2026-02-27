@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Virtual Study Room - 4 Participants</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#EF4444", // Red for hangup button
+                        "background-dark": "#202124", // Deep dark gray main background
+                        "surface-dark": "#3C4043", // Slightly lighter dark for controls
+                        "charcoal": "#1a1a1a", // Dark charcoal base
+                        "tile-bg": "#2c2c2c",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "12px",
+                        'lg': "16px",
+                        'xl': "24px",
+                        '2xl': "32px",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        .aspect-video-custom {
+            aspect-ratio: 16 / 9;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #202124;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3C4043;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-[#1a1a1a] h-screen w-screen flex flex-col font-body overflow-hidden text-white">
+<main class="flex-grow flex items-center justify-center p-4 lg:p-12 w-full h-full relative">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full max-w-7xl mx-auto items-center justify-center">
+<div class="relative group rounded-2xl overflow-hidden shadow-2xl aspect-video-custom bg-[#2c2c2c]">
+<img alt="Sysy's video feed showing a calm study environment" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC79Q7zqZWS7GV9q570BwkwTc_fb1ZRmBIwTRR5YrAYp34MwEEWmkqUzOTeGjp2mbmCnGkHsAljuZGrjJinUHPyNJRcfDufTM5dKsFSMdogiI2l_mXD429tBWYZ1c3GR5cHeNcaAGeyT9tLzQwQa0HJJVbkoHz8JsPsNDQcqgNBZMITTt_UQAs0XlPfquy2BruxujaomW_VaUdQ122aMJFqEfUCQTXAmHDd2ptm2OdopO98dAOv0ZvIerrZtu-F91lE7qS7A2kpTmrz"/>
+<div class="absolute bottom-4 left-4 z-10">
+<span class="text-white text-xl font-medium drop-shadow-md">sysy</span>
+</div>
+<div class="absolute top-3 right-3 z-10 bg-black/50 backdrop-blur-md p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]">mic_off</span>
+</div>
+</div>
+<div class="relative group rounded-2xl overflow-hidden shadow-2xl aspect-video-custom bg-[#2c2c2c]">
+<img alt="Oliver's video feed with bright lighting" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmcaS74PWd0rNr9CGpEQir3JgAYDE7iccJh_NeGtqxyRzU7vnl8NwP8BsSCsQa0QtLVMq_F8Yeura-L9z4rhHnkfn9SV2NHqtxIiR03tHwrrxknjVu4o5wpytv9VZ3VgIkjaAoP8s1bspmL_MXTZ0z6S8CuY1Guh_VJyyAq1zEWB15URkTTvnIrIGKyK5ZMPLC2Pb9e23MT4VXNKJPlpwSmsY20IIcVr3lB2GNSaX-AhUdw5XSLRnsXFWWg0Gij-YaBugTADDB1_TI"/>
+<div class="absolute bottom-4 left-4 z-10">
+<span class="text-white text-xl font-medium drop-shadow-md">oliver</span>
+</div>
+</div>
+<div class="relative group rounded-2xl overflow-hidden shadow-2xl aspect-video-custom bg-[#2c2c2c]">
+<img alt="Octavian's video feed in a cozy room" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVCIibKgC-GBiLcHvcjyH95CBclFzPN5P2IvPpX2yKIK8Y-OZhxPF3cw2aBS6d4XKfmppjbv_Ri6xXKttyRoY6G2-dhQ9_bgilAH1e1GeoXTQ4YWGbOw0nhajsZ0yiKj5C3eVknZ0iVb9vwU8HybcywLJBx1MDetFArO17ntyTIk6ckKNtVBXu2GeyCh8lEDvCG79OHyoFWxBgchei-T91ID4NkjLbdLrO5CGFfiBk_he1RSXiLVCmNy7AZZT32yHC04dxNArWsnOr"/>
+<div class="absolute bottom-4 left-4 z-10">
+<span class="text-white text-xl font-medium drop-shadow-md">octavian</span>
+</div>
+<div class="absolute top-3 right-3 z-10 bg-blue-600/90 backdrop-blur-md p-2 rounded-full flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-white text-[20px]">graphic_eq</span>
+</div>
+</div>
+<div class="relative group rounded-2xl overflow-hidden shadow-2xl aspect-video-custom bg-[#2c2c2c]">
+<img alt="Jen's video feed workspace" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDms0lWuqK38hp8fHBpeISQvRcc4D7xK_LUNDjeZPHEhIxyFgVVgKMjLmXvYfUv-F2MSKNIwuKg9Vy9KMo22hFlgGmbIwOLp3NFFkzWXqh9iFx3uoqCNcylMt4H24LBv6p55O_oBT5hqd8FuJT-FI4Ndiwt4r0rCG0v_zEfwX8auOWzQzNtVdA6CzOQgvuy6ac3VNCAJvksERD1UVAXoPK0En5QJfqEraZOszQFSEgRlhTzkWvcEoRFluOBukG00cDREGIt_kQT5wSf"/>
+<div class="absolute bottom-4 left-4 z-10">
+<span class="text-white text-xl font-medium drop-shadow-md">jen</span>
+</div>
+<div class="absolute top-3 right-3 z-10 bg-black/50 backdrop-blur-md p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]">mic</span>
+</div>
+</div>
+</div>
+</main>
+<footer class="h-20 flex-shrink-0 grid grid-cols-3 items-center px-8 bg-[#1a1a1a] z-50 mb-2">
+<div class="flex flex-col justify-center">
+<h1 class="text-base font-medium text-gray-200">group study - day ten</h1>
+</div>
+<div class="flex items-center justify-center gap-4">
+<button class="w-12 h-12 rounded-full bg-[#EA4335] hover:bg-red-600 text-white flex items-center justify-center transition-all active:scale-95" title="Turn on microphone">
+<span class="material-symbols-outlined text-[24px]">mic_off</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-[#3C4043] hover:bg-[#4a4e52] text-white flex items-center justify-center transition-all active:scale-95" title="Turn off camera">
+<span class="material-symbols-outlined text-[24px]">videocam_off</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-[#3C4043] hover:bg-[#4a4e52] text-white flex items-center justify-center transition-all active:scale-95" title="More options">
+<span class="material-symbols-outlined text-[24px]">more_horiz</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-[#EA4335] hover:bg-red-600 text-white flex items-center justify-center transition-all active:scale-95 ml-1" title="Leave call">
+<span class="material-symbols-outlined text-[28px]">call_end</span>
+</button>
+</div>
+<div class="flex items-center justify-end text-gray-300">
+<div class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/5 cursor-pointer transition-colors">
+<span class="text-sm font-medium">4 people</span>
+</div>
+</div>
+</footer>
+
+</body></html>
