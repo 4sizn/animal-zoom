@@ -1,0 +1,4 @@
+- [x] Validate repository baseline and dependencies
+- [x] Decide first concrete implementation task scope
+- [x] Execute implementation with tests and diagnostics
+- [x] Update this plan with completed checkboxes and notes
