@@ -1,0 +1,9 @@
+
+> @animal-zoom/webapp@0.1.0 dev /Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/client/webapp
+> vite "--" "--host" "127.0.0.1" "--port" "5173" "--strictPort"
+
+
+  VITE v5.4.21  ready in 869 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose

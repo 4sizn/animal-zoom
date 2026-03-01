@@ -1,0 +1,10 @@
+- [x] Extend `@animal-zoom/share` contracts for webapp participants + mic/cam badges (no local duplicate types)
+- [x] Add Tailwind (build-time) + fonts/icons so React output can match `client/webapp/example/*/code.html` classes
+- [x] Implement 4-participant layout (1-4) to match `client/webapp/example/virtual_study_room_desktop_grid_4_participants/screen.png`
+- [x] Implement 12-participant layout (5-12) to match `client/webapp/example/virtual_study_room_desktop_grid_12_participants/screen.png`
+- [x] Implement scrollable layout (13+) to match `client/webapp/example/virtual_study_room_desktop_grid_scrollable_view/screen.png`
+- [x] Implement grid/scroll auto-switch by participant count (FR-WEB-2)
+- [x] Implement mic/cam badges using share model (FR-WEB-3)
+- [x] Add RxJS Observable subscription scaffold for zoom events (FR-WEB-4; placeholder ok but must be RxJS)
+- [x] Verify NFR: `pnpm --filter @animal-zoom/webapp lint`, `typecheck`, `build` all pass
+- [x] Hands-on QA: run `pnpm --filter @animal-zoom/webapp dev` and visually compare with the 3 reference `screen.png`
