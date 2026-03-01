@@ -1,0 +1,10 @@
+- [x] Align scope with `docs/modules/client-babylon-web-spec.md` and document assumptions for `[TO_FILL]` items
+- [x] Refactor `client/babylon-web` entry to support 3 demo routes: `/my-room`, `/room`, `/solo`
+- [x] Implement Babylon Engine bootstrap with hidden master canvas and multiCanvas Views registration
+- [x] Implement scene factory functions reusable across pages (`/my-room`, `/solo`, `/room`)
+- [x] Implement `/solo` demo: single canvas + single scene + camera + render loop (crash-safe)
+- [x] Implement `/room` demo: dynamic participant view grid (add/remove) using `engine.registerView` / `engine.unRegisterView` and per-view scene rendering via `engine.activeView`
+- [x] Implement offscreen optimization for `/room` (disable view rendering when canvas not visible)
+- [x] Implement `/my-room` demo: simple theme/avatar selection UI that updates scene immediately (placeholders ok)
+- [x] Verify NFR: `pnpm --filter @animal-zoom/babylon-web lint`, `typecheck`, `build` all pass
+- [x] Hands-on QA: run `pnpm --filter @animal-zoom/babylon-web dev` and manually validate all 3 routes render as expected
