@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Virtual Study Room - Desktop Grid</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#EF4444", // Red for active/danger buttons
+                        "charcoal-dark": "#181a1d", // Dark charcoal background from reference
+                        "charcoal-light": "#202327", // Slightly lighter for components
+                        "control-bg": "#2d3136", // Background for control buttons
+                        "overlay-plate": "rgba(0, 0, 0, 0.4)", // Semi-transparent plate for text
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "12px",
+                        "xl": "16px",
+                    },
+                    aspectRatio: {
+                        'video': '16 / 9',
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.3);
+            border-radius: 20px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-charcoal-dark font-sans text-gray-200 h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-white transition-colors duration-300">
+<main class="flex-grow p-4 md:p-8 overflow-y-auto flex items-center justify-center">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-[1400px] h-full content-center">
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="sysy's room with colorful decor" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk5iyqtnoYIrA_V2nvDFw4KIUwPqP_67ZNsmbIYGbv3PexsTJQYB0kII33vxonc93Z8S_A9lgfnt3k9pa5PW0zi_m3sEsIflxFTgRbGqUPrxMIxTPQX2iQPvZAir6pdx-LwmVyv-Jvs9YZ_D7HyWbbG5tYLp3_BCczZ4GqQUdh3rK5uYF1jc73PRO4ZLeLxJrv4T4glpHVgoGb0kK7QzggI3DlKz0FQiV4ePm2z_qmA-rGrYMtCOtCzA16cUloMd8RMklZEKfQYFSn"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">sysy</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="oliver's aesthetic neon workspace" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRS10DiFYMtIEwM-VSJ00LwlTaNRoDBbDLL4vl_axiKLT-39cj9-V190YMaiaMpMLq6khPIzXmPfd3W97SbcvZ5HvxIwFIBgz5oLtf-6fPDF7VXv9KUk-6YGpZLtlbDfXx80Xeuez9vo_mpqHZDfRGqdGXogehRdVWbfXj65pacM7egsUwhIkVTq6ueZjQNFrfONDDgpQ1TXx1Z2_ljtjKDc6HqdlHY9tynPUliylMyEnSZJLODkNKQbfDs6EGsAFe1bbsHKRtAAW1"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">oliver</span>
+</div>
+<div class="absolute top-3 right-3 bg-black/60 p-1.5 rounded-full backdrop-blur-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[16px]">mic_off</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="octavian's deep sea themed room" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ2EJ8WdxSRz32j__YMXYiHEANLzngLE7G3aydsV7UfD5bzuELJjOe19ty3E8rbdo51QSX-iGmkhBmJ8QqRTw171Y7O4WFDL5b91dYrXjjVoQApQdTXWD9hwtAAQG5SgKILfWFTZJ5tLMHKneGEbZWBx2xjIWYw7sOTo4i5OrlNvUw1XLfwJGV3hRSmP-PTatUc66i_9uFkIAMs5liYqQ-5Gpq7wz0Ob8g6zh9bq9_mOBWR58wINuSWSApG0EB23MtWrnErtNaHzKz"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">octavian</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="jen's modern minimalist room" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiAQmm-iEXfsKmAuAfpqK486B1WjlbQzRkLm53K8k_Rebe5YljqShPFUIvYjrStI0jE_X77SQ2-u_2ozWjPPrFK3eelcsYJi5gRlD0Vdx0D6FqW_odJJb8xBbRuemdsPc4ng6IaTcaV0uVaKOqccHGJmqvBTyD0rShvF4U0-WReE0ulkq_YWPOHW3Fq2dG07rZ0-yIPUO2OR5iWqT0s_NI0aSLJf2chwzzVY0smAVu4HOZq2sh1HSNSvjM10yOuvY4srioCzQsYddw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">jen</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="mariana's cozy ambient lighting" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1qtUdMD9K0EEuVleBBYoGTFgyT1Gth-jJgly_rS5sTAysKjQvCw6F5m2WzG6vfBAnDNXlZ-Pc1fuqgXtO9O9ZohSbErHFiHX_JAJQzjyiOE-aQ-Xjb0BZzGU1QomMNPOHq_YcuzhJvdcMXzCw3jYOtd_m67r5e8j1ydNqMz93O_kyOFjZIcWVPWNKliW_6iuLdpwkPHAqNTmHiF354XzjFXyMZNgAu3_51p0zP0T8wBnHf04NbzgTus_9vKs7LPMrDiZRFyvVKhj2"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">mariana</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="marina's pink aesthetic room" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdMuUeRjsjIg9_M3J_w1DjaDWvGRwy7Zdq_pIEWkn5kXhp2Ve_yg3t6WjszU0QmKu8feFt-rZNRNJhwI2DYeNNPFi5ZMZtIDSY9zQz75wtLLU8cQzVeqi2MLgEcbN2zd97cwuOELptrwlMMXkUdjMGtPdKsxicvJfIHru9wVtHQKWexzEgDc6yHZ8tZfZNlnj-AA4WkZg-oed1it_hg5dzPfMD97fkDmn53d9ILRLuAh0MGE32eOzBrEjrN3YYIV3DFoIhZ_Dp1Ou3"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">marina</span>
+</div>
+<div class="absolute top-3 right-3 bg-black/60 p-1.5 rounded-full backdrop-blur-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[16px]">mic_off</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="renise's galaxy themed background" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRLsnGL1Yt6y90Q1xunrO5hqkA5jTiDEm4WJruqN-ut8gTe3xeMRirux6rd_7jJA5a4P3nAxCRQL7u3ThzE_Gx3jechRiAi8DLQ0mhbiOiOrJMfXkVM-PfzV_ZRIv2_D5H1ieRt4rO_I0FFANZbRYKb-hzOlFnmyfXvO7l9vHk06eM12P6RUlc9UJVXOOJ7Cxr1bHS5-MU4FsV9_wWfcfYMRDzOuUY5jtAb-fmPqzswA0eFpAo3bMDp1nF0nBzO0I7LNGY9aRGlGqf"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">renise</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="gloria's elegant victorian study" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUOvk1GeONHAWV1dgl7l3tolNjslpCaF5qE_87_1F_YYj3UK1TQLWMAHpnvw51CRXQDvqGApMmQzwe__3jfYyP2sONNCKmz6B37mSvgiEG_dMhKZW-6RH9CiNZSTBMhcwKicxxVIIhso1j84JvqAbqUsibAzYU7cX2lW6_B4ANCaC1JbOYJMIoTSaQzKpaixNQU_edVjYvQKbCvDNqWzFrhMGTsRTN0cUIthR3S4s5TCd1jzKbjjCUxdZ0iFcuGTzNFVqQ8I1cfTHB"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">gloria</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="cleo's artistic abstract background" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv_F44U8ybC-iyeuYWlhaREtjg_m9cMnF8Y-x1r6DxD4_b3QDvNgj8XOqfFtooT6-d4yahQSj75n0t8vQQuoUsYqG46PaqOb9Zi4SmMY0o_sP31hbM7fKvCLO2RTJNd8vLsvPVLKt4z4YPzEgQbZnBxNVyCtk57ihzdRUomo-DYpVVvG1LERJUXR_FTaQD0tD2Yd6hhI6ut7ql4Xh61j51Yn9B4QaMWo1XO1qfWWYuJgp7h8Pgy2FRBJi-jsiJzxbU7mIvFsvqfrlE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">cleo</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="ruby's serene space themed room" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvnB5r4vlPYqSDAJNtdmhdRKM0jl2V4sCRuIm3w4pI0Mgxftl6o5SBDsDwbyWxxtufM2H_R8ynHdFQqoPVmjLtfpAWpiaruuR2gDtJ0ifZ3hKZCd6Hnua_Mrn0Msjrps4s6mATWtFVqlo-GDcjpVC47OYoRi3ZVZj1upu4nU66yOq696lbxANdlMEu6_Nbc-ox7gQ3nLO5VFet-zXrzKwwxiEQX01wBCzKv4A32nGTyV7Fy0XDgdAbUw99EYdpeAE7ivPNL5fy56mV"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">ruby</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="stitch's playful colorful bedroom" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYp29-B77H-UvesrBauQM03Ub6d17EfQHtMDX3JJk8P7prH5_WATRD-fFkdf7n4EwA_Jg7BD3rOLqzLg3rgsyTjJt-pAF77CPYSmY0wvxY7FCWW4xVD5ZMksVaH7dYuDd4dfXNstaDHkMTycVNrcU5W9M5DR8mKVmwR1TF_uDQvnvbvbDeMpzXzK2nPbmlKquZOg6J0HpeT0WbC_V4PLKt-NuDaiO8iQ6BWSXJRaHxHiY8OldmAIBoB-VEAuJVoitSZzMy_JXneWBQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">stitch</span>
+</div>
+</div>
+<div class="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg">
+<img alt="tulip's cozy reading nook" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmF9sTTZUEC5uvifL1fer-VPa1lNmMhSaBdSictpVqL-v25wX1AXjOKcD-zktcCsZJsd80GK2t8QcfkVVY1fV8qrsUGec_jSrRMG_g4ZRG6XogF359TTOdv9GIaZpN9Cb7UVokuRuutv9_OQ2KkqhwBLsWVI7tcROAv_YWddybPTASBW8MiMPqcrNBpLg6PXWgTQF9Dlfq4cffMis_UlzTFg8edbSrakVIUsfMobbg1YwsfSiQeZ0jj_0Q7Y8zhnLNEKZeRRUJjefX"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
+<span class="text-white text-base font-medium tracking-wide">tulip</span>
+</div>
+<div class="absolute top-3 right-3 bg-black/60 p-1.5 rounded-full backdrop-blur-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[16px]">mic_off</span>
+</div>
+</div>
+</div>
+</main>
+<footer class="h-20 shrink-0 bg-charcoal-dark flex items-center justify-between px-6 md:px-10 z-50">
+<div class="w-48 hidden md:block">
+<h2 class="text-base font-medium text-gray-200 tracking-wide">
+                group study - day ten
+            </h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-11 h-11 rounded-full flex items-center justify-center bg-primary hover:bg-red-600 text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-[#181a1d]">
+<span class="material-symbols-outlined text-[20px] filled">mic_off</span>
+</button>
+<button class="w-11 h-11 rounded-full flex items-center justify-center bg-control-bg hover:bg-gray-600 text-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 focus:ring-offset-[#181a1d]">
+<span class="material-symbols-outlined text-[20px] filled">videocam_off</span>
+</button>
+<button class="w-11 h-11 rounded-full flex items-center justify-center bg-control-bg hover:bg-gray-600 text-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 focus:ring-offset-[#181a1d]">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+<button class="w-16 h-10 rounded-full flex items-center justify-center bg-primary hover:bg-red-600 text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-[#181a1d] ml-1 shadow-md">
+<span class="material-symbols-outlined text-[24px] filled">call_end</span>
+</button>
+</div>
+<div class="w-48 hidden md:flex justify-end items-center text-gray-400">
+<span class="material-symbols-outlined text-[20px] mr-2">group</span>
+<span class="text-sm font-medium tracking-wide">13 people</span>
+</div>
+<div class="md:hidden flex items-center">
+<span class="text-sm font-medium text-gray-400">13</span>
+</div>
+</footer>
+<script>
+        document.documentElement.classList.add('dark');
+    </script>
+
+</body></html>

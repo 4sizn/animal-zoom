@@ -1,0 +1,204 @@
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Virtual Study Room - Desktop Grid</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#EF4444", // Red for hangup button
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#18181B",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#27272A",
+                        "control-bg": "rgba(60, 64, 67, 0.9)", // Darker, translucent control bar background often seen in video apps
+                    },
+                    fontFamily: {
+                        display: ["Quicksand", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "3rem", // Added for softer UI
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4B5563; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6B7280; 
+        }
+        .video-tile {
+            aspect-ratio: 16/9;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }.name-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,0) 100%);
+        }
+    </style>
+</head>
+<body class="bg-[#202124] text-gray-100 font-display h-screen flex flex-col overflow-hidden transition-colors duration-300">
+<main class="flex-1 overflow-y-auto p-4 md:p-8 lg:px-12 lg:py-8" data-participants="17">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-[1800px] mx-auto pb-24">
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="sysy avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXG9zC0j7rigvZuAL57VV1D9W8UAwbZQpLfJ_ZXqYKJGfxljV3bhmz9_9LMcLqqh1pAzKEHz-FmeNDlvF-uL2fNp-o4E8OdR5WokqZclp58_U8s-YlMS0KzQrd-sGTZ8AfZZ-E2st48Q2qe_-QhfwLMhcSetrW17vTm0JwdEOVevMFuGWJrGl5I4f-9is7CODthPn1ppJwxMWJTYfrUZQsuLd_bafyH0Mfc92h8tUHxSElBp8yKJckNxTosybDXbqhmv-7KTgktxr3"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">sysy</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="oliver avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyAlj1028Y10hE4XA6i6amd4zRWsUERc1DBiSEigEZNs8NqKdcYlm-dSuOpD9SWlBrxOkDApTSWsAHeqqabD6s7zMDenp73RyRQAjxthHRDMje85_1ZlLMbOXR4sPiKjx4lHjrdHDS0-vwy9ZnGlK_XTuML4wXPrCIu9CJmMkR6oX8uL2kbmxdhqApjUETKBSfY1K_5qQQ5HVT_urtE_xTularExL908QppnpaZR0dggF-IkK86_y4zMJiZcIiE4uCNDxXSCgeJyoB"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">oliver</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="octavian avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlLHgGzIZpxsbUb3dO9TjQr2GMnTsaJ2lEog7s5ZMpBXOpUV_8DrCe7ljz4OtzecNTs0NgyQrKKIQuHfxeSGsD0ng9aYyM-i0Rty9vF3KWIoilPAzHNLxIuAbr5Fm3_6B_8Nkh7EXjgD6zKfkKUDmc4fIn7dLyhblQJ3EWpSybZjG_m8SW4oNchVI2L9J9LVJDXP6e1IKbRO5rVnqNVtv7Lk6exnFHo-_Nht09CUSq_gBbhOla2HGqzm02oPL4hQ8aKWFiMBDSVfkK"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">octavian</span>
+</div>
+<div class="absolute top-3 right-3 bg-red-500/90 backdrop-blur-sm rounded-full p-1.5 shadow-md">
+<span class="material-icons-round text-white text-sm block">mic_off</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="jen avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9Wg24IbSw7c3Sh-4CGMgCiO5YNzvxknuQC0en6W27aqE4uLo5LEcu6irIh7bonGCn6SHDCyZFQRz1KHG1yEyyRDcrRCJwalgdSRJ9JOH6qDForD3qXsNH1epz5D-tHKWSPbgSbaWEzT-S9OrLIBnzrxLJEHjSCYAX8APDulcOyUf8yhJUwkV8kHYsSpAzxEsZQK_YFmL15eamtQB_oeqpeLStaqUAtggyR_JbO5VZWDOORXlK7hX1sUT0Lf81DDYBFuzQUxeqHXZ-"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">jen</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="mariana avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe8PP8Tm-1TXag-6lcPonz0Zsd1b9ZF82wnq23n9IEc_Iy5BCkZUSBxObcPLhkJVofKIjMdDfR6UWVA_kj8naDuy-SRS6LRGKzCNdVABNTveezwE4xo4lEkiIZhQFbzxIbciiFoVGp7Mjnwumi-baqO1L6mzFwUH3jr88fjTWZYUO3y8h6iJP0WHxvub_L8iTTA8IWmHtFyQnjYYmk4h3j6k5ljjVX6J3pWrxv6VmVslnMJ9J0vHroko2SO7ocgTaLbwHyeo2sKdEq"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">mariana</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="marina avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZCS9QuLP-lryw5OAgqMitJ3vWjxs7ci0bD0dTWguY8ETFFAHQ8yiS0l-PyhML7xbZuzfWOuKUyGToWHUyNWJgSpG6gSTHQaLcFczLEftmTXfB4F-ks5q5p6UNwz-Ct2A43BMWyV4NLJp1g_uFy-8BOUH2opXhj8l405qXUIhxFb4oYtTTQEymoO-UtY1UIhnUw7BKYE7uTiqP4wL96rD9wbqGBNOL3e80scmDfHzpuByMCWZu9P-hkRq9J8I5m8A1ti9Y5S10RyXa"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">marina</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="renise avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx631F1-l_5FxTCYecADAizYXW949ONrIidbD4ck02gkta7a8Paow4FKSBBk7r_S0gbGU-Ktqp-V1BOf2HlejEIavgwUDBLxGg4oKO4LyVP9NyxzhxnScP_tuVPd0EU1l3xMEO9uNy3vmO6iQ2mPOpR0Xz-3XIav5uCWiuvqvj6INLPS-ZizSoz8P4UQl7B_AJK8HlAIBImCR87H7ikFU_k564WS0iPqT-LqunpxtlUOoLSd2--iMRohFGxcPjCopocJ222U3HErlX"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">renise</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="gloria avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDot3AQJ8DwrJB59oh-77THvIg3hIGmQ9JwolhR80514p06qeMUg-k7jAZb-yN6EkFQNWrySUNAdJ3nwO0aiKVuWVuhCyqhY-AQxU7EZXlveTkvVyvaL4wT6sqt5bmrU7Q8HvkQxNezgl7c7tWt1MEY_m9AnqQbqOQ1zJvPTHpxozYSSOmpidRctDtH-qf-EaHSUo4A64fbeoWRrqeZa4DI8FtkDDHAJ_81GIBMJC5FI3RBnF8fKrIVNwwfMZL8n-HDYWUOlukYlXk0"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">gloria</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="cleo avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnWiMaTXsbGKKuSsdTM7cWPkfUtC9HPLI5GDlFbQNF0bJdAxta7HwTPvhmZ9o7O-elGKQcygNyqPIt5jSTagh8k35Qxbeh8y7nEPi2P2KRNKS8jhYXZCEBGyq3BwT6mAr2zt7eWSDG9rpTJ8i15IfgR2f31sw9FzlMCiwfN9AWk8nEeRm8ggMaXozMZpaXAHCmQHnNP3QpOMOeDnxx4u0TgrpX_8NCcUaFMmpNhD367UdcwyzP0e4w4N_lGVjpDJJQrMPp1_45K7Du"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">cleo</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="ruby avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATs0_AN2iGT73Z43Yo-1kUveXgkWNQ3D2qHzza90kYJQczn5X9-3HuG9sGAegPKNRH4iOqKt37ODHNGvXz9Yegc8gsj5Pa0-9ZibpHHmlsVD7V_I-vF3R3TdnKoykH_rH6vFQDK687YpXDM_Lyg68dkvX3OcALM-Yivh3qC3TdGqqQ4ZlMnPT3MkcUprewJT8NlYEEhjk1lUAjpVPR8UPQ2xbevdl8KOI-2ElWy28MHeKkz1gVGERPayjNb-WYjngj5NyggjYNhzhi"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">ruby</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="stitch avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlbzW4kmhmDW7_GM6FbXZw1iXhdVvqFUL8z1uwc9lSK5t4Y8Qd94gYiPZeyki5VnF1To6B1ZxWNpCofRyfwILB4QNnFq5ASCW1DR_O2qWuIV09Y6RiSYbBZl_AHcsjjxVnbXCmiRwSHj9KQw00jRAneXitqCxUdgLCS9U3kMfEPF5PIznj4OQAF3rH8ndWaqflSDECIT4yguq5FNn5X5zliFeONQUy8fZDEaUeGtswSW6BRXxeWyfcbRrxHfWr6YfW5GBPycAGUT5u"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">stitch</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="tulip avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiF4G-HnNADm6ID0kli82aJ1NY2DpRzeiR_wnmMRckF5Vh8T7pkPHfUwU9P5UpbG_-vxuE5Fb0XiahNman6e8HmpCQ9A-GUc0sb7FbsIKatfTMvk0qGuqhSK0haf_U5AN3TkjKPd2wCLLsQRH27k1yJO6p_eVQn_HcQ8az2gf2XPKI2Qa60oAryANkpztrDZOZjZ6lDnq3u9OwgWexvBjfa1ht3Etxz9G9QcoEF3mTYUhWjY9oK_cGBUY30H1vXbtH77uxOCS7VF2P"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">tulip</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="apollo avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb0Uq1bUAMyTVHyoXeH4aQOTIeIMggHYrxDg3mlDoGvp68yvZkv2dmcRIul5HGFw23m9lAbOVP4wTLkj-3IrklxUFC9xRayAOkC1kIgjA6nFRKWowixJWMj-1O3P0gPNrFLXsZsMRgWXdt_hu36jB3hWzpKddlEOPl0zmP0sRDfPOQ0Bn-9D3xXWNhcmTyLX14DeNheFmLng5AIwJsCl-tXNneA5I8KzshSNBvk773kvY-tscSFY9VIYi7U4YkVlQER7UiUfuGwIxQ"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">apollo</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="fang avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpG0xNdU4LwnbvITx3xHHZJpCitrFc99hSTcdMPbAylfVK-H0TVynTQWkLuUi2XtRkMkvmCF5l8whEdCWTATWE7hg2njeGdsJNvEumK0cbHJIJc0NWlPWmVRjNvgFBQB8kcRE4_vkcbdqLq7jtPYNuQFKXhLqZJawHlwuftgfNvogAxvC7oD1Bcw5jFvbbvzJMsL_Ia-WmjCK7i8lPyKAWpj2MRp0xCF6d6fvdLhQNW25MI9vHSRS7zNDBTN8Z1WpUN0GPofRBGCqT"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">fang</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="whitney avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC28TwGESoio0Su0spLwe2ANALS_oGn_ouDLrVseXE08Bd8dKjSECkTb5jwsmuJEOEbKxnS9pcmz2bi1kCNbFYDVLQugovybXCnMxQZzty7uo3aA_HS7K4ftdGe-ByQymeLD4eGepRM7DTx8yOR-OE8_S0sQN3AxVAlSFDqym4o0zxGvWhqtauE5yWKUQyKVUuIW84Okukzwhkadn-Fuc4nbvLg8FaLLgQGuk-mFBZ77rNOd_CqSvfeOeMr0GD0eAoTeIEKmzXBZfWs"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">whitney</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="beau avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRXtikgEASNRA4nIy9k7v7CyQZR4KYoAEjiirTgfevUnfWJ-J7uc-ESC98zx1XXjlGwgoEcCr38Qa4EP5kqw5Q521K7UP0xKloKUnK1iqXmzGeT0u6WYAk5oR4My8XWne7kxqQA6Zx1H29oaaI5ir4uSLeypqZEp6srJ1oDNPoMYXlRmfeOGtSyLTx5OB7fLY4ff5rdfUaTvxDsZuyTHS_67XJuWqvWnPVgldaSXA71Kqco-OnMATn4Xo4q5v_M366pk15CM0sf8jy"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">beau</span>
+</div>
+</div>
+<div class="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10">
+<img alt="fauna avatar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD460d17wzkfujAzHnpaxW_xDZHNGw05_Mylal_NS5k05uPgtv9sgj4FQGrvfo7ANd4wOJluGwqjElyQrPOvkhuY2Az1RWAFF7ntqy15zfLtpeKnJRi-iLpbYjrzTun9m-rstxVb10YZQ2WX96pQt83K4FBibvWPI_117pj2uLGknvjpoxRoM_c1m8uuoLuabumu5mBfj2y_7JjvRGiF74Dro3KGKhj-Iq_Jka3srvm7WJAWLC-yI50efj9ayOrT8XvKk3LkTfBmewE"/>
+<div class="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
+<span class="text-white text-lg font-bold tracking-wide drop-shadow-md">fauna</span>
+</div>
+</div>
+</div>
+</main>
+<footer class="flex-none h-20 bg-[#202124] border-t border-white/5 px-8 flex items-center justify-between z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+<div class="flex flex-col">
+<h1 class="text-base font-semibold text-gray-100">group study - day ten</h1>
+<span class="text-xs text-gray-400">01:45:23 elapsed</span>
+</div>
+<div class="flex items-center gap-3 absolute left-1/2 transform -translate-x-1/2">
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-[#EA4335] text-white hover:bg-red-600 transition-colors shadow-lg">
+<span class="material-icons-round text-xl">mic_off</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-[#3C4043] text-gray-200 hover:bg-[#5F6368] transition-colors">
+<span class="material-icons-round text-xl">videocam_off</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-[#3C4043] text-gray-200 hover:bg-[#5F6368] transition-colors">
+<span class="material-icons-round text-xl">more_horiz</span>
+</button>
+<button class="w-12 h-12 rounded-full flex items-center justify-center bg-[#EA4335] text-white hover:bg-red-600 transition-colors shadow-lg ml-1">
+<span class="material-icons-round text-2xl">call_end</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-sm text-gray-300">17 people</span>
+<button class="p-2 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-icons-round text-gray-300">people</span>
+</button>
+</div>
+</footer>
+<script>
+        // Check for saved user preference, if any, on load of the website
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+
+</body></html>

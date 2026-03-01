@@ -1,70 +1,61 @@
-# Client Webapp 모듈 스펙 (템플릿)
+# Client Webapp 모듈 스펙
 
-## 1) 목적
+## 목적
 
 `client/webapp`의 범위, 요구사항, 전달 규칙을 정의합니다.
 
-## 2) 소유 범위와 경계
+---
 
-- 모듈 경로: `client/webapp`
-- 런타임: React + Vite
-- 담당:
-  - 앱 레벨 UI 구성 및 페이지 렌더링
-  - `@animal-zoom/share`의 공통 도메인 계약 소비
-- 비담당:
-  - 실시간 전송 서버 동작 (`server/app`)
-  - 공통 계약의 원천 정의 (`client/share`)
+## 소유 범위와 경계
 
-## 3) 현재 기준선 (관찰 기반)
+- **모듈 경로**: `client/webapp`
+- **런타임**: React + Vite (TypeScript)
+- **담당**: 앱 레벨 UI 구성, 참여자 그리드 렌더링, 하단 컨트롤 바, `@animal-zoom/share` 계약 소비
+- **비담당**: 서버 동작 (`server/app`), 공통 계약 정의 (`client/share`)
 
-- 엔트리 포인트: `client/webapp/src/main.tsx`
-- `ZoomAnimal` 타입을 사용해 정적 동물 목록을 렌더링합니다.
+---
 
-## 4) 기능 요구사항
+## UI 구현 레퍼런스
 
-### FR-WEB-1 데이터 계약 사용
+아래 경로의 `code.html`과 `screen.png`를 기준으로 **동일하게** React로 구현합니다.
 
-- 도메인 모델은 `@animal-zoom/share` 인터페이스를 사용합니다.
-- 도메인 인터페이스를 로컬에 중복 정의하지 않습니다.
+| 예제 | 경로 | 조건 |
+|---|---|---|
+| 4인 그리드 | `client/webapp/example/virtual_study_room_desktop_grid_4_participants/` | 참여자 1–4명 |
+| 12인 그리드 | `client/webapp/example/virtual_study_room_desktop_grid_12_participants/` | 참여자 5–12명 |
+| 스크롤 뷰 | `client/webapp/example/virtual_study_room_desktop_grid_scrollable_view/` | 참여자 13명 이상 |
 
-### FR-WEB-2 UI 렌더링
+> `screen.png`와 시각적으로 일치해야 합니다. 색상·클래스·구조를 임의로 변경하지 않습니다.
 
-- 사용 가능한 동물 엔티티와 핵심 상태를 명확하게 렌더링합니다.
-- UI 동작은 결정적이며 타입 안전해야 합니다.
+---
 
-### FR-WEB-3 이벤트 연동 (구현 시)
+## 기능 요구사항
 
-- 공통 계약 호환성을 깨지 않으면서 zoom 상태/이벤트 업데이트를 소비합니다.
+- **FR-WEB-1** 도메인 모델은 `@animal-zoom/share` 인터페이스를 사용합니다. 로컬 중복 정의 금지.
+- **FR-WEB-2** 참여자 수에 따라 그리드 columns와 스크롤 여부를 자동 전환합니다.
+- **FR-WEB-3** 마이크·카메라 상태를 배지로 표시합니다.
+- **FR-WEB-4** zoom 이벤트는 RxJS Observable로 구독합니다 (구현 시).
 
-## 5) 비기능 요구사항
+---
+
+## 비기능 요구사항
 
 - `pnpm --filter @animal-zoom/webapp lint` 통과
 - `pnpm --filter @animal-zoom/webapp typecheck` 통과
-- 번들 영향 변경 시 `pnpm --filter @animal-zoom/webapp build` 통과
+- 번들 변경 시 `pnpm --filter @animal-zoom/webapp build` 통과
 
-## 6) 입력과 출력
+---
 
-- 입력:
-  - `@animal-zoom/share`의 공통 계약
-  - 향후 서버 이벤트 페이로드(API/이벤트 문서 기준)
-- 출력:
-  - 렌더링된 React UI
-  - 선택적 사용자 상호작용/이벤트(기능 의존)
+## 에이전트 변경 규칙
 
-## 7) 에이전트 변경 규칙
+1. 레이아웃 변경 시 `example/*/screen.png`와 비교하여 일치 여부를 확인합니다.
+2. 데이터 형태가 바뀌면 `client/share`를 먼저 수정합니다.
+3. 동작이 바뀌면 본 문서도 함께 갱신합니다.
 
-1. 기능 로직은 작고 검증 가능하게 유지합니다.
-2. 동작이 바뀌면 문서를 함께 갱신합니다.
-3. 데이터 형태가 바뀌면 `client/share`를 먼저 수정한 뒤 이 모듈을 수정합니다.
+---
 
-## 8) 완료 체크리스트
+## 완료 체크리스트
 
-- [ ] 본 스펙 업데이트 설명대로 동작이 구현되었는가
-- [ ] 타입/린트 검증이 통과하는가
-- [ ] 영향이 있으면 빌드가 통과하는가
-- [ ] 관련 문서/예시가 함께 갱신되었는가
-
-## 9) 열린 질문 / 향후 작업
-
-- zoom 제어와 동기화를 위한 구체 UX 플로우 정의
-- 상호작용 로직 도입 시 모듈 단위 테스트 추가
+- [ ] `screen.png`와 시각적으로 동일한가
+- [ ] 참여자 수에 따라 그리드/스크롤이 정확히 전환되는가
+- [ ] 타입/린트/빌드가 통과하는가
