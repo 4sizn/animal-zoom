@@ -7,10 +7,7 @@ This folder stores user-provided reference resources that implementations must m
 - `docs/concept/zoom-grid-1.png`
 - `docs/concept/zoom-grid-2.png`
 - `docs/concept/zoom-grid-3.png`
-
-## Upcoming
-
-- `docs/concept/babylon-3d-character/README.md`
+- `docs/concept/babylon-3d-character/README.md` — Babylon.js 3D 캐릭터 씬 구현 작업기획서
 
 ## How To Add A New Concept
 

@@ -1,12 +1,13 @@
 {
-  "active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-3-implement-client-webapp-spec.md",
-  "started_at": "2026-03-01T13:15:19Z",
+  "active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-4-integrate-babylon-gltf-characters.md",
+  "started_at": "2026-03-02T05:30:23.504Z",
   "session_ids": [
     "manual-prep",
     "ses_3621eafacffeswbEAMQtx0wZ88",
     "ses_360a66073ffevPQOh7BJLs0tsn",
-    "ses_3607007b2ffe17uNccNO75q1TJ"
+    "ses_3607007b2ffe17uNccNO75q1TJ",
+    "ses_352f94ca5ffexsVvK7LiLenp85"
   ],
-  "plan_name": "plan-3-implement-client-webapp-spec",
+  "plan_name": "plan-4-integrate-babylon-gltf-characters",
   "worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

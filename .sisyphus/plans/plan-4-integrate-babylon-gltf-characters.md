@@ -1,0 +1,11 @@
+- [x] Read and align requirements from the mandated inputs: `docs/concept/babylon-3d-character/README.md`, `docs/modules/client-babylon-web-spec.md`, `client/babylon-web/src/main.ts`, `client/babylon-web/src/scene/sceneFactory.ts`, `docs/concept/zoom-grid-1.png`, `docs/concept/zoom-grid-2.png`
+- [x] Phase 1: add a minimal glTF loading proof inside `client/babylon-web` (solo route) using `SceneLoader.ImportMeshAsync`, verifying textures resolve and the mesh is framed by the camera
+- [x] Phase 1: verify glTF loads from a stable public URL path (under `client/babylon-web/public/assets/characters/...`) and document the chosen path mapping
+- [x] Phase 2: implement a small asset loader utility (`client/babylon-web/src/scene/assetLoader.ts`) that loads a character by avatar type and provides a primitive fallback on error
+- [x] Phase 2: update `client/babylon-web/src/scene/sceneFactory.ts` to use the asset loader for `/solo` (and `/my-room` if it shares the same factory), including camera/light defaults aligned to the concept doc
+- [x] Phase 2: update `client/babylon-web/src/main.ts` to support async scene bundle creation (await, crash-safe), without breaking `/solo`, `/my-room`, `/room` routing
+- [x] Phase 3: update `client/babylon-web/src/scene/sceneFactory.ts` (participant factory) to load a glTF character per participant view scene; keep existing offscreen optimization behavior intact
+- [x] Phase 3: add basic participant name overlay for room tiles (HTML/CSS in `client/babylon-web/src/main.ts`), anchored to each participant tile/canvas
+- [x] Phase 3: add basic speaking highlight styling hook (CSS class toggle) for participant tiles (static/demo state acceptable)
+- [x] Verify NFR: `pnpm --filter @animal-zoom/babylon-web lint`, `pnpm --filter @animal-zoom/babylon-web typecheck`, `pnpm --filter @animal-zoom/babylon-web build` all pass
+- [x] Hands-on QA: run `pnpm --filter @animal-zoom/babylon-web dev`; verify `/solo` renders one textured glTF character; verify `/room` can render 12 participant tiles (4x3) with visible characters and no console errors; visually compare against `docs/concept/zoom-grid-2.png`
