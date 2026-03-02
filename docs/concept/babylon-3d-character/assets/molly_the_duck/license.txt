@@ -1,0 +1,11 @@
+Model Information:
+* title:	Molly the Duck
+* source:	https://sketchfab.com/3d-models/molly-the-duck-d4aa4126fce64397935d128ed54c3def
+* author:	BenEEmoon (https://sketchfab.com/BenEEmoon)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Molly the Duck" (https://sketchfab.com/3d-models/molly-the-duck-d4aa4126fce64397935d128ed54c3def) by BenEEmoon (https://sketchfab.com/BenEEmoon) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

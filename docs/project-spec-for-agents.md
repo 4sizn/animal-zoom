@@ -132,6 +132,13 @@ For stronger agent execution quality, add:
 - `docs/api-events.md`: websocket event contract versioning and examples.
 - `docs/roadmap.md`: implementation milestones and definition of done.
 
+## 10.1) Docs Workflow (Recommended)
+
+- Start here: `docs/INDEX.md`
+- Put user reference resources under: `docs/concept/INDEX.md`
+- Keep evolving requirements under: `docs/requirements/INDEX.md`
+- Write work plans under: `docs/plans/INDEX.md` (use templates in `docs/templates/`)
+
 ## 11) Module Specs (Templates)
 
 Use these module-level templates for detailed, agent-friendly specs:
