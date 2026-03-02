@@ -26,10 +26,10 @@
 
 | 에셋 폴더 | 포맷 | 비고 |
 |---|---|---|
-| `animal_crossing_pocket_camp_apollo/` | glTF 2.0 (`scene.gltf` + `scene.bin` + `textures/`) | 앉은 포즈, 의상 텍스처 포함 |
-| `animal_crossing_villager_oc/` | glTF 2.0 | 캐릭터 + 다수 텍스처 |
-| `macchiato_animal_crossing_original_character/` | glTF 2.0 | 오리지널 OC 캐릭터 |
-| `molly_the_duck/` | glTF 2.0 | 오리 캐릭터 |
+| `animal_crossing_pocket_camp_apollo/` | glTF 2.0 (`model/scene.gltf` + `model/scene.bin` + `model/textures/`) | 앉은 포즈, 의상 텍스처 포함 |
+| `animal_crossing_villager_oc/` | glTF 2.0 (`model/scene.gltf` + `model/scene.bin` + `model/textures/`) | 캐릭터 + 다수 텍스처 |
+| `macchiato_animal_crossing_original_character/` | glTF 2.0 (`model/scene.gltf` + `model/scene.bin` + `model/textures/`) | 오리지널 OC 캐릭터 |
+| `molly_the_duck/` | glTF 2.0 (`model/scene.gltf` + `model/scene.bin` + `model/textures/`) | 오리 캐릭터 |
 
 > **라이선스:** 각 에셋 폴더의 `license.txt`를 반드시 확인하고, 상업적 사용 가능 여부를 기재된 조건에 따라 준수한다.
 

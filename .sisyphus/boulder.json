@@ -1,13 +1,14 @@
 {
-  "active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-4-integrate-babylon-gltf-characters.md",
-  "started_at": "2026-03-02T05:30:23.504Z",
+  "active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-5-organize-babylon-character-assets.md",
+  "started_at": "2026-03-02T07:56:04.364Z",
   "session_ids": [
     "manual-prep",
     "ses_3621eafacffeswbEAMQtx0wZ88",
     "ses_360a66073ffevPQOh7BJLs0tsn",
     "ses_3607007b2ffe17uNccNO75q1TJ",
-    "ses_352f94ca5ffexsVvK7LiLenp85"
+    "ses_352f94ca5ffexsVvK7LiLenp85",
+    "ses_35273eca5ffe4U0SR0M2OsKi9m"
   ],
-  "plan_name": "plan-4-integrate-babylon-gltf-characters",
+  "plan_name": "plan-5-organize-babylon-character-assets",
   "worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

@@ -1,0 +1,29 @@
+{
+  "id": "molly_the_duck",
+  "displayName": "Molly (Duck)",
+  "source": {
+    "url": "",
+    "note": "Fill in provenance/source URL for this asset"
+  },
+  "license": {
+    "file": "license.txt",
+    "note": "Read license.txt before use"
+  },
+  "model": {
+    "type": "gltf",
+    "entry": "model/scene.gltf",
+    "texturesDir": "model/textures"
+  },
+  "animation": {
+    "hasAnimations": false,
+    "notes": "No glTF animations array detected in scene.gltf"
+  },
+  "rig": {
+    "sourceFiles": [],
+    "notes": "No .blend/.fbx rig sources currently stored"
+  },
+  "sound": {
+    "files": [],
+    "notes": "Reserved for future character SFX/voice"
+  }
+}

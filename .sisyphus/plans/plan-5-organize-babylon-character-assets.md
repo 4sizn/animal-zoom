@@ -1,0 +1,7 @@
+- [x] Inventory current contents under `docs/concept/babylon-3d-character/assets/` (models/textures/licenses) and note what does/does not exist yet (rig source files, audio)
+- [x] Define the on-disk layout for each character asset: `model/` (runtime glTF), `rig/` (rigging + animation notes/source), `sound/` (character SFX/voice), plus a per-asset `manifest.json`
+- [x] Write AI-friendly documentation at `docs/concept/babylon-3d-character/assets/README.md` describing the layout, naming conventions, and how to add new assets safely
+- [x] Reorganize each existing character folder under `docs/concept/babylon-3d-character/assets/` to match the new layout (move `scene.gltf`, `scene.bin`, `textures/` into `model/`; add `rig/` + `sound/` placeholders)
+- [x] Add a `manifest.json` per character folder capturing: id, displayName, source/provenance, license file path, model entrypoint path, textures dir, animationGroups presence, scale/up-axis notes, and notes for rig/sound
+- [x] Update docs that reference old paths to the model entrypoint (at least `docs/concept/babylon-3d-character/README.md` and `docs/concept/babylon-3d-character/links.md`)
+- [x] Verify there are no stale references to pre-move paths in docs (search for `assets/.../scene.gltf` at the old locations)
