@@ -3,6 +3,10 @@ import { EMPTY, type Observable } from "rxjs";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles.css";
+import { AuthProvider } from "./auth/AuthContext";
+import { ForgotPasswordPage } from "./pages/forgot-password";
+import { LoginPage } from "./pages/login";
+import { RegisterPage } from "./pages/register";
 
 function getParticipantCount(maxCount: number): number {
   const params = new URLSearchParams(window.location.search);
@@ -627,6 +631,28 @@ function App() {
   );
 }
 
+function Router() {
+  const [path, setPath] = React.useState(() => window.location.pathname);
+
+  React.useEffect(() => {
+    const onPopState = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  if (path === "/login") {
+    return <LoginPage />;
+  }
+  if (path === "/register") {
+    return <RegisterPage />;
+  }
+  if (path === "/forgot-password") {
+    return <ForgotPasswordPage />;
+  }
+
+  return <App />;
+}
+
 document.documentElement.classList.add("dark");
 
 const rootElement = document.getElementById("root");
@@ -637,6 +663,8 @@ if (rootElement === null) {
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <Router />
+    </AuthProvider>
   </React.StrictMode>
 );

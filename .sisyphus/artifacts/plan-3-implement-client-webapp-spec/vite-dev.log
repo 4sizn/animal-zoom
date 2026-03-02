@@ -7,3 +7,6 @@
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
+9:09:38 PM [vite] hmr update /src/main.tsx, /src/styles.css
+11:13:29 PM [vite] ✨ new dependencies optimized: socket.io-client
+11:13:29 PM [vite] ✨ optimized dependencies changed. reloading

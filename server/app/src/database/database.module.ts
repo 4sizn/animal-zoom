@@ -1,0 +1,54 @@
+import { Module, type OnModuleDestroy } from "@nestjs/common";
+import { Kysely, PostgresDialect, type Generated } from "kysely";
+import { Pool } from "pg";
+
+export interface UsersTable {
+  id: Generated<number>;
+  email: string;
+  password_hash: string;
+  reset_password_token: string | null;
+  reset_password_token_expires_at: Date | null;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
+export interface Database {
+  users: UsersTable;
+}
+
+function createKysely(): Kysely<Database> {
+  const connectionString = process.env.DATABASE_URL;
+
+  const pool = new Pool(
+    connectionString !== undefined
+      ? { connectionString }
+      : {
+          host: process.env.POSTGRES_HOST ?? "localhost",
+          port: Number(process.env.POSTGRES_PORT ?? 5432),
+          database: process.env.POSTGRES_DB,
+          user: process.env.POSTGRES_USER,
+          password: process.env.POSTGRES_PASSWORD
+        }
+  );
+
+  return new Kysely<Database>({
+    dialect: new PostgresDialect({ pool })
+  });
+}
+
+@Module({
+  providers: [
+    {
+      provide: Kysely,
+      useFactory: createKysely
+    }
+  ],
+  exports: [Kysely]
+})
+export class DatabaseModule implements OnModuleDestroy {
+  constructor(private readonly db: Kysely<Database>) {}
+
+  async onModuleDestroy() {
+    await this.db.destroy();
+  }
+}

@@ -1,0 +1,15 @@
+- [x] Add `docker-compose.yml` with PostgreSQL 16 (alpine) + MinIO services, plus `postgres_data` and `minio_data` volumes
+- [x] Add root `.env` defining DB connection settings and JWT secret (and any Mailtrap/MinIO env vars required by the spec)
+- [x] Update `server/app/package.json` dependencies for Kysely + Postgres + NestJS Passport/JWT + bcrypt + dotenv and required `@types/*`
+- [x] Add Kysely database module provider at `server/app/src/database/database.module.ts` using `PostgresDialect`
+- [x] Add migration runner script at `server/app/src/database/migrate.ts` using `FileMigrationProvider` and `Migrator`
+- [x] Add initial migration under `server/app/src/database/migrations/` that creates `users` table for auth
+- [x] Implement auth module under `server/app/src/auth/` (JWT issue/verify strategy + guard) using NestJS Passport + JWT
+- [x] Implement users module under `server/app/src/users/` using Kysely (register + fetch user)
+- [x] Implement mail module under `server/app/src/mail/` for forgot-password mail sending (Mailtrap integration)
+- [x] Apply JWT verification guard to WebSocket connection in `server/app/src/gateway/animal-zoom.gateway.ts`
+- [x] Update shared types in `client/share/src/index.ts` (User, LoginDto, RegisterDto, AuthResponse, etc.)
+- [x] Add client webapp auth pages `client/webapp/src/pages/login`, `client/webapp/src/pages/register`, `client/webapp/src/pages/forgot-password`
+- [x] Add token management (AuthContext or store) and API interceptor configuration in `client/webapp` per spec
+- [x] Verification: automated (`pnpm run test` for server; run migration script and confirm tables created)
+- [x] Verification: manual (docker compose up; webapp register -> login -> WS connect with auth; mail logs + Mailtrap inbox)

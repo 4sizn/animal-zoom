@@ -25,3 +25,36 @@ export interface ZoomState {
   animalId: string;
   position: ZoomPosition;
 }
+
+export interface User {
+  id: number;
+  email: string;
+  createdAt: string;
+}
+
+export interface RegisterDto {
+  email: string;
+  password: string;
+}
+
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
+export interface ForgotPasswordDto {
+  email: string;
+}
+
+export interface RegisterResponse {
+  ok: boolean;
+  user?: User;
+  error?: string;
+}
+
+export interface AuthResponse {
+  ok: boolean;
+  accessToken?: string;
+  user?: User;
+  error?: string;
+}
