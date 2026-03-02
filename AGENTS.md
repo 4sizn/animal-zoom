@@ -33,6 +33,9 @@ This repo is a local bundle of LLM/agent skills (mostly Markdown + a few scripts
 ## CONVENTIONS
 - Canonical edits go in `.agents/skills/` (other tool-specific directories are symlink mirrors).
 - Skill layout is `SKILL.md` plus optional `rules/`, `scripts/`, `references/`, `assets/`.
+- OpenCode `task` calls must use `run_in_background` (boolean). Do not use `run_background`.
+- Default execution mode for independent agent tasks is parallel background: launch multiple `task(...)` calls with `run_in_background: true`.
+- Only use `run_in_background: false` when downstream steps require immediate, sequential task output.
 
 ## ANTI-PATTERNS (THIS PROJECT)
 - Do not edit `.agent/skills/`, `.claude/skills/`, `.cline/skills/` directly; they are symlink mirrors.

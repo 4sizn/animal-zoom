@@ -107,6 +107,9 @@ When agents implement changes, follow these rules:
 3. Avoid introducing breaking payload changes without updating all producers/consumers in the same change.
 4. Prefer minimal, verifiable increments and keep scripts passing.
 5. For docs/spec updates, only state behavior verified from repository code.
+6. For OpenCode subagent delegation, use `task(..., run_in_background: boolean, ...)`; never use `run_background`.
+7. For independent exploration/research subtasks, default to parallel background execution (`run_in_background: true`) and collect results later.
+8. Use foreground execution (`run_in_background: false`) only when a task's output is required immediately for the next step.
 
 ## 8) Acceptance Criteria for Agent Tasks
 
