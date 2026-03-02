@@ -1,16 +1,17 @@
 {
-  "active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-6-introduce-auth-kysely-postgres.md",
-  "started_at": "2026-03-02T10:29:04.904Z",
-  "session_ids": [
-    "manual-prep",
-    "ses_3621eafacffeswbEAMQtx0wZ88",
-    "ses_360a66073ffevPQOh7BJLs0tsn",
-    "ses_3607007b2ffe17uNccNO75q1TJ",
-    "ses_352f94ca5ffexsVvK7LiLenp85",
-    "ses_35273eca5ffe4U0SR0M2OsKi9m",
-    "ses_351e7d729ffeXGCFiKcyM7gLC1",
-    "ses_3511fa1e4ffe6FBca4mIJ8eC1S"
-  ],
-  "plan_name": "plan-6-introduce-auth-kysely-postgres",
-  "worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-7-babylonjs-personal-space-automation.md",
+	"started_at": "2026-03-02T14:53:38.888Z",
+	"session_ids": [
+		"manual-prep",
+		"ses_3621eafacffeswbEAMQtx0wZ88",
+		"ses_360a66073ffevPQOh7BJLs0tsn",
+		"ses_3607007b2ffe17uNccNO75q1TJ",
+		"ses_352f94ca5ffexsVvK7LiLenp85",
+		"ses_35273eca5ffe4U0SR0M2OsKi9m",
+		"ses_351e7d729ffeXGCFiKcyM7gLC1",
+		"ses_3511fa1e4ffe6FBca4mIJ8eC1S",
+		"ses_350f59f67ffepQf0gjz7INnLyi"
+	],
+	"plan_name": "plan-7-babylonjs-personal-space-automation",
+	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

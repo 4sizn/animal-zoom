@@ -1,12 +1,12 @@
-import {
-	Color3,
-	Engine,
-	StandardMaterial,
-} from "@babylonjs/core";
+import { Color3, Engine, StandardMaterial } from "@babylonjs/core";
+import personalSpacesConfig from "./data/personalSpaces.json";
+import type { PersonalSpace } from "./scene/personalSpaceTypes";
 import {
 	createParticipantViewSceneBundle,
+	createPersonalSpaces,
 	createSingleViewSceneBundle,
 	createSingleViewSceneBundleAsync,
+	focusCameraOnDesk,
 	type SceneBundle,
 } from "./scene/sceneFactory";
 
@@ -213,13 +213,13 @@ function createEngineRuntime(): {
 	clearViews: () => void;
 } {
 	type RegisteredView = ReturnType<Engine["registerView"]>;
-		type RoomParticipantView = {
-			participantId: string;
-			tile: HTMLElement;
-			canvas: HTMLCanvasElement;
-			bundle: SceneBundle;
-			view: RegisteredView;
-		};
+	type RoomParticipantView = {
+		participantId: string;
+		tile: HTMLElement;
+		canvas: HTMLCanvasElement;
+		bundle: SceneBundle;
+		view: RegisteredView;
+	};
 
 	const workingCanvas = createWorkingCanvas();
 	const engine = new Engine(workingCanvas, true);
@@ -576,7 +576,10 @@ function createEngineRuntime(): {
 			const participantId = `participant-${nextParticipantIndex}`;
 			const tile = document.createElement("div");
 			tile.className = "room-tile";
-			tile.classList.toggle("room-tile-speaking", nextParticipantIndex % 3 === 0);
+			tile.classList.toggle(
+				"room-tile-speaking",
+				nextParticipantIndex % 3 === 0,
+			);
 
 			const canvas = createCanvasPlaceholder(
 				`room-canvas-${nextParticipantIndex}`,
@@ -700,6 +703,7 @@ function createEngineRuntime(): {
 			void createSingleViewSceneBundleAsync(engine, {
 				attachControl: false,
 				inputElement: soloCanvas,
+				avatarType: null,
 			})
 				.then((bundle) => {
 					if (loadRequestId !== soloLoadRequestId || runtimeRoute !== "/solo") {
@@ -711,8 +715,31 @@ function createEngineRuntime(): {
 						engine.registerView(soloCanvas, bundle.camera);
 						registeredViews.add(soloCanvas);
 						soloSceneBundle = bundle;
+						(window as unknown as { __soloScene?: unknown }).__soloScene =
+							bundle.scene;
 						hasRenderError = false;
 						soloRenderEnabled = true;
+
+						const config = Array.isArray(personalSpacesConfig)
+							? (personalSpacesConfig as unknown as PersonalSpace[])
+							: [];
+						void createPersonalSpaces(bundle.scene, config)
+							.then((spaces) => {
+								if (
+									loadRequestId !== soloLoadRequestId ||
+									runtimeRoute !== "/solo"
+								) {
+									return;
+								}
+
+								const firstSpace = spaces[0];
+								if (firstSpace) {
+									focusCameraOnDesk(bundle.scene, firstSpace);
+								}
+							})
+							.catch((error) => {
+								console.error("Failed to create personal spaces", error);
+							});
 					} catch (error) {
 						bundle.dispose();
 						soloSceneBundle = null;

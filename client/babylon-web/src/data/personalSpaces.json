@@ -1,0 +1,70 @@
+[
+	{
+		"id": "space-001",
+		"name": "Music Studio",
+		"theme": "Music",
+		"position": { "x": 0, "y": 0, "z": 0 },
+		"size": { "width": 5, "depth": 5 },
+		"assets": [
+			{
+				"type": "background",
+				"key": "music_studio",
+				"id": "bg-001",
+				"position": { "x": 0, "y": 0, "z": 0 },
+				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 }
+			},
+			{
+				"type": "mesh",
+				"key": "desk_keyboard",
+				"id": "desk-001",
+				"position": { "x": 0, "y": 0, "z": 0 },
+				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 }
+			},
+			{
+				"type": "mesh",
+				"key": "chair",
+				"id": "chair-001",
+				"position": { "x": -0.6, "y": 0, "z": -0.6 },
+				"rotation": { "x": 0, "y": 0.6, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 }
+			},
+			{
+				"type": "mesh",
+				"key": "plant",
+				"id": "plant-001",
+				"position": { "x": 1.2, "y": 0, "z": 0.8 },
+				"rotation": { "x": 0, "y": 0.2, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 }
+			},
+			{
+				"type": "avatar",
+				"key": "avatar",
+				"id": "avatar-001",
+				"avatarType": "apollo",
+				"position": { "x": 0.2, "y": 0, "z": -0.9 },
+				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 }
+			},
+			{
+				"type": "light",
+				"key": "spotlight",
+				"id": "light-001",
+				"position": { "x": 0, "y": 3, "z": -2 },
+				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 },
+				"options": { "intensity": 1.2 }
+			},
+			{
+				"type": "ui",
+				"key": "name_tag",
+				"id": "label-001",
+				"position": { "x": 0, "y": 2.0, "z": -1.6 },
+				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 },
+				"options": { "text": "K.K. Slider" }
+			}
+		]
+	}
+]
