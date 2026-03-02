@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@animal-zoom/share": "workspace:*",
-    "@babylonjs/core": "^7.27.0"
+    "@babylonjs/core": "^7.27.0",
+    "@babylonjs/loaders": "^7.27.0"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
