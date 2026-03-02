@@ -163,7 +163,7 @@ client/babylon-web/
   public/
     assets/
       characters/
-        apollo/        ← scene.gltf, scene.bin, textures/
+        apollo/        ← model/scene.gltf, model/scene.bin, model/textures/
         villager_oc/
         macchiato/
         molly_duck/
@@ -176,10 +176,10 @@ client/babylon-web/
 
 ```typescript
 const AVATAR_ASSET_MAP: Record<AvatarType, string> = {
-  apollo:     "/assets/characters/apollo/scene.gltf",
-  villager:   "/assets/characters/villager_oc/scene.gltf",
-  macchiato:  "/assets/characters/macchiato/scene.gltf",
-  duck:       "/assets/characters/molly_duck/scene.gltf",
+  apollo:     "/assets/characters/apollo/model/scene.gltf",
+  villager:   "/assets/characters/villager_oc/model/scene.gltf",
+  macchiato:  "/assets/characters/macchiato/model/scene.gltf",
+  duck:       "/assets/characters/molly_duck/model/scene.gltf",
 };
 ```
 

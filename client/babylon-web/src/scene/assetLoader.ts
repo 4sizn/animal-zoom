@@ -10,10 +10,10 @@ import "@babylonjs/loaders/glTF";
 export type AvatarType = "apollo" | "villager_oc" | "macchiato" | "molly_duck";
 
 const AVATAR_ROOT_URL_BY_TYPE: Record<AvatarType, string> = {
-	apollo: "/assets/characters/apollo/",
-	villager_oc: "/assets/characters/villager_oc/",
-	macchiato: "/assets/characters/macchiato/",
-	molly_duck: "/assets/characters/molly_duck/",
+	apollo: "/assets/characters/apollo/model/",
+	villager_oc: "/assets/characters/villager_oc/model/",
+	macchiato: "/assets/characters/macchiato/model/",
+	molly_duck: "/assets/characters/molly_duck/model/",
 };
 
 type LoadCharacterOptions = {
