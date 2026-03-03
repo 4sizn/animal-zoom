@@ -1,0 +1,8 @@
+- [x] Read `client/babylon-web/src/main.ts` and identify how `/my-room` controls are wired today
+- [x] Update `/my-room` control options to use PersonalSpace themes (default/music/cafe/study) and Babylon avatar types (apollo/villager_oc/macchiato/molly_duck)
+- [x] Implement `/my-room` scene init using `createSingleViewSceneBundleAsync` (avatarType null) so we can load personal-space assets
+- [x] Implement `rebuildMyRoomPersonalSpace(theme, avatarType)` that disposes previous personal-space nodes and calls `createPersonalSpaces`
+- [x] Wire theme/avatar `<select>` change handlers to call rebuild (with load request id to avoid async race)
+- [x] After create, call `focusCameraOnDesk` on the first created space
+- [x] Manual verification: `pnpm --filter @animal-zoom/babylon-web dev` -> open `/my-room`, switch theme + avatar; confirm assets load and no console errors beyond favicon 404
+- [x] Automated verification: `pnpm --filter @animal-zoom/babylon-web lint`, `pnpm --filter @animal-zoom/babylon-web typecheck`, `pnpm --filter @animal-zoom/babylon-web build`

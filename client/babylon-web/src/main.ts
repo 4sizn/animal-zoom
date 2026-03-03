@@ -1,5 +1,11 @@
-import { Color3, Engine, StandardMaterial } from "@babylonjs/core";
+import {
+	Color3,
+	Engine,
+	StandardMaterial,
+	type TransformNode,
+} from "@babylonjs/core";
 import personalSpacesConfig from "./data/personalSpaces.json";
+import type { AvatarType } from "./scene/assetLoader";
 import type { PersonalSpace } from "./scene/personalSpaceTypes";
 import {
 	createParticipantViewSceneBundle,
@@ -13,8 +19,8 @@ import {
 const ROUTES = ["/solo", "/room", "/my-room"] as const;
 
 type RoutePath = (typeof ROUTES)[number];
-type MyRoomTheme = "default" | "library" | "cafe";
-type MyRoomAvatar = "cat" | "bear" | "penguin" | "rabbit";
+type MyRoomTheme = "default" | "music" | "cafe" | "study";
+type MyRoomAvatar = AvatarType;
 
 const appRoot = getAppRoot();
 const engineRuntime = createEngineRuntime();
@@ -104,12 +110,13 @@ function renderRoute(path: RoutePath): void {
 
 			const themeSelect = document.createElement("select");
 			themeSelect.id = "my-room-theme-select";
-			["default", "library", "cafe"].forEach((theme) => {
+			["default", "music", "cafe", "study"].forEach((theme) => {
 				const option = document.createElement("option");
 				option.value = theme;
 				option.textContent = theme;
 				themeSelect.append(option);
 			});
+			themeSelect.value = "default";
 
 			const avatarLabel = document.createElement("label");
 			avatarLabel.setAttribute("for", "my-room-avatar-select");
@@ -117,12 +124,13 @@ function renderRoute(path: RoutePath): void {
 
 			const avatarSelect = document.createElement("select");
 			avatarSelect.id = "my-room-avatar-select";
-			["cat", "bear", "penguin", "rabbit"].forEach((avatar) => {
+			["apollo", "villager_oc", "macchiato", "molly_duck"].forEach((avatar) => {
 				const option = document.createElement("option");
 				option.value = avatar;
 				option.textContent = avatar;
 				avatarSelect.append(option);
 			});
+			avatarSelect.value = "apollo";
 
 			controls.append(
 				title,
@@ -336,7 +344,7 @@ function createEngineRuntime(): {
 	};
 
 	const normalizeMyRoomTheme = (value: string): MyRoomTheme => {
-		if (value === "library" || value === "cafe") {
+		if (value === "music" || value === "cafe" || value === "study") {
 			return value;
 		}
 
@@ -344,79 +352,151 @@ function createEngineRuntime(): {
 	};
 
 	const normalizeMyRoomAvatar = (value: string): MyRoomAvatar => {
-		if (value === "bear" || value === "penguin" || value === "rabbit") {
-			return value;
+		if (
+			value === "apollo" ||
+			value === "villager_oc" ||
+			value === "macchiato" ||
+			value === "molly_duck"
+		) {
+			return value as AvatarType;
 		}
 
-		return "cat";
+		return "apollo";
 	};
 
-	const applyMyRoomTheme = (theme: MyRoomTheme): void => {
+	let myRoomLoadRequestId = 0;
+	let myRoomPersonalSpaceNodes: TransformNode[] = [];
+	let myRoomCurrentTheme: MyRoomTheme = "default";
+	let myRoomCurrentAvatar: MyRoomAvatar = "apollo";
+
+	const disposeMyRoomPersonalSpaces = (): void => {
+		myRoomPersonalSpaceNodes.forEach((node) => {
+			node.dispose();
+		});
+		myRoomPersonalSpaceNodes = [];
+	};
+
+	const createMyRoomConfig = (
+		theme: MyRoomTheme,
+		avatarType: MyRoomAvatar,
+	): PersonalSpace[] => {
+		return [
+			{
+				id: "my-room-space",
+				name: "My room",
+				theme,
+				position: { x: 0, y: 0, z: 0 },
+				size: { width: 5, depth: 5 },
+				assets: [
+					{
+						type: "background",
+						key: theme,
+						id: "bg-my-room",
+						position: { x: 0, y: 0, z: 0 },
+						rotation: { x: 0, y: 0, z: 0 },
+						scale: { x: 1, y: 1, z: 1 },
+					},
+					{
+						type: "mesh",
+						key: "desk_cafe_table",
+						id: "desk-my-room",
+						position: { x: 0, y: 0, z: 0 },
+						rotation: { x: 0, y: 0, z: 0 },
+						scale: { x: 1, y: 1, z: 1 },
+						options: {
+							url: "/assets/personal-space/cafe-table/modern_coffee_table_02_1k.gltf",
+						},
+					},
+					{
+						type: "mesh",
+						key: "chair",
+						id: "chair-my-room",
+						position: { x: -0.8, y: 0, z: -0.7 },
+						rotation: { x: 0, y: 0.6, z: 0 },
+						scale: { x: 1, y: 1, z: 1 },
+						options: {
+							url: "/assets/personal-space/greenchair/GreenChair_01_1k.gltf",
+						},
+					},
+					{
+						type: "mesh",
+						key: "plant",
+						id: "plant-my-room",
+						position: { x: 1.2, y: 0, z: 0.8 },
+						rotation: { x: 0, y: 0.2, z: 0 },
+						scale: { x: 0.65, y: 0.65, z: 0.65 },
+						options: { url: "/assets/personal-space/plant/Avocado.glb" },
+					},
+					{
+						type: "avatar",
+						key: "avatar",
+						id: "avatar-my-room",
+						avatarType,
+						position: { x: 0.2, y: 0, z: -0.9 },
+						rotation: { x: 0, y: 0, z: 0 },
+						scale: { x: 1, y: 1, z: 1 },
+					},
+					{
+						type: "light",
+						key: "spotlight",
+						id: "light-my-room",
+						position: { x: 0, y: 3, z: -2 },
+						rotation: { x: 0, y: 0, z: 0 },
+						scale: { x: 1, y: 1, z: 1 },
+						options: { intensity: 1.1 },
+					},
+					{
+						type: "ui",
+						key: "name_tag",
+						id: "label-my-room",
+						position: { x: 0, y: 2.0, z: -1.6 },
+						rotation: { x: 0, y: 0, z: 0 },
+						scale: { x: 1, y: 1, z: 1 },
+						options: { text: `${theme} / ${avatarType}` },
+					},
+				],
+			},
+		];
+	};
+
+	const rebuildMyRoomPersonalSpace = async (
+		theme: MyRoomTheme,
+		avatarType: MyRoomAvatar,
+	): Promise<void> => {
 		const scene = myRoomSceneBundle?.scene;
 		if (!scene) {
 			return;
 		}
 
-		const light = scene.getLightByName("single-view-light");
+		myRoomCurrentTheme = theme;
+		myRoomCurrentAvatar = avatarType;
+		const loadRequestId = myRoomLoadRequestId + 1;
+		myRoomLoadRequestId = loadRequestId;
 
-		if (theme === "library") {
-			scene.clearColor.set(0.88, 0.91, 0.95, 1);
-			if (light) {
-				light.intensity = 0.85;
+		disposeMyRoomPersonalSpaces();
+
+		try {
+			const spaces = await createPersonalSpaces(
+				scene,
+				createMyRoomConfig(theme, avatarType),
+			);
+			if (
+				loadRequestId !== myRoomLoadRequestId ||
+				runtimeRoute !== "/my-room"
+			) {
+				spaces.forEach((space) => space.dispose());
+				return;
 			}
-			return;
-		}
-
-		if (theme === "cafe") {
-			scene.clearColor.set(0.98, 0.91, 0.82, 1);
-			if (light) {
-				light.intensity = 1.05;
+			myRoomPersonalSpaceNodes = spaces;
+			const firstSpace = spaces[0];
+			if (firstSpace) {
+				focusCameraOnDesk(scene, firstSpace);
 			}
-			return;
+		} catch (error) {
+			if (loadRequestId === myRoomLoadRequestId) {
+				console.error("Failed to rebuild my-room personal space", error);
+			}
 		}
-
-		scene.clearColor.set(0.94, 0.97, 1.0, 1);
-		if (light) {
-			light.intensity = 0.95;
-		}
-	};
-
-	const applyMyRoomAvatar = (avatar: MyRoomAvatar): void => {
-		const scene = myRoomSceneBundle?.scene;
-		if (!scene) {
-			return;
-		}
-
-		const avatarMesh = scene.getMeshByName("single-view-avatar-proxy");
-		if (!avatarMesh) {
-			return;
-		}
-
-		const avatarMaterial = avatarMesh.material;
-		if (!(avatarMaterial instanceof StandardMaterial)) {
-			return;
-		}
-
-		if (avatar === "bear") {
-			avatarMaterial.diffuseColor = new Color3(0.58, 0.38, 0.24);
-			avatarMesh.scaling.set(1.15, 1.15, 1.15);
-			return;
-		}
-
-		if (avatar === "penguin") {
-			avatarMaterial.diffuseColor = new Color3(0.2, 0.26, 0.37);
-			avatarMesh.scaling.set(0.95, 1.35, 0.95);
-			return;
-		}
-
-		if (avatar === "rabbit") {
-			avatarMaterial.diffuseColor = new Color3(0.78, 0.78, 0.88);
-			avatarMesh.scaling.set(0.85, 1.4, 0.85);
-			return;
-		}
-
-		avatarMaterial.diffuseColor = new Color3(0.8, 0.56, 0.35);
-		avatarMesh.scaling.set(1, 1, 1);
 	};
 
 	const syncMyRoomSceneFromControls = (): void => {
@@ -427,14 +507,18 @@ function createEngineRuntime(): {
 			"#my-room-avatar-select",
 		);
 
-		const theme = normalizeMyRoomTheme(themeSelect?.value ?? "default");
-		const avatar = normalizeMyRoomAvatar(avatarSelect?.value ?? "cat");
-
-		applyMyRoomTheme(theme);
-		applyMyRoomAvatar(avatar);
+		const theme = normalizeMyRoomTheme(
+			themeSelect?.value ?? myRoomCurrentTheme,
+		);
+		const avatar = normalizeMyRoomAvatar(
+			avatarSelect?.value ?? myRoomCurrentAvatar,
+		);
+		void rebuildMyRoomPersonalSpace(theme, avatar);
 	};
 
 	const disposeMyRoomScene = (): void => {
+		myRoomLoadRequestId += 1;
+		disposeMyRoomPersonalSpaces();
 		myRoomRenderEnabled = false;
 		myRoomControlsCleanup?.();
 		myRoomControlsCleanup = null;
@@ -653,11 +737,17 @@ function createEngineRuntime(): {
 		}
 
 		const handleThemeChange = (): void => {
-			applyMyRoomTheme(normalizeMyRoomTheme(themeSelect.value));
+			void rebuildMyRoomPersonalSpace(
+				normalizeMyRoomTheme(themeSelect.value),
+				myRoomCurrentAvatar,
+			);
 		};
 
 		const handleAvatarChange = (): void => {
-			applyMyRoomAvatar(normalizeMyRoomAvatar(avatarSelect.value));
+			void rebuildMyRoomPersonalSpace(
+				myRoomCurrentTheme,
+				normalizeMyRoomAvatar(avatarSelect.value),
+			);
 		};
 
 		themeSelect.addEventListener("change", handleThemeChange);
@@ -776,21 +866,52 @@ function createEngineRuntime(): {
 				return;
 			}
 
-			try {
-				myRoomSceneBundle = createSingleViewSceneBundle(engine, {
-					attachControl: false,
-					inputElement: myRoomCanvas,
+			const loadRequestId = myRoomLoadRequestId + 1;
+			myRoomLoadRequestId = loadRequestId;
+			myRoomSceneBundle = null;
+			myRoomRenderEnabled = false;
+
+			void createSingleViewSceneBundleAsync(engine, {
+				attachControl: false,
+				inputElement: myRoomCanvas,
+				avatarType: null,
+			})
+				.then((bundle) => {
+					if (
+						loadRequestId !== myRoomLoadRequestId ||
+						runtimeRoute !== "/my-room"
+					) {
+						bundle.dispose();
+						return;
+					}
+
+					try {
+						engine.registerView(myRoomCanvas, bundle.camera);
+						registeredViews.add(myRoomCanvas);
+						myRoomSceneBundle = bundle;
+						(window as unknown as { __myRoomScene?: unknown }).__myRoomScene =
+							bundle.scene;
+						hasMyRoomRenderError = false;
+						myRoomRenderEnabled = true;
+						syncMyRoomSceneFromControls();
+					} catch (error) {
+						bundle.dispose();
+						myRoomSceneBundle = null;
+						myRoomRenderEnabled = false;
+						if (loadRequestId === myRoomLoadRequestId) {
+							console.error("Failed to initialize my-room scene", error);
+						}
+					}
+				})
+				.catch((error) => {
+					if (loadRequestId !== myRoomLoadRequestId) {
+						return;
+					}
+
+					myRoomSceneBundle = null;
+					myRoomRenderEnabled = false;
+					console.error("Failed to initialize my-room scene", error);
 				});
-				engine.registerView(myRoomCanvas, myRoomSceneBundle.camera);
-				registeredViews.add(myRoomCanvas);
-				hasMyRoomRenderError = false;
-				myRoomRenderEnabled = true;
-				syncMyRoomSceneFromControls();
-			} catch (error) {
-				myRoomRenderEnabled = false;
-				myRoomSceneBundle = null;
-				console.error("Failed to initialize my-room scene", error);
-			}
 
 			return;
 		}
