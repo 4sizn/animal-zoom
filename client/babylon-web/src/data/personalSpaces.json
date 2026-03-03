@@ -1,14 +1,14 @@
 [
 	{
 		"id": "space-001",
-		"name": "Music Studio",
-		"theme": "Music",
+		"name": "Cafe Corner",
+		"theme": "Cafe",
 		"position": { "x": 0, "y": 0, "z": 0 },
 		"size": { "width": 5, "depth": 5 },
 		"assets": [
 			{
 				"type": "background",
-				"key": "music_studio",
+				"key": "cafe",
 				"id": "bg-001",
 				"position": { "x": 0, "y": 0, "z": 0 },
 				"rotation": { "x": 0, "y": 0, "z": 0 },
@@ -16,19 +16,25 @@
 			},
 			{
 				"type": "mesh",
-				"key": "desk_keyboard",
+				"key": "desk_cafe_table",
 				"id": "desk-001",
 				"position": { "x": 0, "y": 0, "z": 0 },
 				"rotation": { "x": 0, "y": 0, "z": 0 },
-				"scale": { "x": 1, "y": 1, "z": 1 }
+				"scale": { "x": 1, "y": 1, "z": 1 },
+				"options": {
+					"url": "/assets/personal-space/cafe-table/modern_coffee_table_02_1k.gltf"
+				}
 			},
 			{
 				"type": "mesh",
 				"key": "chair",
 				"id": "chair-001",
-				"position": { "x": -0.6, "y": 0, "z": -0.6 },
+				"position": { "x": -0.8, "y": 0, "z": -0.7 },
 				"rotation": { "x": 0, "y": 0.6, "z": 0 },
-				"scale": { "x": 1, "y": 1, "z": 1 }
+				"scale": { "x": 1, "y": 1, "z": 1 },
+				"options": {
+					"url": "/assets/personal-space/greenchair/GreenChair_01_1k.gltf"
+				}
 			},
 			{
 				"type": "mesh",
@@ -36,7 +42,8 @@
 				"id": "plant-001",
 				"position": { "x": 1.2, "y": 0, "z": 0.8 },
 				"rotation": { "x": 0, "y": 0.2, "z": 0 },
-				"scale": { "x": 1, "y": 1, "z": 1 }
+				"scale": { "x": 0.65, "y": 0.65, "z": 0.65 },
+				"options": { "url": "/assets/personal-space/plant/Avocado.glb" }
 			},
 			{
 				"type": "avatar",
@@ -63,7 +70,73 @@
 				"position": { "x": 0, "y": 2.0, "z": -1.6 },
 				"rotation": { "x": 0, "y": 0, "z": 0 },
 				"scale": { "x": 1, "y": 1, "z": 1 },
-				"options": { "text": "K.K. Slider" }
+				"options": { "text": "Cafe" }
+			}
+		]
+	},
+	{
+		"id": "space-002",
+		"name": "Cafe Table",
+		"theme": "Cafe",
+		"position": { "x": 6, "y": 0, "z": 0 },
+		"size": { "width": 5, "depth": 5 },
+		"assets": [
+			{
+				"type": "background",
+				"key": "cafe",
+				"id": "bg-002",
+				"position": { "x": 0, "y": 0, "z": 0 },
+				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 }
+			},
+			{
+				"type": "mesh",
+				"key": "desk_cafe_table",
+				"id": "desk-002",
+				"position": { "x": 0, "y": 0, "z": 0 },
+				"rotation": { "x": 0, "y": 1.0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 },
+				"options": {
+					"url": "/assets/personal-space/cafe-table/modern_coffee_table_02_1k.gltf"
+				}
+			},
+			{
+				"type": "mesh",
+				"key": "chair",
+				"id": "chair-002",
+				"position": { "x": -0.9, "y": 0, "z": -0.6 },
+				"rotation": { "x": 0, "y": 2.2, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 },
+				"options": {
+					"url": "/assets/personal-space/greenchair/GreenChair_01_1k.gltf"
+				}
+			},
+			{
+				"type": "mesh",
+				"key": "plant",
+				"id": "plant-002",
+				"position": { "x": 1.2, "y": 0, "z": 0.8 },
+				"rotation": { "x": 0, "y": 0.2, "z": 0 },
+				"scale": { "x": 0.65, "y": 0.65, "z": 0.65 },
+				"options": { "url": "/assets/personal-space/plant/Avocado.glb" }
+			},
+			{
+				"type": "light",
+				"key": "spotlight",
+				"id": "light-002",
+				"position": { "x": 0, "y": 3, "z": -2 },
+				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 },
+				"options": { "intensity": 1.1 }
+			},
+			{
+				"type": "ui",
+				"key": "name_tag",
+				"id": "label-002",
+				"position": { "x": 0, "y": 2.0, "z": -1.6 },
+				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"scale": { "x": 1, "y": 1, "z": 1 },
+				"options": { "text": "Cafe 2" }
 			}
 		]
 	}

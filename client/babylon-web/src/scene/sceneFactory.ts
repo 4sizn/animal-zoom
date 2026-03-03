@@ -9,6 +9,7 @@ import {
 	MeshBuilder,
 	PointLight,
 	Scene,
+	SceneLoader,
 	SpotLight,
 	StandardMaterial,
 	TransformNode,
@@ -356,6 +357,8 @@ function createBackgroundAssets(
 	);
 	if (theme === "music") {
 		material.diffuseColor = new Color3(0.18, 0.15, 0.22);
+	} else if (theme === "cafe") {
+		material.diffuseColor = new Color3(0.25, 0.21, 0.18);
 	} else if (theme === "study") {
 		material.diffuseColor = new Color3(0.2, 0.22, 0.18);
 	} else {
@@ -423,6 +426,53 @@ function createFurnitureMesh(
 	fallback.parent = spaceNode;
 	fallback.material = material;
 	applyAssetTransform(fallback, asset);
+}
+
+function getAssetUrl(asset: AssetSpec): string | null {
+	const url = asset.options?.url;
+	return typeof url === "string" && url.length > 0 ? url : null;
+}
+
+async function createMeshFromUrl(
+	scene: Scene,
+	spaceNode: TransformNode,
+	asset: AssetSpec,
+	url: string,
+): Promise<void> {
+	const lastSlashIndex = url.lastIndexOf("/");
+	const rootUrl = lastSlashIndex >= 0 ? url.slice(0, lastSlashIndex + 1) : "";
+	const fileName = lastSlashIndex >= 0 ? url.slice(lastSlashIndex + 1) : url;
+
+	const assetNode = new TransformNode(asset.id, scene);
+	assetNode.parent = spaceNode;
+	applyAssetTransform(assetNode, asset);
+
+	try {
+		const result = await SceneLoader.ImportMeshAsync(
+			"",
+			rootUrl,
+			fileName,
+			scene,
+		);
+		result.meshes.forEach((mesh) => {
+			mesh.parent = assetNode;
+		});
+	} catch (error) {
+		console.error(`Failed to load mesh asset (${url})`, error);
+		const material = new StandardMaterial(
+			`${asset.id}-fallback-material`,
+			scene,
+		);
+		material.diffuseColor = new Color3(0.62, 0.48, 0.32);
+		material.specularColor = new Color3(0.1, 0.1, 0.1);
+		const fallback = MeshBuilder.CreateBox(
+			`${asset.id}-fallback-mesh`,
+			{ size: 0.8 },
+			scene,
+		);
+		fallback.parent = assetNode;
+		fallback.material = material;
+	}
 }
 
 function createLocalLight(
@@ -497,7 +547,12 @@ export async function createPersonalSpaces(
 			}
 
 			if (asset.type === "mesh") {
-				createFurnitureMesh(scene, spaceNode, asset);
+				const url = getAssetUrl(asset);
+				if (url) {
+					await createMeshFromUrl(scene, spaceNode, asset, url);
+				} else {
+					createFurnitureMesh(scene, spaceNode, asset);
+				}
 				continue;
 			}
 
@@ -548,14 +603,14 @@ export function focusCameraOnDesk(
 		return;
 	}
 
-	const deskMeshes = spaceNode
-		.getChildMeshes(false)
-		.filter((mesh) => mesh.name.toLowerCase().includes("desk"));
-	const targetMesh = deskMeshes[0];
-	if (targetMesh) {
-		targetMesh.computeWorldMatrix(true);
-		const bounds = targetMesh.getBoundingInfo().boundingBox;
-		camera.setTarget(bounds.centerWorld);
+	const deskNodes = spaceNode
+		.getChildTransformNodes(false)
+		.filter((node) => node.name.toLowerCase().includes("desk"));
+	const deskNode = deskNodes[0];
+
+	if (deskNode) {
+		const meshes = deskNode.getChildMeshes(false);
+		frameCameraToVisibleMeshes(camera, meshes);
 	} else {
 		camera.setTarget(
 			spaceNode.getAbsolutePosition().add(new Vector3(0, 0.9, 0)),
