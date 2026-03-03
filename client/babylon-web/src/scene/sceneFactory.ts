@@ -557,6 +557,10 @@ export async function createPersonalSpaces(
 			}
 
 			if (asset.type === "avatar") {
+				const avatarNode = new TransformNode(asset.id, scene);
+				avatarNode.parent = spaceNode;
+				applyAssetTransform(avatarNode, asset);
+
 				const avatarType = isAvatarType(
 					(asset as { avatarType?: unknown }).avatarType,
 				)
@@ -569,8 +573,7 @@ export async function createPersonalSpaces(
 				});
 
 				loaded.forEach((mesh) => {
-					mesh.parent = spaceNode;
-					mesh.position.addInPlace(toVector3(asset.position));
+					mesh.parent = avatarNode;
 				});
 				continue;
 			}

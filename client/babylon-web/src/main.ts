@@ -1,4 +1,6 @@
 import {
+	Animation,
+	AnimationGroup,
 	Color3,
 	Engine,
 	StandardMaterial,
@@ -132,12 +134,35 @@ function renderRoute(path: RoutePath): void {
 			});
 			avatarSelect.value = "apollo";
 
+			const animationTitle = document.createElement("h3");
+			animationTitle.textContent = "Animations";
+
+			const animationList = document.createElement("ul");
+			animationList.id = "my-room-animation-list";
+			animationList.className = "my-room-animation-list";
+
+			const animations = [
+				{ id: "hello", label: "안녕" },
+				{ id: "sad", label: "슬픔" },
+			] as const;
+			animations.forEach((item) => {
+				const li = document.createElement("li");
+				const button = document.createElement("button");
+				button.type = "button";
+				button.dataset.animationId = item.id;
+				button.textContent = item.label;
+				li.append(button);
+				animationList.append(li);
+			});
+
 			controls.append(
 				title,
 				themeLabel,
 				themeSelect,
 				avatarLabel,
 				avatarSelect,
+				animationTitle,
+				animationList,
 			);
 
 			shell.append(
@@ -368,12 +393,163 @@ function createEngineRuntime(): {
 	let myRoomPersonalSpaceNodes: TransformNode[] = [];
 	let myRoomCurrentTheme: MyRoomTheme = "default";
 	let myRoomCurrentAvatar: MyRoomAvatar = "apollo";
+	let myRoomCurrentAnimationId: "hello" | "sad" = "hello";
+	let myRoomAnimationGroups: AnimationGroup[] = [];
+
+	const getMyRoomAnimationOrder = (): ("hello" | "sad")[] => {
+		return ["hello", "sad"];
+	};
 
 	const disposeMyRoomPersonalSpaces = (): void => {
 		myRoomPersonalSpaceNodes.forEach((node) => {
 			node.dispose();
 		});
 		myRoomPersonalSpaceNodes = [];
+	};
+
+	const disposeMyRoomAnimations = (): void => {
+		myRoomAnimationGroups.forEach((group) => {
+			group.stop();
+			group.dispose();
+		});
+		myRoomAnimationGroups = [];
+	};
+
+	const setMyRoomActiveAnimationButton = (): void => {
+		const list = appRoot.querySelector<HTMLElement>("#my-room-animation-list");
+		if (!list) {
+			return;
+		}
+
+		list
+			.querySelectorAll<HTMLButtonElement>("button[data-animation-id]")
+			.forEach((button) => {
+				const id = button.dataset.animationId;
+				const pressed = id === myRoomCurrentAnimationId;
+				button.setAttribute("aria-pressed", pressed ? "true" : "false");
+			});
+	};
+
+	const createHelloAnimationGroup = (
+		avatarNode: TransformNode,
+	): AnimationGroup => {
+		const fps = 30;
+		const baseY = avatarNode.position.y;
+		const baseRotY = avatarNode.rotation.y;
+
+		const rotY = new Animation(
+			"my-room-hello-rotY",
+			"rotation.y",
+			fps,
+			Animation.ANIMATIONTYPE_FLOAT,
+			Animation.ANIMATIONLOOPMODE_CONSTANT,
+		);
+		rotY.setKeys([
+			{ frame: 0, value: baseRotY },
+			{ frame: 10, value: baseRotY + 0.55 },
+			{ frame: 20, value: baseRotY - 0.35 },
+			{ frame: 30, value: baseRotY },
+		]);
+
+		const posY = new Animation(
+			"my-room-hello-posY",
+			"position.y",
+			fps,
+			Animation.ANIMATIONTYPE_FLOAT,
+			Animation.ANIMATIONLOOPMODE_CONSTANT,
+		);
+		posY.setKeys([
+			{ frame: 0, value: baseY },
+			{ frame: 10, value: baseY + 0.08 },
+			{ frame: 20, value: baseY + 0.02 },
+			{ frame: 30, value: baseY },
+		]);
+
+		const group = new AnimationGroup("안녕", avatarNode.getScene());
+		group.addTargetedAnimation(rotY, avatarNode);
+		group.addTargetedAnimation(posY, avatarNode);
+		return group;
+	};
+
+	const createSadAnimationGroup = (
+		avatarNode: TransformNode,
+	): AnimationGroup => {
+		const fps = 30;
+		const baseY = avatarNode.position.y;
+		const baseRotX = avatarNode.rotation.x;
+		const baseRotZ = avatarNode.rotation.z;
+
+		const rotX = new Animation(
+			"my-room-sad-rotX",
+			"rotation.x",
+			fps,
+			Animation.ANIMATIONTYPE_FLOAT,
+			Animation.ANIMATIONLOOPMODE_CONSTANT,
+		);
+		rotX.setKeys([
+			{ frame: 0, value: baseRotX },
+			{ frame: 30, value: baseRotX + 0.35 },
+			{ frame: 60, value: baseRotX },
+		]);
+
+		const rotZ = new Animation(
+			"my-room-sad-rotZ",
+			"rotation.z",
+			fps,
+			Animation.ANIMATIONTYPE_FLOAT,
+			Animation.ANIMATIONLOOPMODE_CONSTANT,
+		);
+		rotZ.setKeys([
+			{ frame: 0, value: baseRotZ },
+			{ frame: 15, value: baseRotZ + 0.12 },
+			{ frame: 30, value: baseRotZ - 0.12 },
+			{ frame: 45, value: baseRotZ + 0.08 },
+			{ frame: 60, value: baseRotZ },
+		]);
+
+		const posY = new Animation(
+			"my-room-sad-posY",
+			"position.y",
+			fps,
+			Animation.ANIMATIONTYPE_FLOAT,
+			Animation.ANIMATIONLOOPMODE_CONSTANT,
+		);
+		posY.setKeys([
+			{ frame: 0, value: baseY },
+			{ frame: 30, value: baseY - 0.07 },
+			{ frame: 60, value: baseY },
+		]);
+
+		const group = new AnimationGroup("슬픔", avatarNode.getScene());
+		group.addTargetedAnimation(rotX, avatarNode);
+		group.addTargetedAnimation(rotZ, avatarNode);
+		group.addTargetedAnimation(posY, avatarNode);
+		return group;
+	};
+
+	const startMyRoomAnimationLoop = (avatarNode: TransformNode): void => {
+		disposeMyRoomAnimations();
+		const hello = createHelloAnimationGroup(avatarNode);
+		const sad = createSadAnimationGroup(avatarNode);
+		myRoomAnimationGroups = [hello, sad];
+
+		const playById = (id: "hello" | "sad"): void => {
+			myRoomCurrentAnimationId = id;
+			setMyRoomActiveAnimationButton();
+			myRoomAnimationGroups.forEach((group) => group.stop());
+
+			const group = id === "hello" ? hello : sad;
+			group.onAnimationGroupEndObservable.clear();
+			group.onAnimationGroupEndObservable.addOnce(() => {
+				const order = getMyRoomAnimationOrder();
+				const index = order.indexOf(id);
+				const next = order[(index + 1) % order.length] ?? "hello";
+				playById(next);
+			});
+			group.start(false);
+		};
+
+		playById(myRoomCurrentAnimationId);
 	};
 
 	const createMyRoomConfig = (
@@ -492,6 +668,11 @@ function createEngineRuntime(): {
 			if (firstSpace) {
 				focusCameraOnDesk(scene, firstSpace);
 			}
+
+			const avatarNode = scene.getTransformNodeByName("avatar-my-room");
+			if (avatarNode) {
+				startMyRoomAnimationLoop(avatarNode);
+			}
 		} catch (error) {
 			if (loadRequestId === myRoomLoadRequestId) {
 				console.error("Failed to rebuild my-room personal space", error);
@@ -518,6 +699,7 @@ function createEngineRuntime(): {
 
 	const disposeMyRoomScene = (): void => {
 		myRoomLoadRequestId += 1;
+		disposeMyRoomAnimations();
 		disposeMyRoomPersonalSpaces();
 		myRoomRenderEnabled = false;
 		myRoomControlsCleanup?.();
@@ -732,7 +914,10 @@ function createEngineRuntime(): {
 		const avatarSelect = appRoot.querySelector<HTMLSelectElement>(
 			"#my-room-avatar-select",
 		);
-		if (!themeSelect || !avatarSelect) {
+		const animationList = appRoot.querySelector<HTMLElement>(
+			"#my-room-animation-list",
+		);
+		if (!themeSelect || !avatarSelect || !animationList) {
 			return;
 		}
 
@@ -750,12 +935,35 @@ function createEngineRuntime(): {
 			);
 		};
 
+		const handleAnimationClick = (event: MouseEvent): void => {
+			const target = event.target;
+			if (!(target instanceof HTMLButtonElement)) {
+				return;
+			}
+			const id = target.dataset.animationId;
+			if (id !== "hello" && id !== "sad") {
+				return;
+			}
+
+			myRoomCurrentAnimationId = id;
+			setMyRoomActiveAnimationButton();
+
+			const scene = myRoomSceneBundle?.scene;
+			const avatarNode = scene?.getTransformNodeByName("avatar-my-room");
+			if (avatarNode) {
+				startMyRoomAnimationLoop(avatarNode);
+			}
+		};
+
 		themeSelect.addEventListener("change", handleThemeChange);
 		avatarSelect.addEventListener("change", handleAvatarChange);
+		animationList.addEventListener("click", handleAnimationClick);
+		setMyRoomActiveAnimationButton();
 
 		myRoomControlsCleanup = () => {
 			themeSelect.removeEventListener("change", handleThemeChange);
 			avatarSelect.removeEventListener("change", handleAvatarChange);
+			animationList.removeEventListener("click", handleAnimationClick);
 		};
 	};
 

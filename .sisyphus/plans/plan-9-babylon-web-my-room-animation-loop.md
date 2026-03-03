@@ -1,0 +1,7 @@
+- [x] Inspect available glTF animation groups (if any) and decide procedural vs glTF-driven approach
+- [x] Ensure `createPersonalSpaces` creates a stable TransformNode for avatar assets (so animations can target `avatar-my-room`)
+- [x] Add procedural Babylon animations: `안녕` and `슬픔` as `AnimationGroup`s targeting `avatar-my-room`
+- [x] Add `/my-room` UI list for animations (two items) and indicate which is currently playing
+- [x] Implement loop playback: alternate `안녕` -> `슬픔` -> ... continuously
+- [x] Manual verification: `pnpm --filter @animal-zoom/babylon-web dev` -> open `/my-room`, confirm list renders and animation alternates
+- [x] Automated verification: `pnpm --filter @animal-zoom/babylon-web lint`, `pnpm --filter @animal-zoom/babylon-web typecheck`, `pnpm --filter @animal-zoom/babylon-web build`
