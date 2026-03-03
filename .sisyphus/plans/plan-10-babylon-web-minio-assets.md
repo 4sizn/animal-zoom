@@ -1,0 +1,18 @@
+- [x] Discovery: inventory how `@animal-zoom/babylon-web` resolves asset URLs (local `public/` vs env/config)
+- [x] Discovery: inventory how `@animal-zoom/webapp` resolves asset URLs today (env/config/server response)
+- [x] Discovery fallback: if agents fail, use direct `ls`/`grep` to find `assets/`, `public/`, and URL builders
+- [x] Define MinIO object key layout for webapp assets (e.g. `characters/<id>/...`, `rooms/<id>/...`, `thumbnails/...`)
+- [x] Provision MinIO for local dev (docker-compose or existing infra); persist data volume
+- [x] Create buckets needed for webapp assets (e.g. `assets`) and document naming
+- [x] Configure MinIO CORS for browser usage (at least `GET,HEAD,OPTIONS`; allow `Range` header)
+- [x] Decide presign strategy details (TTL, allowed methods, key prefix rules, cache headers)
+- [x] Add server-side config/env for MinIO/S3 client (endpoint, region, access key, secret key, bucket)
+- [x] Implement server API: resolve an asset request to a presigned URL (Approach B)
+- [x] Implement server API: return bucket/meta info if webapp needs it (e.g. base key prefixes)
+- [x] Wire webapp to request presigned URLs from server and load assets via returned URLs
+- [x] Ensure babylon demo/test continues to use local prepared resources (no MinIO dependency)
+- [x] Add dev seed/upload procedure to populate MinIO from local prepared resources (script/command)
+- [x] Manual verification: start MinIO + server + webapp; confirm webapp assets load via presigned URLs (Network tab)
+- [x] Manual verification: run babylon demo/test; confirm it still uses local assets
+- [x] Automated verification: `pnpm --filter @animal-zoom/webapp lint`, `pnpm --filter @animal-zoom/webapp typecheck`, `pnpm --filter @animal-zoom/webapp build`
+- [x] Automated verification: (if server package exists) `pnpm --filter @animal-zoom/server lint`, `pnpm --filter @animal-zoom/server typecheck`, `pnpm --filter @animal-zoom/server test`

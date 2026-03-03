@@ -26,6 +26,50 @@ services:
       - minio_data:/data
     restart: unless-stopped
 
+  minio-init:
+    image: minio/mc:RELEASE.2025-01-17T23-25-50Z
+    container_name: animal-zoom-minio-init
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./server/minio/cors.json:/config/cors.json:ro
+    command:
+      - /bin/sh
+      - -c
+      - >
+        until mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do
+          echo "Waiting for MinIO to be ready...";
+          sleep 1;
+        done;
+        mc mb --ignore-existing local/assets;
+        mc cors set local/assets /config/cors.json;
+    restart: "no"
+
+  minio-seed:
+    image: minio/mc:RELEASE.2025-01-17T23-25-50Z
+    container_name: animal-zoom-minio-seed
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./client/babylon-web/public/assets:/seed/assets:ro
+    command:
+      - /bin/sh
+      - -c
+      - >
+        until mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do
+          echo "Waiting for MinIO to be ready...";
+          sleep 1;
+        done;
+        mc mb --ignore-existing local/assets;
+        mc mirror --overwrite /seed/assets local/assets;
+    restart: "no"
+
 volumes:
   postgres_data:
   minio_data:
