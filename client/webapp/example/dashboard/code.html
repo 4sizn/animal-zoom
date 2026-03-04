@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e27b28",
+                        "forest": "#5c8d4d",
+                        "leaf": "#8bc34a",
+                        "cream": "#fdf8f1",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#211811",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Study Forest - Dashboard</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 px-6 md:px-10 py-4 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-forest rounded-xl flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-2xl">park</span>
+</div>
+<h2 class="text-forest text-xl font-bold leading-tight tracking-tight">Study Forest</h2>
+</div>
+<div class="flex flex-1 justify-end gap-4 items-center">
+<label class="hidden md:flex flex-col min-w-40 h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-full h-full bg-slate-100 dark:bg-slate-800">
+<div class="text-slate-500 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-transparent focus:ring-0 h-full placeholder:text-slate-400 px-4 text-sm" placeholder="Find a glade..." value=""/>
+</div>
+</label>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-full size-10 bg-cream border border-primary/20 text-primary">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-full size-10 bg-cream border border-primary/20 text-primary">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="h-10 w-10 rounded-full border-2 border-primary overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover bg-primary/10" data-alt="Cute illustrated animal crossing style avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABPmvYi0SXxtUPSQaW2A6U2r62_tP1lFQ-63MgcA4rTpmwm0ie8AwjIdJUPJ8TqXBa6GhGwHPI2jDbwFs5DcYaw0lgrMYV66X5D119visB0gmE4OkFKbeEkctP2DY512Tur6mYOWC0mZ0E9AJWTKnxmIXO9xOmycKBm5vUpAf0YNikTo81I7IyikuQisge5XjfO1zb5e56z7SgRimd3N15LNI7efUNtvEc3SXlF_9EDwFZHcK4NRUs_1DKLaB5tktsKbLT7msz6MDA"/>
+</div>
+</div>
+</header>
+<main class="flex flex-1 flex-col lg:flex-row gap-8 px-6 md:px-10 py-8 max-w-[1440px] mx-auto w-full">
+<!-- Left Content: Welcome & Study Rooms -->
+<div class="flex-1 flex flex-col gap-8">
+<!-- Welcome Banner -->
+<div class="bg-primary/10 dark:bg-primary/5 rounded-lg p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 opacity-10">
+<span class="material-symbols-outlined text-[200px] text-primary">eco</span>
+</div>
+<div class="z-10 bg-white dark:bg-slate-800 p-2 rounded-full border-4 border-white shadow-lg">
+<img alt="Large Avatar" class="size-24 md:size-32 rounded-full" data-alt="Friendly character waving in front of a tree" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxLC3rg7RQxAjS9MwtQKSBrUVZoUJENX3SjJ_vr9OjGkmGlSnOTEVhbbdx109RHtEvKn_i644BvKhHt5g4jaoKgh5YVJu2rNDdpjngFtEUZHBXM1Ff7E0MJN3u1OhcVTnDlGtS33fvZKtvO6t7oesRwIt3CCGOvic6bNe0it0iXcPfNkyF1O983UopqT111WxS0eKpDEbPnXZ-_PgFiK5Hm8lvUt7TVzyDEjxDX-oAszw2b7pT6ZpngeZt5BXhXDeKEmMrlS7ybVoc"/>
+</div>
+<div class="flex-1 text-center md:text-left z-10">
+<h1 class="text-slate-900 dark:text-slate-100 text-2xl md:text-3xl font-bold leading-tight">Welcome back, Villager!</h1>
+<p class="text-slate-600 dark:text-slate-400 mt-1 text-lg">Ready for a cozy study session in the glade?</p>
+<div class="mt-6 space-y-2">
+<div class="flex justify-between items-end">
+<span class="text-primary font-bold text-sm uppercase tracking-wider">Daily Study Goal</span>
+<span class="text-forest font-bold">120 / 180 min</span>
+</div>
+<div class="w-full bg-white/50 dark:bg-slate-700 h-4 rounded-full overflow-hidden border border-primary/10">
+<div class="bg-gradient-to-r from-primary to-orange-400 h-full rounded-full" style="width: 66%"></div>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs italic">Just 60 more minutes to water your daily sprout! 🌱</p>
+</div>
+</div>
+</div>
+<!-- Open Study Rooms -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-slate-900 dark:text-slate-100 text-2xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-forest">forest</span>
+                            Active Study Glades
+                        </h2>
+<button class="text-forest font-semibold flex items-center gap-1 hover:underline">
+                            View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Room 1 -->
+<div class="bg-white dark:bg-slate-800 rounded-lg p-5 shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="size-14 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">coffee</span>
+</div>
+<div class="flex -space-x-3">
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-cream" data-alt="Participant avatar 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6AWqPmTmk19N3mZXnuQj6uYcBSrFVxuZ5OEIS_9erhwmhO7o_z1vpQloF515NzZ5tTxS8QFQI2nDUijMRZZURCdT9rL1OfpzGWgbeXRcmf61f0YQtjY1x6cn8wenzF5097KK0YA3xFlArcZID_H0mqnUGGTAiP4NEuaY8MWZ7BNx--Vqt540AHtchttN2Xagb7ZevSJdYJWeMWaaI4KODX0DZ3FJ1fSFDclw4gYNPqc0EQSpspwt-Yt523Sr0qwTFt-Ji-qHoklik"/>
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-cream" data-alt="Participant avatar 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz0iNANyhLidGYaMvNDzI0BkoJ1Qi2KNJH2mwsNdJWk9oHsOodVG5R5dcoeL2xdZBQO7maQQPAp3K5Cr_OwVn8abKYdO9IUs2yFtHfRQS9SqpGJeB_Wf5St8BoKRZRz7p8_yydlE79psjXehszMWvowH8RrzZot9PPlXzPA_mwoZrJGVBQCfTwp7tfcwiDbR2fUxuCfHsSi_ZZcIu7viVlJM7nagomgYBdUVj1mde1naJnZmP5WTz7aTPvUMtgVm2lsoTTfSe1feDC"/>
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-cream" data-alt="Participant avatar 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsTYHfbe_xzkgqII42Z2ztk6S8cR6OACvMUQxD7aXh0yF02PKysuHDAOCYo1wZAnF3agPdvrzE8MXjbmS_KEpqLsUQb7djplf-fxHgZTOFAVjarUmfWcgQEcKgYlLg7gVsnMmpL4l_1NWLl777b8Ui_8tlp-aigL-7EPXiJ96NCQTOcQdht54YFU-opF2GzRG1MMdfZTtQtzKYCNNGZkIa0vonSaX8ZUNfpB9BEAnkzWZoo0S_VXUE5kVeNCXj6zJs0B1IAMZF9RKR"/>
+<div class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-slate-100 flex items-center justify-center text-[10px] font-bold">+2</div>
+</div>
+</div>
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">The Cozy Cafe</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-4">Lofi beats and gentle chatter. Perfect for light reading.</p>
+<button class="w-full bg-forest text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-forest/90">
+<span class="material-symbols-outlined">eco</span>
+                                Join Glade
+                            </button>
+</div>
+<!-- Room 2 -->
+<div class="bg-white dark:bg-slate-800 rounded-lg p-5 shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="size-14 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined text-3xl">auto_stories</span>
+</div>
+<div class="flex -space-x-3">
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-cream" data-alt="Participant avatar 4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClHFTuQQ419DY0z8WeqKbbfyq1aQMblTbQF9doC25XIK4XArAvx22p_WoicWAfsCFv-4B_z5DvWHrWM__fTIyTlPhzOt-XhnsqUmqqZs1LeKwrCqw60rxbB6XPHyWAjxEEkpo0YHu6GsUYRnybvBm2pG0F0aTeQcFdYHx-E7XlI-hNd0gaOtbCj_ABC_YHXbkXV4DxEKmKqI8fnWlbiW9MVMCdtjxKOvmkUy-qKHfPCMEtwqHWvdT7f66w0Pe-1Gd6At7tnl9guxZU"/>
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-cream" data-alt="Participant avatar 5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH5-8Z5JC1wJeRjz6W1PLpEg-uICxwGn6BiJ8pWBzFAy769CgnEHw2pklBXVkPtPsCqK7BoZT7GsacnoPxdj6u502vDPHLFQoe4shoX-hFZJvyJRPVqeY4jteqhwcSW5QmCf5PCFw1rzOojA20Re3HETBMfmuULC4mlaAUU8p5KrEB9HUB8g-YyiZxJk6OPWU4E21Nu5BJxzx5zmYS83e07okiFwljscutZpam4ZGcK13h9677cnNKqMw-m1oXyfCkvNLh2ON4S8sk"/>
+<div class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-slate-100 flex items-center justify-center text-[10px] font-bold">+8</div>
+</div>
+</div>
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">Quiet Library</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-4">Strictly silent study. Deep focus encouraged here.</p>
+<button class="w-full bg-primary text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90">
+<span class="material-symbols-outlined">eco</span>
+                                Join Glade
+                            </button>
+</div>
+<!-- Room 3 -->
+<div class="bg-white dark:bg-slate-800 rounded-lg p-5 shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="size-14 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-forest">
+<span class="material-symbols-outlined text-3xl">deck</span>
+</div>
+<div class="flex -space-x-3">
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-cream" data-alt="Participant avatar 6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACMaHTDfcqNvQ9T0cYUt7E9lqSbT4aL86yOdaY7m6MYdnKlXiyUc-9noxIgr8m2pUqZRRpJSpFDNanhBQmc8yYtWj4pV01jcGrIiWLcG6EaNWh7-YD0f9cSWUiKs6Ll_9niy90_FLNMx6Ki-26mygr29ppvry-lJQesswiRJPiniDabTEo4NbuxnWhIi9s-O11yvtaKHctIM7bFSsBIkMere21vUifcvJVCmvuDqJ80eWgbWi5LAS__v-J74kE3OKQcU2_BLb8V0pQ"/>
+<div class="size-8 rounded-full border-2 border-white dark:border-slate-800 bg-slate-100 flex items-center justify-center text-[10px] font-bold">+1</div>
+</div>
+</div>
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">Riverside Porch</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-4">Ambient water sounds and fresh air vibes.</p>
+<button class="w-full bg-forest text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-forest/90">
+<span class="material-symbols-outlined">eco</span>
+                                Join Glade
+                            </button>
+</div>
+<!-- Room 4 -->
+<div class="bg-white dark:bg-slate-800 rounded-lg p-5 shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow border-dashed border-slate-300 dark:border-slate-600 flex flex-col items-center justify-center text-center opacity-70 cursor-pointer">
+<div class="size-14 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400 mb-3">
+<span class="material-symbols-outlined text-3xl">add</span>
+</div>
+<h3 class="text-slate-600 dark:text-slate-400 text-lg font-bold">New Glade</h3>
+<p class="text-slate-400 dark:text-slate-500 text-sm">Start your own study room</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Content: Sidebar Statistics -->
+<aside class="w-full lg:w-80 flex flex-col gap-6">
+<!-- Weekly Stats Card -->
+<div class="bg-cream dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-primary/10">
+<h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">bar_chart</span>
+                        Weekly Growth
+                    </h3>
+<div class="flex items-end justify-between h-40 gap-2 mb-6">
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-forest/20 rounded-t-lg h-[40%]"></div>
+<span class="text-[10px] font-bold text-slate-500">M</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-forest/40 rounded-t-lg h-[65%]"></div>
+<span class="text-[10px] font-bold text-slate-500">T</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-forest/60 rounded-t-lg h-[85%]"></div>
+<span class="text-[10px] font-bold text-slate-500">W</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary rounded-t-lg h-[95%]"></div>
+<span class="text-[10px] font-bold text-slate-900 font-bold">T</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-forest/20 rounded-t-lg h-[10%]"></div>
+<span class="text-[10px] font-bold text-slate-500">F</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-forest/20 rounded-t-lg h-[15%]"></div>
+<span class="text-[10px] font-bold text-slate-500">S</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-forest/20 rounded-t-lg h-[5%]"></div>
+<span class="text-[10px] font-bold text-slate-500">S</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-white dark:bg-slate-700 rounded-xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<span class="text-sm font-medium">Total Focus</span>
+</div>
+<span class="font-bold">14.5h</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-white dark:bg-slate-700 rounded-xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-forest">local_florist</span>
+<span class="text-sm font-medium">Sprouts Grown</span>
+</div>
+<span class="font-bold">12</span>
+</div>
+</div>
+</div>
+<!-- Friends Online Card -->
+<div class="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-100 dark:border-slate-700">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-500">group</span>
+                        Friends in Forest
+                    </h3>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Friend 1" class="size-10 rounded-full bg-cream" data-alt="Avatar of Coco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbjgop2-ZWXyQIzUDa2pBnpsBoQK1CjxilN0ltvXl6ByZ8eRWl5SsRYtj55pBsL2Ucg1QwaycCicfxFkeMxGe8ZZPQTStcyXDS-xRkDgJB3PekV2euo_rhaotbtVSrLXQLGVHmex1WEcHKXe1_IxOke3q5zGnG3KHL3Zfje2Gynh0CSY-yEkx1EDsMVjqL06U9DmwC3wwHxYNSNdNhTLvHra_tLlCt6f6BwkOIT-h4Ondv6SYyprI4EyZ3NdsTGfNi_LnUsSEKTp65"/>
+<div class="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold">Coco</p>
+<p class="text-xs text-slate-500">In Cozy Cafe</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Friend 2" class="size-10 rounded-full bg-cream" data-alt="Avatar of Milo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmdGd57oLh0JuwAk8rqKgg-3_4Jm0IymCG7-1YmAy9w-6on893HhPJxUHxRdMZrapNaRzhrik--jsAg5I4FfPVJjhNyAHsnz2OFwjs7eMSniT3ENPjSFUc1oM3C6zM0zyt7Abxd_ym9PwODfNWt1kWor5HTSc30dBkXJ2a4fosZNoYZhCwZowqY5DIGQgVS6EJ78UiezY8mOc_ZN1S_pdDbo8YNlpWOX_81QoiSkNQeg2LmZXLbGV4RxYibV4xK-F_P4P9Y9cF9Y2s"/>
+<div class="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold">Milo</p>
+<p class="text-xs text-slate-500">In Quiet Library</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Friend 3" class="size-10 rounded-full bg-cream" data-alt="Avatar of Buster" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB36alt5VAhQkwHT2W21PusmrnGnI8OVT6KUpm3b7ipyyKOJfnwltiFDewIykdDrogm5LrZPOtIOzS3xosdj6bHBYK7iOEroyHatRooi3Bk3R1AyAXIZ81-eXuigxdLf4CimnhEtgotCHYp9vC3ppp4FqUjq02LfNQ8isR7N9CTu5bGAVZSS8e7J5FMH4KUghWJ5iyV9_yFbt2SSM3PCvZadLTxdgVwWdN1a2Dzy3niFG17KpnceBc5djQL3ltPRmBkdJaxHntPMVmn"/>
+<div class="absolute bottom-0 right-0 size-3 bg-slate-300 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold opacity-60">Buster</p>
+<p class="text-xs text-slate-400 italic">Exploring offline</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 rounded-xl text-forest font-bold text-sm bg-forest/5 hover:bg-forest/10 transition-colors">
+                        View More Friends
+                    </button>
+</div>
+</aside>
+</main>
+<!-- Bottom Tab Bar (Mobile Only) -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800 flex justify-around items-center py-3 z-50">
+<button class="flex flex-col items-center text-primary">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Glade</span>
+</button>
+<button class="flex flex-col items-center text-slate-400">
+<span class="material-symbols-outlined">park</span>
+<span class="text-[10px] font-medium">My Forest</span>
+</button>
+<button class="flex flex-col items-center text-slate-400">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-medium">Stats</span>
+</button>
+<button class="flex flex-col items-center text-slate-400">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

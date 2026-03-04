@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Quicksand:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3bee2b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#122210",
+                        "island-cream": "#FEF9E7",
+                        "island-tan": "#E9DCC9",
+                        "island-green": "#78C850",
+                        "island-leaf": "#5DB03E",
+                    },
+                    fontFamily: {
+                        "display": ["Quicksand", "Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>.leaf-pattern {
+    background-color: #f6f8f6;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAYA9VMyAV8-cB20RKzmsrJczRR6a3FuheI6dktiPvwDHxnPrWUL6YrIKbdjLkSHnIZoF06ZviWk_eQGCP6Vg4UKWArWwe-ED8deW8fwdmfxY4Ci6wlP9rSBZWN-hfHfGukfNrO-durQMjb3G0AuDGam8Gi2F-MDLw6JxZ-IzZkPjd3KKikzGElImP-_yBmtsEC_HNwnopNCpKDJrdiQjuOYZpMBXZ271I81AFOaWrzjPL0BUc_JKR3YHrtgJHH_oKmyApKDmkmvuvK);
+    background-opacity: 0.05
+    }
+.bouncy-shadow {
+    box-shadow: 0 4px 0 0 #4A8D31
+    }
+.bouncy-shadow:active {
+    box-shadow: 0 1px 0 0 #4A8D31;
+    transform: translatey(3px)
+    }</style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark leaf-pattern min-h-screen flex items-center justify-center p-6">
+<div class="layout-container flex h-full grow flex-col items-center justify-center w-full max-w-[1200px]">
+<!-- Main Login Card -->
+<div class="relative w-full max-w-[480px] bg-island-cream rounded-xl border-[6px] border-island-tan shadow-xl p-8 md:p-12 overflow-hidden">
+<!-- Top Decoration -->
+<div class="absolute top-0 left-0 w-full h-2 bg-primary/20"></div>
+<header class="flex flex-col items-center mb-8">
+<!-- Icon/Logo -->
+<div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-4 shadow-lg border-4 border-white">
+<span class="material-symbols-outlined text-white text-5xl">eco</span>
+</div>
+<h1 class="text-slate-900 text-3xl font-bold tracking-tight text-center">Welcome Home!</h1>
+<p class="text-slate-600 mt-2 text-center font-medium">Please sign in to your island</p>
+</header>
+<form class="space-y-6">
+<!-- Email Input -->
+<div class="flex flex-col gap-2">
+<label class="text-slate-700 text-lg font-bold px-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">mail</span>
+                        Email Address
+                    </label>
+<input class="form-input w-full rounded-lg border-2 border-island-tan bg-[#FFFDF5] focus:border-primary focus:ring-0 h-14 px-5 text-lg placeholder:text-slate-400 transition-colors" placeholder="yourname@island.com" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-2">
+<label class="text-slate-700 text-lg font-bold px-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">lock</span>
+                        Password
+                    </label>
+<input class="form-input w-full rounded-lg border-2 border-island-tan bg-[#FFFDF5] focus:border-primary focus:ring-0 h-14 px-5 text-lg placeholder:text-slate-400 transition-colors" placeholder="••••••••" type="password"/>
+</div>
+<div class="flex justify-end px-1">
+<a class="text-island-leaf font-bold hover:underline" href="#">Forgot password?</a>
+</div>
+<!-- Sign In Button -->
+<button class="w-full bouncy-shadow bg-primary hover:bg-island-leaf text-slate-900 text-xl font-bold h-14 rounded-full transition-all flex items-center justify-center gap-2 border-2 border-[#2da320]" type="submit">
+<span>Sign In</span>
+<span class="material-symbols-outlined">door_open</span>
+</button>
+</form>
+<!-- Divider -->
+<div class="relative my-10 flex items-center">
+<div class="flex-grow border-t-2 border-island-tan"></div>
+<span class="mx-4 text-slate-400 font-bold uppercase text-xs tracking-widest">or visit with</span>
+<div class="flex-grow border-t-2 border-island-tan"></div>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 h-12 rounded-full border-2 border-island-tan bg-white hover:bg-island-tan/20 transition-colors font-bold text-slate-700">
+<img alt="" class="w-5 h-5" data-alt="Google logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqwVFNa3nKUYwJqyZCcAaWiYnkC2NzLxkfc6yWJaT13c-ecnpG7ZHJJKHjwzOw3cVG-oABZ7KNJtJDx9s6R-zke839e12LLIiUsPiRc09f9tOgJuaT_d0ZzoR6NQfKPuqdIaWhrjXPTuIbpBzKjniQntq7QwDYUxfq2Fj5oYxHFAx53sw1fBKBgZQZPEU0fbPqQHEtU-6uVCytmHtcXXcrFMwuHCk_cBGJWsP-e7qAlxxMAZdI_vkjNnl_VQG6XxbUXV22Ure5eb7e"/>
+                    Google
+                </button>
+<button class="flex items-center justify-center gap-2 h-12 rounded-full border-2 border-island-tan bg-white hover:bg-island-tan/20 transition-colors font-bold text-slate-700">
+<span class="material-symbols-outlined text-blue-500">passkey</span>
+                    SSO
+                </button>
+</div>
+<!-- Footer Link -->
+<div class="mt-10 text-center">
+<p class="text-slate-600 font-medium">
+                    New to the island? 
+                    <a class="text-island-leaf font-bold hover:underline" href="#">Register here!</a>
+</p>
+</div>
+<!-- Corner Decoration -->
+<div class="absolute -bottom-6 -right-6 opacity-10">
+<span class="material-symbols-outlined text-[120px] text-island-leaf rotate-12">park</span>
+</div>
+</div>
+<!-- Decorative Elements Outside Card -->
+<div class="mt-8 flex gap-4 items-center opacity-60">
+<div class="flex items-center gap-2 bg-white/50 px-4 py-2 rounded-full border border-island-tan">
+<span class="material-symbols-outlined text-orange-400">sunny</span>
+<span class="font-bold text-slate-700">Sunny Day</span>
+</div>
+<div class="flex items-center gap-2 bg-white/50 px-4 py-2 rounded-full border border-island-tan">
+<span class="material-symbols-outlined text-blue-400">schedule</span>
+<span class="font-bold text-slate-700">10:00 AM</span>
+</div>
+</div>
+</div>
+</body></html>
