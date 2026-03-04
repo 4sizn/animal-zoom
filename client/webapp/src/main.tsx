@@ -32,7 +32,7 @@ const participantsFour: ZoomParticipant[] = [
 			id: "sysy",
 			name: "sysy",
 			imageUrl:
-				"https://lh3.googleusercontent.com/aida-public/AB6AXuC79Q7zqZWS7GV9q570BwkwTc_fb1ZRmBIwTRR5YrAYp34MwEEWmkqUzOTeGjp2mbmCnGkHsAljuZGrjJinUHPyNJRcfDufTM5dKsFSMdogiI2l_mXD429tBWYZ1c3GR5cHeNcaAGeyT9tLzQwQa0HJJVbkoHz8JsPsNDQcqgNBZMITTt_UQAs0XlPfquy2BruxujaomW_VaUdQ122aMJFqEfUCQTXAmHDd2ptm2OdopO98dAOv0ZvIerrZtu-F91lE7qS7A2kpTmrz",
+				"asset:personal-space/greenchair/textures/GreenChair_01_diff_1k.jpg",
 		},
 		mediaState: {
 			isMicOn: false,

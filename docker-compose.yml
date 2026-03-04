@@ -35,17 +35,17 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
-      - ./server/minio/cors.json:/config/cors.json:ro
+      - ./server/minio/cors.xml:/config/cors.xml:ro
+    entrypoint: ["/bin/sh"]
     command:
-      - /bin/sh
-      - -c
-      - >
+      - "-c"
+      - |
         until mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do
           echo "Waiting for MinIO to be ready...";
           sleep 1;
-        done;
-        mc mb --ignore-existing local/assets;
-        mc cors set local/assets /config/cors.json;
+        done
+        mc mb --ignore-existing local/assets
+        mc cors set local/assets /config/cors.xml || true
     restart: "no"
 
   minio-seed:
@@ -58,16 +58,16 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
       - ./client/babylon-web/public/assets:/seed/assets:ro
+    entrypoint: ["/bin/sh"]
     command:
-      - /bin/sh
-      - -c
-      - >
+      - "-c"
+      - |
         until mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do
           echo "Waiting for MinIO to be ready...";
           sleep 1;
-        done;
-        mc mb --ignore-existing local/assets;
-        mc mirror --overwrite /seed/assets local/assets;
+        done
+        mc mb --ignore-existing local/assets
+        mc mirror --overwrite /seed/assets local/assets
     restart: "no"
 
 volumes:

@@ -12,7 +12,7 @@
 - MinIO is already provisioned for local dev in `docker-compose.yml` as service `minio` with persisted volume `minio_data` and ports `9000` (S3 API) / `9001` (console).
 - Added one-shot `minio-init` service (`minio/mc`) to create bucket `assets` idempotently via `mc mb --ignore-existing local/assets` using `MINIO_ROOT_USER`/`MINIO_ROOT_PASSWORD`.
 - Operational gotcha: `minio-init` is a separate one-shot service; run `docker compose up -d minio` and then run `docker compose up minio-init` (or `docker compose up -d minio minio-init`) to ensure bucket bootstrap executes.
-- MinIO CORS config for local browser access is stored at `server/minio/cors.json`; `minio-init` mounts this file and applies it to `local/assets` via `mc cors set` during bootstrap.
+- MinIO CORS config for local browser access is stored at `server/minio/cors.xml`; `minio-init` mounts this file and applies it to `local/assets` via `mc cors set` during bootstrap.
 - Server MinIO config now comes from `@animal-zoom/server-minio` `loadMinioConfig`; expected env vars are `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`, and `MINIO_BUCKET`.
 
 - Babylon demo/test stays local because `@animal-zoom/babylon-web` uses hardcoded `/assets/...` URLs that resolve to Vite `public/` (`client/babylon-web/public/assets/**`).

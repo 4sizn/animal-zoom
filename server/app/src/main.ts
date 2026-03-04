@@ -1,10 +1,9 @@
 import "reflect-metadata";
 import "dotenv/config";
 import crypto from "node:crypto";
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NestFactory } from "@nestjs/core";
 import express from "express";
+import { Client as MinioClient } from "minio";
 import { AppModule } from "./app.module";
 import { getMinioConfig } from "./assets/minio";
 import { AuthService } from "./auth/auth.service";
@@ -38,8 +37,6 @@ async function bootstrap() {
 
 	const json = express.json();
 	const minioConfig = getMinioConfig();
-	const minioProtocol = minioConfig.useSSL ? "https" : "http";
-	const minioRegion = process.env.MINIO_REGION ?? "us-east-1";
 	const rawAssetPresignTtl = Number.parseInt(
 		process.env.ASSET_PRESIGN_TTL_SECONDS ?? "",
 		10,
@@ -49,14 +46,12 @@ async function bootstrap() {
 			? rawAssetPresignTtl
 			: 600;
 	const assetAllowedPrefixes = ["characters/", "personal-space/"];
-	const s3Client = new S3Client({
-		endpoint: `${minioProtocol}://${minioConfig.endpoint}:${minioConfig.port}`,
-		region: minioRegion,
-		forcePathStyle: true,
-		credentials: {
-			accessKeyId: minioConfig.accessKey,
-			secretAccessKey: minioConfig.secretKey,
-		},
+	const minioClient = new MinioClient({
+		endPoint: minioConfig.endpoint,
+		port: minioConfig.port,
+		useSSL: minioConfig.useSSL,
+		accessKey: minioConfig.accessKey,
+		secretKey: minioConfig.secretKey,
 	});
 
 	http.post("/users/register", json as any, async (req, res) => {
@@ -139,13 +134,11 @@ async function bootstrap() {
 		}
 
 		try {
-			const command = new GetObjectCommand({
-				Bucket: minioConfig.bucket,
-				Key: key,
-			});
-			const url = await getSignedUrl(s3Client, command, {
-				expiresIn: assetPresignTtlSeconds,
-			});
+			const url = await minioClient.presignedGetObject(
+				minioConfig.bucket,
+				key,
+				assetPresignTtlSeconds,
+			);
 			return res.json({ ok: true, url });
 		} catch {
 			return res.status(400).json({ ok: false, error: "failed to presign" });
