@@ -21,3 +21,7 @@ This directory is the project documentation hub.
 - Webapp module spec: `docs/modules/client-webapp-spec.md`
 - Babylon-web module spec: `docs/modules/client-babylon-web-spec.md`
 - Share module spec: `docs/modules/client-share-spec.md`
+
+## Guides
+
+- MinIO presigned assets (webapp): `docs/guides/minio-presigned-assets.md`

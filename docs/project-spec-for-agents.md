@@ -68,7 +68,7 @@ Animal Zoom provides synchronized zoom interaction for animal-focused views.
   - `MINIO_USE_SSL=false`
   - `MINIO_ACCESS_KEY=minioadmin`
   - `MINIO_SECRET_KEY=minioadmin`
-  - `MINIO_BUCKET=animal-zoom`
+  - `MINIO_BUCKET=assets`
 
 ## 5) Non-Functional Requirements
 
