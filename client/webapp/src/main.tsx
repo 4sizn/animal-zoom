@@ -1,6 +1,7 @@
 import type { ZoomParticipant } from "@animal-zoom/share";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { EMPTY, type Observable } from "rxjs";
 import "./styles.css";
 import { AuthProvider } from "./auth/AuthContext";
@@ -8,6 +9,7 @@ import { AssetsController } from "./core/controllers/AssetsController";
 import { StorageController } from "./core/controllers/StorageController";
 import { SystemController } from "./core/controllers/system/SystemController";
 import { SystemControllerManager } from "./core/managers/system/SystemControllerManager";
+import { DashboardPage } from "./pages/dashboard";
 import { ForgotPasswordPage } from "./pages/forgot-password";
 import { LoginPage } from "./pages/login";
 import { RegisterPage } from "./pages/register";
@@ -721,26 +723,17 @@ function App() {
 	);
 }
 
-function Router() {
-	const [path, setPath] = React.useState(() => window.location.pathname);
-
-	React.useEffect(() => {
-		const onPopState = () => setPath(window.location.pathname);
-		window.addEventListener("popstate", onPopState);
-		return () => window.removeEventListener("popstate", onPopState);
-	}, []);
-
-	if (path === "/login") {
-		return <LoginPage />;
-	}
-	if (path === "/register") {
-		return <RegisterPage />;
-	}
-	if (path === "/forgot-password") {
-		return <ForgotPasswordPage />;
-	}
-
-	return <App />;
+function AppRoutes() {
+	return (
+		<Routes>
+			<Route path="/" element={<App />} />
+			<Route path="/login" element={<LoginPage />} />
+			<Route path="/register" element={<RegisterPage />} />
+			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
+			<Route path="/dashboard" element={<DashboardPage />} />
+			<Route path="*" element={<Navigate replace to="/" />} />
+		</Routes>
+	);
 }
 
 document.documentElement.classList.add("dark");
@@ -753,8 +746,10 @@ if (rootElement === null) {
 
 ReactDOM.createRoot(rootElement).render(
 	<React.StrictMode>
-		<AuthProvider>
-			<Router />
-		</AuthProvider>
+		<BrowserRouter>
+			<AuthProvider>
+				<AppRoutes />
+			</AuthProvider>
+		</BrowserRouter>
 	</React.StrictMode>,
 );

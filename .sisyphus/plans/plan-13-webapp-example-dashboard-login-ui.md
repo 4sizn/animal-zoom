@@ -1,0 +1,7 @@
+- [x] Discovery: inspect `client/webapp` UI/routing/styling conventions + review example HTML in `client/webapp/example/dashboard/code.html` and `client/webapp/example/loginForm/code.html`
+- [x] Implement: create Dashboard UI in webapp matching repo style (design only, mock data)
+- [x] Implement: create Login Form UI in webapp matching repo style (design only, no auth wiring)
+- [x] Wire: add routes/navigation to access Dashboard and Login pages
+- [x] Verify: `pnpm --filter @animal-zoom/webapp typecheck`
+- [x] Verify: `pnpm --filter @animal-zoom/webapp build`
+- [x] Manual QA: `pnpm --filter @animal-zoom/webapp dev` and confirm pages render + responsive + no console errors

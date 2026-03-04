@@ -1,6 +1,6 @@
 {
-	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-12-web-client-command-controller-architecture.md",
-	"started_at": "2026-03-04T04:40:00Z",
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-14-webapp-router-and-dashboard-data.md",
+	"started_at": "2026-03-04T06:30:00Z",
 	"session_ids": [
 		"manual-prep",
 		"ses_3621eafacffeswbEAMQtx0wZ88",
@@ -11,8 +11,9 @@
 		"ses_351e7d729ffeXGCFiKcyM7gLC1",
 		"ses_3511fa1e4ffe6FBca4mIJ8eC1S",
 		"ses_350f59f67ffepQf0gjz7INnLyi",
-		"ses_34d2f4b12ffeLq5LKwU9yx4ble"
+		"ses_34d2f4b12ffeLq5LKwU9yx4ble",
+		"ses_34889d27cffeUD0GkghFmbV9Ta"
 	],
-	"plan_name": "plan-12-web-client-command-controller-architecture",
+	"plan_name": "plan-14-webapp-router-and-dashboard-data",
 	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

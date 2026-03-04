@@ -1,0 +1,8 @@
+- [x] Discovery: confirm current `@animal-zoom/webapp` routing, navigation links, and whether any router library is already used
+- [x] Implement: migrate from manual `Router()` in `client/webapp/src/main.tsx` to `react-router-dom` with routes for `/`, `/login`, `/register`, `/forgot-password`, `/dashboard`
+- [x] Implement: update page navigation to use router links (at least login page links + any touched pages)
+- [x] Implement: add dashboard async data module (mock loader, BE-ready interface)
+- [x] Implement: wire dashboard page to async loader + loading/error/empty states
+- [x] Verify: `pnpm --filter @animal-zoom/webapp typecheck`
+- [x] Verify: `pnpm --filter @animal-zoom/webapp build`
+- [x] Manual QA: `pnpm --filter @animal-zoom/webapp dev` and verify `/login` and `/dashboard` render + navigation works
