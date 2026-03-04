@@ -1,0 +1,16 @@
+- [x] Discovery: inventory `/Users/hsshin-rsupport/Downloads/rfice-game/src/shared` folder roles (api/config/core/lib/types/ui) and list key abstractions worth mirroring
+- [x] Discovery: inventory current `client/webapp/src` responsibilities and identify existing system/network concerns (env, storage, apiRequest, auth token)
+- [x] Decision: define target layer map for web client (system, network, domain, features, ui) and allowed dependency directions
+- [x] Decision: decide public entrypoints/barrel exports (mirroring `rfice-game/src/shared/index.ts` style) for each layer
+- [x] Decision: decide how to handle env config in Vite (single `system/env.ts` with typed reads of `import.meta.env`)
+- [x] Implement: create `client/webapp/src/system/` (env, storage, logger/runtime helpers) with no React imports
+- [x] Implement: create `client/webapp/src/network/` (api client, request helpers, auth header injection) and migrate `client/webapp/src/auth/api.ts` into it
+- [x] Implement: create `client/webapp/src/domain/` for shared domain models/types (avoid UI concerns)
+- [x] Implement: create `client/webapp/src/ui/` for reusable presentational components (no network calls)
+- [x] Implement: migrate presign-related logic into `network/assets.ts` (or similar) and keep `AssetImage` as a thin UI wrapper
+- [x] Implement: update imports across `client/webapp/src` to follow new layer boundaries (no `ui` importing `network`)
+- [x] Implement: add minimal barrel exports for `system/`, `network/`, `domain/`, `ui/` to keep imports stable
+- [x] Verify: `pnpm --filter @animal-zoom/webapp lint`
+- [x] Verify: `pnpm --filter @animal-zoom/webapp typecheck`
+- [x] Verify: `pnpm --filter @animal-zoom/webapp build`
+- [x] Manual QA: run `pnpm --filter @animal-zoom/webapp dev` and verify key flows still work (login/register pages + participant tiles)

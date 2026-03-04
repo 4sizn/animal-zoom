@@ -3,11 +3,22 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { EMPTY, type Observable } from "rxjs";
 import "./styles.css";
-import { AssetImage } from "./assets/AssetImage";
 import { AuthProvider } from "./auth/AuthContext";
+import { AssetsController } from "./core/controllers/AssetsController";
+import { StorageController } from "./core/controllers/StorageController";
+import { SystemController } from "./core/controllers/system/SystemController";
+import { SystemControllerManager } from "./core/managers/system/SystemControllerManager";
 import { ForgotPasswordPage } from "./pages/forgot-password";
 import { LoginPage } from "./pages/login";
 import { RegisterPage } from "./pages/register";
+import { AssetImage } from "./ui/AssetImage";
+
+SystemControllerManager.getInstance().registerSystemController(
+	new SystemController(new StorageController()),
+);
+SystemControllerManager.getInstance().registerSystemController(
+	new SystemController(new AssetsController()),
+);
 
 function getParticipantCount(maxCount: number): number {
 	const params = new URLSearchParams(window.location.search);

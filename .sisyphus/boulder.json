@@ -1,6 +1,6 @@
 {
-	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-10-babylon-web-minio-assets.md",
-	"started_at": "2026-03-03T08:29:08.257Z",
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-12-web-client-command-controller-architecture.md",
+	"started_at": "2026-03-04T04:40:00Z",
 	"session_ids": [
 		"manual-prep",
 		"ses_3621eafacffeswbEAMQtx0wZ88",
@@ -13,6 +13,6 @@
 		"ses_350f59f67ffepQf0gjz7INnLyi",
 		"ses_34d2f4b12ffeLq5LKwU9yx4ble"
 	],
-	"plan_name": "plan-10-babylon-web-minio-assets",
+	"plan_name": "plan-12-web-client-command-controller-architecture",
 	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

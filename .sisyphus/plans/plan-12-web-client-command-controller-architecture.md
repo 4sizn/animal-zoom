@@ -1,0 +1,16 @@
+- [x] Discovery: read rfice-game command/controller base abstractions (`AbstractController`, `AbstractCommand`, `CommandManager`, `SystemController`)
+- [x] Discovery: identify current webapp interaction points that benefit from commands (asset presign, auth, storage)
+- [x] Implement: add `client/webapp/src/core/abstract/AbstractController.ts`
+- [x] Implement: add `client/webapp/src/core/abstract/AbstractCommand.ts`
+- [x] Implement: add `client/webapp/src/core/managers/CommandManager.ts` (register/unregister/execute)
+- [x] Implement: add `client/webapp/src/core/controllers/system/SystemController.ts` (controller -> command mapping + lifecycle)
+- [x] Implement: add `client/webapp/src/core/managers/system/SystemControllerManager.ts`
+- [x] Implement: add `client/webapp/src/core/controllers/StorageController.ts` (wrap `system/storage`)
+- [x] Implement: add `client/webapp/src/core/commands/StorageCommand.ts`
+- [x] Implement: add `client/webapp/src/core/controllers/AssetsController.ts` (wrap `network/assets`)
+- [x] Implement: add `client/webapp/src/core/commands/AssetsCommand.ts`
+- [x] Wire: initialize and register system controllers/commands in `client/webapp/src/main.tsx`
+- [x] Wire: update `client/webapp/src/ui/AssetImage.tsx` to resolve via `CommandManager` (end-to-end usage)
+- [x] Verify: `pnpm --filter @animal-zoom/webapp typecheck`
+- [x] Verify: `pnpm --filter @animal-zoom/webapp build`
+- [x] Manual QA: `pnpm --filter @animal-zoom/webapp dev` and check that participant tile image still renders
