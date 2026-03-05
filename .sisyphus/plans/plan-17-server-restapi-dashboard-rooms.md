@@ -1,0 +1,8 @@
+- [x] Discovery: audit existing `server/app` auth + users + mail REST endpoints (register/login/forgot-password) and shared DTO/types usage
+- [x] Discovery: locate the existing dev/test account markdown doc(s) and extract required seed users + any required initial data
+- [x] Design: define REST API routes + request/response DTOs for: signup, login, forgot-password, dashboard, room(create), room(get) in a single markdown spec under `server/app/docs/rest-api.md`
+- [x] DB: add minimal Kysely migration(s) for room storage needed by the new endpoints (keep schema minimal; no extra features)
+- [x] Implement: add NestJS module(s)/controller(s)/service(s) for dashboard + rooms endpoints, using existing JWT guard and Kysely database module
+- [x] Implement: add a dev-only seed runner that reads the dev-account doc requirements and inserts seed users (and optionally one sample room) into DB
+- [x] Verification: `pnpm --filter @animal-zoom/server-app typecheck` and `pnpm --filter @animal-zoom/server-app build`
+- [x] Manual QA: run docker postgres, run migrations + seed, then verify endpoints with curl (happy path + auth failures)

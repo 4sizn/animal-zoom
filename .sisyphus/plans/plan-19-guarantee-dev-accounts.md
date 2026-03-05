@@ -1,0 +1,5 @@
+- [x] Seed: ensure default dev accounts are ALWAYS seeded (even when `DEV_SEED_USERS_JSON` is provided)
+- [x] DX: make `pnpm --filter @animal-zoom/server-app dev` automatically run migrate + seed before starting
+- [x] Docs: update `server/app/docs/dev-accounts.md` to reflect the "always guaranteed" behavior
+- [x] Verification: `pnpm --filter @animal-zoom/server-app typecheck` and `pnpm --filter @animal-zoom/server-app build`
+- [x] Manual QA: start local Postgres, run `pnpm --filter @animal-zoom/server-app dev`, and confirm login works for `dev1@animal-zoom.local`

@@ -1,0 +1,4 @@
+- [x] Docs: add developer account list doc under `server/app/docs/dev-accounts.md`
+- [x] Seed: update `server/app/src/database/seed.ts` to use default dev accounts when `DEV_SEED_USERS_JSON` is missing/empty
+- [x] Verification: `pnpm --filter @animal-zoom/server-app typecheck` and `pnpm --filter @animal-zoom/server-app build`
+- [x] Manual QA: run migrations + `pnpm --filter @animal-zoom/server-app seed` and confirm default accounts are inserted and login works

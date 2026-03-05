@@ -3,12 +3,13 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "DOTENV_CONFIG_PATH=../../.env nest start --watch",
+		"dev": "pnpm build && DOTENV_CONFIG_PATH=../../.env node dist/database/migrate.js && DOTENV_CONFIG_PATH=../../.env node dist/database/seed.js && DOTENV_CONFIG_PATH=../../.env nest start --watch",
 		"build": "nest build",
 		"start": "DOTENV_CONFIG_PATH=../../.env node dist/main.js",
 		"lint": "tsc -p tsconfig.json --noEmit",
 		"test": "node -e \"console.log('no tests yet: @animal-zoom/server-app')\"",
-		"typecheck": "tsc -p tsconfig.json --noEmit"
+		"typecheck": "tsc -p tsconfig.json --noEmit",
+		"seed": "pnpm build && DOTENV_CONFIG_PATH=../../.env node dist/database/seed.js"
 	},
 	"dependencies": {
 		"@animal-zoom/server-minio": "workspace:*",

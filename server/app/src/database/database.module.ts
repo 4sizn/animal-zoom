@@ -12,8 +12,17 @@ export interface UsersTable {
   updated_at: Generated<Date>;
 }
 
+export interface RoomsTable {
+  id: string;
+  name: string;
+  owner_user_id: number;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
 export interface Database {
   users: UsersTable;
+  rooms: RoomsTable;
 }
 
 function createKysely(): Kysely<Database> {
