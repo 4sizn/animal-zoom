@@ -1,0 +1,5 @@
+- [x] Discovery: inspect current `client/webapp` router + `/login` and `/forgot-password` page layout/styling patterns
+- [x] Implement: update `/forgot-password` UI to visually fit `/login` form (spacing/typography/components) and ensure navigation links are consistent
+- [x] Verify: `pnpm --filter @animal-zoom/webapp typecheck`
+- [x] Verify: `pnpm --filter @animal-zoom/webapp build`
+- [x] Manual QA: `pnpm --filter @animal-zoom/webapp dev` and confirm `/login` + `/forgot-password` are responsive, consistent, and no console errors

@@ -1,0 +1,5 @@
+- [x] Discovery: inspect current `/register` page and confirm shared auth-page layout tokens from `/login` and `/forgot-password`
+- [x] Implement: update `/register` UI to visually fit `/login` and `/forgot-password` (layout/card/inputs/buttons/links) without changing auth behavior
+- [x] Verify: `pnpm --filter @animal-zoom/webapp typecheck`
+- [x] Verify: `pnpm --filter @animal-zoom/webapp build`
+- [x] Manual QA: `pnpm --filter @animal-zoom/webapp dev` and confirm `/register` is responsive, consistent, and no console errors
