@@ -1,0 +1,5 @@
+- [x] Define the room creation UX + behavior (between /dashboard and /room/study/:roomId)
+- [x] Implement room creation UI in `client/webapp/src/pages/room/create/index.tsx` (form, validation, loading, errors)
+- [x] Wire room creation logic to `POST /rooms` using existing auth token (fallback to demo room if unauth)
+- [x] Verification: navigate /dashboard -> /room/create -> /room/study/:roomId with success + error cases
+- [x] Verification: `npm --prefix client/webapp run lint` and `npm --prefix client/webapp run build` pass
