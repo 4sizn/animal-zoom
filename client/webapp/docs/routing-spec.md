@@ -2,6 +2,8 @@
 
 This document describes the route paths and page/component mapping for `@animal-zoom/webapp`.
 
+Last updated: 2026-03-06 (`/room/join/:roomId` normalized, room create/join/study flows documented)
+
 ## Router Setup
 
 - Router entrypoint: `client/webapp/src/main.tsx`
@@ -19,6 +21,9 @@ This document describes the route paths and page/component mapping for `@animal-
 | `/register` | `RegisterPage` | `client/webapp/src/pages/register/index.tsx` | Calls `useAuth().register()`; on success: `window.location.href = "/login"`. |
 | `/forgot-password` | `ForgotPasswordPage` | `client/webapp/src/pages/forgot-password/index.tsx` | Calls `useAuth().forgotPassword()`. |
 | `/dashboard` | `DashboardPage` | `client/webapp/src/pages/dashboard/index.tsx` | Uses mock data loader (`loadDashboardData()`); no router-level auth guard. |
+| `/room/study/:roomId` | `RoomStudyPage` | `client/webapp/src/pages/room/study/index.tsx` | Renders `ZoomRoomExperience`; participant count is derived from `getDashboardRoomById(roomId)` and falls back to `participants` query param via `resolveParticipantCountFromSearch(...)` when `roomId` is missing/unknown. |
+| `/room/join/:roomId` | `RoomJoinPage` | `client/webapp/src/pages/room/join/index.tsx` | Redirect page: trims `roomId` and replaces to `/room/study/:roomId`; if empty/missing, replaces to `/dashboard`. |
+| `/room/create` | `RoomCreatePage` | `client/webapp/src/pages/room/create/index.tsx` | Redirect page: creates `room-${Date.now().toString(36)}` and replaces to `/room/study/:roomId`; on failure, replaces to `/dashboard`. |
 | `*` | `Navigate` -> `/` | `client/webapp/src/main.tsx` | Catch-all: redirects unknown paths to `/` using `<Navigate replace to="/" />`. |
 
 ## Route Tree
@@ -38,6 +43,17 @@ This document describes the route paths and page/component mapping for `@animal-
 
 /dashboard
   (DashboardPage)
+
+/room/study/:roomId
+  (RoomStudyPage)
+
+/room/join/:roomId
+  (RoomJoinPage)
+  -> redirect to /room/study/:roomId (or /dashboard when param is missing/empty)
+
+/room/create
+  (RoomCreatePage)
+  -> redirect to /room/study/:roomId (or /dashboard on create failure)
 
 *
   -> redirect to /
@@ -76,7 +92,7 @@ This document describes the route paths and page/component mapping for `@animal-
 
 ## Known In-App Navigation Links
 
-These are `react-router-dom` `<Link>` targets found in page components.
+These are known in-app navigation targets from `react-router-dom` `<Link>` usage and button handlers that call `useNavigate(...)`.
 
 - `client/webapp/src/pages/login/index.tsx`
   - `/register`
@@ -88,6 +104,9 @@ These are `react-router-dom` `<Link>` targets found in page components.
 - `client/webapp/src/pages/forgot-password/index.tsx`
   - `/login`
   - `/register`
+- `client/webapp/src/pages/dashboard/index.tsx`
+  - `/room/join/<room.id>` (Join room buttons via `navigate(`/room/join/${roomId}`)`)
+  - `/room/create` (New room buttons via `navigate("/room/create")`)
 
 ## Verification Checklist
 
