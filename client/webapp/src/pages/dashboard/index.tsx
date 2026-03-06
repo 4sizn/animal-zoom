@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import type { DashboardRoom, FriendStatus } from "./data";
 import { type DashboardData, loadDashboardData } from "./data";
@@ -37,6 +38,7 @@ function statusDot(status: FriendStatus): string {
 }
 
 export function DashboardPage() {
+	const navigate = useNavigate();
 	const [state, setState] = React.useState<
 		| { status: "loading" }
 		| { status: "error"; message: string }
@@ -54,6 +56,17 @@ export function DashboardPage() {
 				}),
 			);
 	}, []);
+
+	const goToCreateRoom = React.useCallback(() => {
+		navigate("/room/create");
+	}, [navigate]);
+
+	const goToJoinRoom = React.useCallback(
+		(roomId: string) => {
+			navigate(`/room/join/${roomId}`);
+		},
+		[navigate],
+	);
 
 	React.useEffect(() => {
 		load();
@@ -172,6 +185,7 @@ export function DashboardPage() {
 					<div className="mt-6 grid gap-3">
 						<button
 							type="button"
+							onClick={goToCreateRoom}
 							className="w-full h-12 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-red-600 active:scale-[0.99] transition"
 						>
 							New room
@@ -361,6 +375,7 @@ export function DashboardPage() {
 
 										<button
 											type="button"
+											onClick={() => goToJoinRoom(room.id)}
 											className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-red-600 active:scale-[0.99] transition"
 										>
 											<span className="material-symbols-outlined text-[18px]">
@@ -373,6 +388,7 @@ export function DashboardPage() {
 
 								<button
 									type="button"
+									onClick={goToCreateRoom}
 									className="rounded-lg border border-dashed border-white/15 bg-surface-dark/30 p-5 text-left ring-1 ring-white/10 hover:ring-white/20 transition"
 								>
 									<div className="flex items-center gap-3">

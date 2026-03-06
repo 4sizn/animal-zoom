@@ -91,3 +91,9 @@ export async function loadDashboardData(): Promise<DashboardData> {
 		weeklyBars: [...mockDashboardData.weeklyBars],
 	};
 }
+
+export function getDashboardRoomById(
+	roomId: string,
+): DashboardRoom | undefined {
+	return mockDashboardData.rooms.find((room) => room.id === roomId);
+}

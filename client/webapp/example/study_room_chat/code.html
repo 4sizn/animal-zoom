@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Call with Chat Sidebar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        "background-light": "#f3f4f6",
+                        "background-dark": "#0f172a",
+                        "card-dark": "#1e293b",
+                        "chat-bg": "#111827",
+                        "bubble-other": "#334155",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "12px",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 10px;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 12px;
+        }
+        @media (min-width: 1440px) {
+            .video-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .avatar-label {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen flex overflow-hidden">
+<main class="flex-1 flex flex-col relative h-full bg-slate-100 dark:bg-[#12141a]">
+<header class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white">
+<span class="material-icons-outlined">groups</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-none">Group Study</h1>
+<p class="text-sm text-slate-500 dark:text-slate-400">17 people online</p>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto px-6 pb-24 custom-scrollbar">
+<div class="video-grid">
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark group">
+<img alt="Participant Marina" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIHACUdgmY8giWD1tSZC3y5jrZdusrUf7PNoxlnT3fAarudJCl0KsfF9_cSskWQWkk8DlTRwKPlyr0lAp4hqMta5QkkKW8NKIuhO_zLYqCErpF6tRf5z_SYbXrPLPRFFVYlcYJfMf9RhN6U102lJJsEVWaCh_AGfGs8P15It6dBKgPautTwgpIAxjePrjrNDLChhI0R96p3XNjtW4OQnwVRhE9Im6aS-bH0Xet8kOBAM0e4RmMhfDkqtQNo7gkMB4gNCC1booiQYg"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Marina</div>
+<div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white scale-0 group-hover:scale-100 transition-transform">
+<span class="material-icons-outlined text-sm">mic_off</span>
+</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Oliver" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9X0zK5ZJjyu8kvtErebDZKeKyOTCotcls5Ygxa4Xkq7y4bOB54NKw8FsENG16SeO6n2QHRkNp9sf1k5-BdeUi6FZXXgPUnaa_Fw1iSMIb6WrxdEJ5BxssHBmS9Sgx9cFe_hEiwUWiWLQNmTEhvJkoBNnMrXgZG9e76xqMELcQLOyK4QL_EDYbe1HNHmjk5z_VapHw9BokkDExd1J9k0dSuKmVF0700ozMUF0RZO31zjAI4YU5U1JctSV6XPbYvo-23S0ZYvj8EhI"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Oliver</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Octavian" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvnugMPt93XnaOKfwkla5edVA_Ry73jZEOGhjs9ztrYHvDvGjoYgagHqJKzmoyYYrw64DRMnrZG59tiNacRMvSiK7IKVbICU__CpKqSDTMJB8fzr6tCB5PFCdwuXLUaBzN00zRx7GonVYw2cXZKNHZS4aIC5RRlKOE3sOummdrXwpyfZ57BnDdRdlQzfMfWT9ZrZTkpxudoWXkhc6bAs1nGwXseQuVfl3a2luhUy06Rme4WjMyRsUp0_gZFjQSmM27l4mDwBbMnjA"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Octavian</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Jen" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoFb_wbo2Us2AgnPbhQsLEQoQ51rRSVCN8VqNR_CwQyI8Q5hwQq2Iy4lUFAqAeSvYnob0EJyRLjjIK21XkIWCr2m26dz2FVeYg2yTzHK0xDxftaZAtdcy0IwdO8LAtdsQVw8RHxJj1FA43J60vr5HZm0Vtmh5J_9LkzlMGi2TAeY6ifKtTrBbP4dR1bt1hTYmwlGPLvFcGyS97TwWPwHAf43I9j1kcucWa6j8egcTbmt23VfjhJlrN3KqqfjYJWtgp1aQFEv__LLY"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Jen</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Renise" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQg_8Z4sq0spzAla6LzVqdgxSuiISBb3Lzy4qMsqjM2faGfp2lPNX0RvGy3vEiwL8K4_Td7hi1ZavpzgC6ryQAE2tigZaT2DtbV40ReJvG1bUJHmBWk1t2ZeJGgy9OxPOAqeVFPD-KCG4xGhRuPHUbp75dbhcdoYQ71JICzmhQk_UoRoT4-7fA2iiQhO6zA134xTOa3t2ZWM7GLDmpns3G8sr77Aq6rr2KU4auEiFnK9INwrQU4Y8kxX_X2yoKaoinSMnAyvXdmRE"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Renise</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark border-2 border-yellow-500/50">
+<img alt="Participant Gloria" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTC67nCxCgIIo9mksjkSUGydSX76HbdWe1bY2cL5VfcQxIWOKDzwpphJ0UST3Kdb2jaNADd41FTsW0KG5okAuvmNqqeDiALSqfJy4R08X5EOt3v5yh26MSdLFsjF6WXKCkAr3wR30J487mGt28yOwn-8JfcMcvDPExwyf8waUHhhUYBciiZnqTT2bsd7KYR0CteFq5hlnLxusJS3mfC6mNZdcofPFHvLlPvws8eeKkx0R5AOvv8QAqaQRblGzUM7BjNdIiqHMGMWY"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg bg-yellow-500/80 backdrop-blur-sm text-black text-xs font-bold">Gloria</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Noah" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARxtmow-s2-j69nkOuq8c_N43J7vjnuF_HuereXBouzpLybaZ_miQDHmjkVUUSp58nI3k8YPBv1jgL_8EaeRQk_vMw2pISqN73XpnDAhMhEJCW8XF97EyQECfXPDZ0f3De6YXa9lZiOac95g_MZDrX14q_5KSFnl9KIQ1COgagTMvlcevYfyC7sDupPdT6Jx3UQSbOYvvgmSKD6_RjqogkUmJt0V0xtZxILd8DZAP5QtI9wh7NkNXcoSwCZnVL1Zc7r0d_P3YH94I"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Noah</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Liam" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWmEkiyLCLWb4y3lb6mY-aldF9Y7zZ7wgCbMfQfoY96kHUFbxkD8MtbKz9K0-yk-1UP2ARPmqSy6KVSNavU38Ok-Wj9YkOLhpUnBKuOFscikxafZ-GtLSeWkWSexlvGRyQxlbLuCFvXEBJHBtkMSSSPxrBLDZ__sWF3UOQDk9k-_NrSYXTAv10giW_WmVW-YIdNSjfn5xM-yJPg2tbGEoMQaMvGBFbE0U0nyvQUAAxL-ZtWmqISvIEj34ITt3ybcjDlMrtD5AqUjo"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Liam</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Emma" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtlQxnaNXsb4UxdYdOfXC9oty7o7bPBvnbIVdiklCg-SWM4VHRddGIPIiE8FmBKS4c4WlFtB2SbTSJOEVmNhmw6x2f6q0ayQFPBUMG2UG8WDIW_pNMVzIGcOP3iIALat2Gs-coR9gZGYKeBhgglogYyw_PmxOnKtbtxEa-wxvGUwhwP2NaDIYJtbR_0sGv_WO-cRFb0aJDp1aKftFayge5W5RlusPdcHMSD9F8t0dg6g-11RNxY3xij4FgMphTKYN4GiIBXuIZbuU"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Emma</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Cleo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQexutgwdAZsBWQekLOaPzq3wF7R1GjPvdOCBnt4tN3zeMhbYmhp4gQnH5DYbs8PMabgOP7kIjFan6IWHWGPshJ-cFjftsurkZLV4RLLvBlE-toFY9sML0gGQcb1KCKtlAzzsQS3H9D-CLRbg63t7l-qpNp2P8RjAzDBudLilHpjkxKXjIqvlYUynDcGLEATfvin6Pe1HOjqBYj55vqoBc7MEGJ9GXhAmQ5FK7jj3QlWZGqFS_1NsTFXt0JGOUlQwir7qH5UCKIV4"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Cleo</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Tulip" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8raUTQp75VIxi1p0nyNlEjDS2RVbxQJ-mRogNt45cDAg7jT-nX_peGtR9-uDYvqqHYsjFNmSjdQhyoXYvgv8JxGcjxd2SYOwtWO2CEYDNGo-3yAagbyjhnaa2iPV_BNSTejRslOpwycfa0rFxxi-4_Ow7jlGwjAZVyeHqy7tgA-1NJOBQk73iSsQWdwbIVGRDVZsFHPTz4wXMnHhAbpLBYcBtUI58N2q8yCe1Ce_Vvze4ggqGe_2--vdLzmp1O3LM2jJzac-Bx38"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Tulip</div>
+</div>
+<div class="aspect-video relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-card-dark">
+<img alt="Participant Mia" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJV9mkldxT8S3w7Bt57wq5EbPBZxOpbkRe1X4WY13K_lONs5ICx6UiZ-kYAVCpy6oRtgWHz1GtNse2aUr8DN8Zw8EWNdqK7sTTYZf1RF7anBKIyhCdn_grrjZwie8deX4pY14jJl3aLJyt9vzxIcrGMzScATiBi6aoR3q65wzQiYj40Pcuwd_FFjU6hnO2XnMQ9V-rSruq0-4urmnJBsuH3h3TCnFN71RYqQoopbduJ_dFwDNFnt5PYFClj0hrwVk0VfEShZY33mI"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg avatar-label text-white text-xs font-medium">Mia</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-slate-900/90 backdrop-blur-md p-3 px-6 rounded-full shadow-2xl border border-white/10">
+<button class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors text-white">
+<span class="material-icons-outlined">mic</span>
+</button>
+<button class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors text-white">
+<span class="material-icons-outlined">videocam</span>
+</button>
+<button class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors text-white">
+<span class="material-icons-outlined">more_horiz</span>
+</button>
+<div class="w-px h-8 bg-slate-700 mx-1"></div>
+<button class="w-12 h-12 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-lg">
+<span class="material-icons-outlined">call_end</span>
+</button>
+</div>
+</main>
+<aside class="w-[400px] h-full bg-white dark:bg-[#1c222d] flex flex-col border-l border-slate-200 dark:border-slate-800">
+<div class="p-6 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="text-xl font-bold">Chat</h2>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-icons-outlined text-slate-500">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+<div class="flex gap-3">
+<img alt="Avatar Marina" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGtlxIdZ6DCigRf3Dh6qYJAAc_9qh36Amm75FPZAnkenslQ_ITGEDPXzVMUWQ5dQpwJ5bgJDRuHzHb_TdV7_aZyk7KJEYKsvP_adkApCYAW1NTQrHvYHyIjMxveCUieMFhNdy4jAPL2lPG1GsGs8Iq-9DRSyw1Ee9N1E7NygE3qObUvmGCMeCo0RTy47vUMtpR0x-jNVpLipsZ1zxxjJv0E_Ifo0LeJSTy8UdsIq7fTrppZtH9fJgErAoCfVwHgyeP3bxDPi25oOw"/>
+<div class="space-y-1 max-w-[80%]">
+<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Marina</p>
+<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
+                        omg yes!!
+                    </div>
+<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl text-sm">
+                        I have a lot of ideas to share!
+                    </div>
+</div>
+</div>
+<div class="flex gap-3">
+<img alt="Avatar Sam" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6fFbiEsl2ggrgWz7w3yHIIDCOaTwSgMSbl0EUdSkG_VJOrHuFPwstm1GE69CUl3Lz1FjYLvJ3M6XalgmUzrJsciVK0uCZtnXv4SP2XDe0FufuoXFo-tMq9LxnMi6nXwQdA-DFDeFY-Q4co10Q91u84FmfHugJkmGsQJSF6JVonrhLxlKYO4-VagETSWbikiihtU0J4il-9-1IhSUzGG2eoJXIr6_5hMozBtGDDHUQkGFMTxy6F-AhlrW1Yue-iJMq52EfLItlmak"/>
+<div class="space-y-1 max-w-[80%]">
+<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Sam</p>
+<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
+                        Same here, excited to brainstorm!
+                    </div>
+</div>
+</div>
+<div class="flex flex-row-reverse gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">ME</div>
+<div class="space-y-1 max-w-[80%] flex flex-col items-end">
+<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Jen</p>
+<div class="bg-primary text-white p-3 rounded-2xl rounded-tr-none text-sm shadow-md">
+                        Great! How do you want to start?
+                    </div>
+</div>
+</div>
+<div class="flex gap-3">
+<img alt="Avatar Marina" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkG5K9aXqwA_tAvIQPbIQalN-buNPisY03v-E4f8Hw-s216DUJZ_DURPjvlW-IYyr3LWnU1ordLEvzLC66t_dT8oBGc0bwUMyepf2oHiYDhcVLoqW57nu3RUSdrWNAH6ICVydlZDEVADoUKsq5hGAmzCcKQCVsvxG6NRBG-JLjP5hqykRm0tx6QAmzn2KN-VYcj4afaTtVZbYS8iSChHTwV9r-ahbdsE3toO1mazbUG0zl9FQKi8MpynZTDBvzK_Wa1QoJPcpRwQ4"/>
+<div class="space-y-1 max-w-[80%]">
+<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Marina</p>
+<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
+                        Maybe we can go over the project details first?
+                    </div>
+</div>
+</div>
+<div class="flex gap-3">
+<img alt="Avatar Biagis" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdadjP9lUN-TEYcgvaMKakVoEjt5cXYvFPaJH90iV0_8NKk3E4r6vnFZhU9xGUEabov2fwjcKAf12ot4kGyt2i5RKZR9BO30RqAFuImVZ1mlVp_H25srG5r6RkWwl9Izmlvh-AKMgnxgWJNSZjryYxoQdR846pXAA1SijbvkyvLzXTSNLbGxKJ_Jq_ODhceOhNC7eGt95dIlmwYtGCJcSY9OXnMbp5RT7CJrVJcdW6F5HjjNlBhyCGlEZvM7E9VPJC77hl8PJyq1s"/>
+<div class="space-y-1 max-w-[80%]">
+<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Biagis</p>
+<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
+                        Good idea!
+                    </div>
+<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl text-sm">
+                        What about you all?
+                    </div>
+</div>
+</div>
+<div class="flex flex-row-reverse gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">ME</div>
+<div class="space-y-1 max-w-[80%] flex flex-col items-end">
+<div class="bg-primary text-white p-3 rounded-2xl rounded-tr-none text-sm shadow-md">
+                        Thanks everyone!
+                    </div>
+</div>
+</div>
+<div class="flex gap-3">
+<img alt="Avatar Liam" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxt-gZckIOrgUHwcwhnNoB3v5KIjDe3PJ6izSg8xQO0_P8pg-53eXCZSKa5NA4uHK1cFTTm9WGkn1BDT_nfYcZDMZ2Jjkyr6XA1vaI0eOOZyo6tG6x4sHcNN4oIpsWC4czAAhmbF41aDjYms5ek0_h7woky6mY6RUF0SiwvLLjghPE1D4nNWlACn1oo-zJ-TVWXvOrrdi7cOnLD1e1f1Xc5ylunvm79-L9EQhSVzWHbkx5C-b-c2oEcJAy3gpxe97WHHNQVoIQWAg"/>
+<div class="space-y-1 max-w-[80%]">
+<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Liam</p>
+<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
+                        No problem!
+                    </div>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-slate-200 dark:border-slate-800">
+<div class="relative group">
+<input class="w-full bg-slate-100 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-primary rounded-xl py-4 pl-4 pr-12 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400 transition-all" placeholder="Type a message..." type="text"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+<span class="material-icons-outlined text-sm">send</span>
+</button>
+</div>
+</div>
+</aside>
+
+</body></html>
