@@ -1,6 +1,6 @@
 {
-	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-19-guarantee-dev-accounts.md",
-	"started_at": "2026-03-05T09:11:26Z",
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-20-webapp-routing-spec-doc.md",
+	"started_at": "2026-03-06T07:43:37Z",
 	"session_ids": [
 		"manual-prep",
 		"ses_3621eafacffeswbEAMQtx0wZ88",
@@ -14,8 +14,9 @@
 		"ses_34d2f4b12ffeLq5LKwU9yx4ble",
 		"ses_34889d27cffeUD0GkghFmbV9Ta",
 		"ses_3441251a4ffeS5HV818B9lAE54",
-		"ses_3434593e9ffeltKV0pR8oiXuZS"
+		"ses_3434593e9ffeltKV0pR8oiXuZS",
+		"ses_33e20224effeOPvW7c7XiTHUfF"
 	],
-	"plan_name": "plan-19-guarantee-dev-accounts",
+	"plan_name": "plan-20-webapp-routing-spec-doc",
 	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

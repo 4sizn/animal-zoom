@@ -1,0 +1,9 @@
+- [x] Inventory route entry points in `client/webapp/src` (where React Router is configured)
+- [x] Enumerate all route paths and map to page components (include params like `:id`)
+- [x] Identify nested routes/layout routes and document parent-child relationships
+- [x] Note auth/guard behavior per route (public vs protected) and any redirects
+- [x] Document 404 / catch-all route handling (and where it is defined)
+- [x] Document API/socket base URLs used by the webapp and which routes depend on them
+- [x] Write routing spec doc: `client/webapp/docs/routing-spec.md` (route table + route tree diagram)
+- [x] Cross-check the doc against code: every documented path exists in router config
+- [x] Verification: run a grep/search to ensure all route paths appear in router definitions
