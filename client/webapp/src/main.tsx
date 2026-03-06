@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./styles.css";
-import { AuthProvider } from "./auth/AuthContext";
+import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { AssetsController } from "./core/controllers/AssetsController";
 import { StorageController } from "./core/controllers/StorageController";
 import { SystemController } from "./core/controllers/system/SystemController";
@@ -41,10 +41,20 @@ function App() {
 	);
 }
 
+function HomeRoute() {
+	const { token } = useAuth();
+
+	if (token) {
+		return <Navigate replace to="/dashboard" />;
+	}
+
+	return <App />;
+}
+
 function AppRoutes() {
 	return (
 		<Routes>
-			<Route path="/" element={<App />} />
+			<Route path="/" element={<HomeRoute />} />
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/register" element={<RegisterPage />} />
 			<Route path="/forgot-password" element={<ForgotPasswordPage />} />

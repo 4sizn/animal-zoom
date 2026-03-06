@@ -2,7 +2,7 @@
 
 This document describes the route paths and page/component mapping for `@animal-zoom/webapp`.
 
-Last updated: 2026-03-06 (`/room/join/:roomId` normalized, room create/join/study flows documented)
+Last updated: 2026-03-06 (`/room/join/:roomId` normalized, room create/join/study flows documented, `/` auth redirect strategy)
 
 ## Router Setup
 
@@ -16,7 +16,7 @@ Last updated: 2026-03-06 (`/room/join/:roomId` normalized, room create/join/stud
 
 | Path | Element (component) | Source | Notes |
 | --- | --- | --- | --- |
-| `/` | `App` | `client/webapp/src/main.tsx` | Main "zoom" UI layout (participant grid). |
+| `/` | `HomeRoute` | `client/webapp/src/main.tsx` | If authenticated (`auth_token` present via `useAuth()`), redirects to `/dashboard`; otherwise renders `App` (main zoom UI layout). |
 | `/login` | `LoginPage` | `client/webapp/src/pages/login/index.tsx` | Calls `useAuth().login()`; shows token/socket status. |
 | `/register` | `RegisterPage` | `client/webapp/src/pages/register/index.tsx` | Calls `useAuth().register()`; on success: `window.location.href = "/login"`. |
 | `/forgot-password` | `ForgotPasswordPage` | `client/webapp/src/pages/forgot-password/index.tsx` | Calls `useAuth().forgotPassword()`. |
@@ -30,7 +30,9 @@ Last updated: 2026-03-06 (`/room/join/:roomId` normalized, room create/join/stud
 
 ```
 /
-  (App)
+  (HomeRoute)
+  -> authenticated: redirect to /dashboard
+  -> unauthenticated: (App)
 
 /login
   (LoginPage)
@@ -72,6 +74,9 @@ Last updated: 2026-03-06 (`/room/join/:roomId` normalized, room create/join/stud
 - Router-level route protection:
   - None found (no protected-route wrapper, loader redirect, or route config guards).
   - Pages can still behave differently when `token` is present (e.g., Login page shows a Logout button).
+- Root-entry redirect behavior:
+  - `"/"` checks auth token through `useAuth()` and redirects authenticated users to `"/dashboard"`.
+  - Unauthenticated users still land on the main zoom UI (`App`).
 
 ### Auth API Endpoints Used
 
