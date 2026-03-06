@@ -58,7 +58,7 @@
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
         }
-    </style>
+</style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen flex overflow-hidden">
 <main class="flex-1 flex flex-col relative h-full bg-slate-100 dark:bg-[#12141a]">
@@ -69,6 +69,11 @@
 <div>
 <h1 class="text-lg font-bold leading-none">Group Study</h1>
 <p class="text-sm text-slate-500 dark:text-slate-400">17 people online</p>
+</div>
+<div class="ml-auto flex items-center gap-2">
+<button id="openChatButton" type="button" aria-label="Open chat" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-200/70 dark:hover:bg-slate-800/70 transition-colors">
+<span class="material-icons-outlined text-slate-600 dark:text-slate-300">chat</span>
+</button>
 </div>
 </header>
 <div class="flex-1 overflow-y-auto px-6 pb-24 custom-scrollbar">
@@ -142,93 +147,370 @@
 </button>
 </div>
 </main>
-<aside class="w-[400px] h-full bg-white dark:bg-[#1c222d] flex flex-col border-l border-slate-200 dark:border-slate-800">
+<aside id="chatSidebar" class="fixed inset-y-0 right-0 z-50 w-[min(400px,100vw)] h-full bg-white dark:bg-[#1c222d] flex flex-col border-l border-slate-200 dark:border-slate-800 transform translate-x-full transition-transform duration-200 ease-out md:static md:translate-x-0 md:w-[400px]">
 <div class="p-6 flex items-center justify-between">
 <div class="flex items-center gap-2">
 <h2 class="text-xl font-bold">Chat</h2>
 </div>
-<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<button id="closeChatButton" type="button" aria-label="Close chat" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
 <span class="material-icons-outlined text-slate-500">close</span>
 </button>
 </div>
-<div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
-<div class="flex gap-3">
-<img alt="Avatar Marina" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGtlxIdZ6DCigRf3Dh6qYJAAc_9qh36Amm75FPZAnkenslQ_ITGEDPXzVMUWQ5dQpwJ5bgJDRuHzHb_TdV7_aZyk7KJEYKsvP_adkApCYAW1NTQrHvYHyIjMxveCUieMFhNdy4jAPL2lPG1GsGs8Iq-9DRSyw1Ee9N1E7NygE3qObUvmGCMeCo0RTy47vUMtpR0x-jNVpLipsZ1zxxjJv0E_Ifo0LeJSTy8UdsIq7fTrppZtH9fJgErAoCfVwHgyeP3bxDPi25oOw"/>
-<div class="space-y-1 max-w-[80%]">
-<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Marina</p>
-<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
-                        omg yes!!
-                    </div>
-<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl text-sm">
-                        I have a lot of ideas to share!
-                    </div>
+<div class="relative flex-1 overflow-y-auto p-6 custom-scrollbar">
+<div id="newMessagesChip" class="hidden sticky top-0 z-10 pb-4">
+<button id="scrollToBottomButton" type="button" class="mx-auto flex items-center gap-2 rounded-full bg-slate-900/90 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur-md border border-white/10">
+<span class="material-icons-outlined text-sm">south</span>
+<span id="newMessagesText">New messages</span>
+</button>
 </div>
-</div>
-<div class="flex gap-3">
-<img alt="Avatar Sam" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6fFbiEsl2ggrgWz7w3yHIIDCOaTwSgMSbl0EUdSkG_VJOrHuFPwstm1GE69CUl3Lz1FjYLvJ3M6XalgmUzrJsciVK0uCZtnXv4SP2XDe0FufuoXFo-tMq9LxnMi6nXwQdA-DFDeFY-Q4co10Q91u84FmfHugJkmGsQJSF6JVonrhLxlKYO4-VagETSWbikiihtU0J4il-9-1IhSUzGG2eoJXIr6_5hMozBtGDDHUQkGFMTxy6F-AhlrW1Yue-iJMq52EfLItlmak"/>
-<div class="space-y-1 max-w-[80%]">
-<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Sam</p>
-<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
-                        Same here, excited to brainstorm!
-                    </div>
-</div>
-</div>
-<div class="flex flex-row-reverse gap-3">
-<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">ME</div>
-<div class="space-y-1 max-w-[80%] flex flex-col items-end">
-<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Jen</p>
-<div class="bg-primary text-white p-3 rounded-2xl rounded-tr-none text-sm shadow-md">
-                        Great! How do you want to start?
-                    </div>
-</div>
-</div>
-<div class="flex gap-3">
-<img alt="Avatar Marina" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkG5K9aXqwA_tAvIQPbIQalN-buNPisY03v-E4f8Hw-s216DUJZ_DURPjvlW-IYyr3LWnU1ordLEvzLC66t_dT8oBGc0bwUMyepf2oHiYDhcVLoqW57nu3RUSdrWNAH6ICVydlZDEVADoUKsq5hGAmzCcKQCVsvxG6NRBG-JLjP5hqykRm0tx6QAmzn2KN-VYcj4afaTtVZbYS8iSChHTwV9r-ahbdsE3toO1mazbUG0zl9FQKi8MpynZTDBvzK_Wa1QoJPcpRwQ4"/>
-<div class="space-y-1 max-w-[80%]">
-<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Marina</p>
-<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
-                        Maybe we can go over the project details first?
-                    </div>
-</div>
-</div>
-<div class="flex gap-3">
-<img alt="Avatar Biagis" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdadjP9lUN-TEYcgvaMKakVoEjt5cXYvFPaJH90iV0_8NKk3E4r6vnFZhU9xGUEabov2fwjcKAf12ot4kGyt2i5RKZR9BO30RqAFuImVZ1mlVp_H25srG5r6RkWwl9Izmlvh-AKMgnxgWJNSZjryYxoQdR846pXAA1SijbvkyvLzXTSNLbGxKJ_Jq_ODhceOhNC7eGt95dIlmwYtGCJcSY9OXnMbp5RT7CJrVJcdW6F5HjjNlBhyCGlEZvM7E9VPJC77hl8PJyq1s"/>
-<div class="space-y-1 max-w-[80%]">
-<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Biagis</p>
-<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
-                        Good idea!
-                    </div>
-<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl text-sm">
-                        What about you all?
-                    </div>
-</div>
-</div>
-<div class="flex flex-row-reverse gap-3">
-<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">ME</div>
-<div class="space-y-1 max-w-[80%] flex flex-col items-end">
-<div class="bg-primary text-white p-3 rounded-2xl rounded-tr-none text-sm shadow-md">
-                        Thanks everyone!
-                    </div>
-</div>
-</div>
-<div class="flex gap-3">
-<img alt="Avatar Liam" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxt-gZckIOrgUHwcwhnNoB3v5KIjDe3PJ6izSg8xQO0_P8pg-53eXCZSKa5NA4uHK1cFTTm9WGkn1BDT_nfYcZDMZ2Jjkyr6XA1vaI0eOOZyo6tG6x4sHcNN4oIpsWC4czAAhmbF41aDjYms5ek0_h7woky6mY6RUF0SiwvLLjghPE1D4nNWlACn1oo-zJ-TVWXvOrrdi7cOnLD1e1f1Xc5ylunvm79-L9EQhSVzWHbkx5C-b-c2oEcJAy3gpxe97WHHNQVoIQWAg"/>
-<div class="space-y-1 max-w-[80%]">
-<p class="text-xs font-bold text-slate-500 dark:text-slate-400">Liam</p>
-<div class="bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl rounded-tl-none text-sm">
-                        No problem!
-                    </div>
-</div>
-</div>
+<div id="messageList" class="space-y-6"></div>
 </div>
 <div class="p-6 border-t border-slate-200 dark:border-slate-800">
 <div class="relative group">
-<input class="w-full bg-slate-100 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-primary rounded-xl py-4 pl-4 pr-12 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400 transition-all" placeholder="Type a message..." type="text"/>
-<button class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+<label class="sr-only" for="chatInput">Message</label>
+<textarea id="chatInput" rows="1" class="w-full resize-none bg-slate-100 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-primary rounded-xl py-4 pl-4 pr-12 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400 transition-all" placeholder="Type a message..."></textarea>
+<button id="sendButton" type="button" aria-label="Send message" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
 <span class="material-icons-outlined text-sm">send</span>
 </button>
 </div>
 </div>
 </aside>
+
+<script>
+(() => {
+  const STORAGE_KEY = "animal-zoom:study-room-chat:messages:v1";
+
+  const chatSidebar = document.getElementById("chatSidebar");
+  const openChatButton = document.getElementById("openChatButton");
+  const closeChatButton = document.getElementById("closeChatButton");
+  const messageList = document.getElementById("messageList");
+  const chatInput = document.getElementById("chatInput");
+  const sendButton = document.getElementById("sendButton");
+  const newMessagesChip = document.getElementById("newMessagesChip");
+  const scrollToBottomButton = document.getElementById("scrollToBottomButton");
+  const newMessagesText = document.getElementById("newMessagesText");
+
+  if (!chatSidebar || !openChatButton || !closeChatButton || !messageList || !chatInput || !sendButton || !newMessagesChip || !scrollToBottomButton || !newMessagesText) {
+    return;
+  }
+
+  function uid() {
+    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+
+  function formatTime(ms) {
+    try {
+      return new Date(ms).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } catch {
+      return "";
+    }
+  }
+
+  function loadMessages() {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      const now = Date.now();
+      return [
+        { id: uid(), authorId: "marina", authorName: "Marina", authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCGtlxIdZ6DCigRf3Dh6qYJAAc_9qh36Amm75FPZAnkenslQ_ITGEDPXzVMUWQ5dQpwJ5bgJDRuHzHb_TdV7_aZyk7KJEYKsvP_adkApCYAW1NTQrHvYHyIjMxveCUieMFhNdy4jAPL2lPG1GsGs8Iq-9DRSyw1Ee9N1E7NygE3qObUvmGCMeCo0RTy47vUMtpR0x-jNVpLipsZ1zxxjJv0E_Ifo0LeJSTy8UdsIq7fTrppZtH9fJgErAoCfVwHgyeP3bxDPi25oOw", text: "omg yes!!", createdAt: now - 1000 * 60 * 8 },
+        { id: uid(), authorId: "marina", authorName: "Marina", authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCGtlxIdZ6DCigRf3Dh6qYJAAc_9qh36Amm75FPZAnkenslQ_ITGEDPXzVMUWQ5dQpwJ5bgJDRuHzHb_TdV7_aZyk7KJEYKsvP_adkApCYAW1NTQrHvYHyIjMxveCUieMFhNdy4jAPL2lPG1GsGs8Iq-9DRSyw1Ee9N1E7NygE3qObUvmGCMeCo0RTy47vUMtpR0x-jNVpLipsZ1zxxjJv0E_Ifo0LeJSTy8UdsIq7fTrppZtH9fJgErAoCfVwHgyeP3bxDPi25oOw", text: "I have a lot of ideas to share!", createdAt: now - 1000 * 60 * 7 },
+        { id: uid(), authorId: "sam", authorName: "Sam", authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuA6fFbiEsl2ggrgWz7w3yHIIDCOaTwSgMSbl0EUdSkG_VJOrHuFPwstm1GE69CUl3Lz1FjYLvJ3M6XalgmUzrJsciVK0uCZtnXv4SP2XDe0FufuoXFo-tMq9LxnMi6nXwQdA-DFDeFY-Q4co10Q91u84FmfHugJkmGsQJSF6JVonrhLxlKYO4-VagETSWbikiihtU0J4il-9-1IhSUzGG2eoJXIr6_5hMozBtGDDHUQkGFMTxy6F-AhlrW1Yue-iJMq52EfLItlmak", text: "Same here, excited to brainstorm!", createdAt: now - 1000 * 60 * 6 },
+        { id: uid(), authorId: "me", authorName: "Jen", authorAvatarUrl: null, text: "Great! How do you want to start?", createdAt: now - 1000 * 60 * 5 },
+        { id: uid(), authorId: "marina", authorName: "Marina", authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuBkG5K9aXqwA_tAvIQPbIQalN-buNPisY03v-E4f8Hw-s216DUJZ_DURPjvlW-IYyr3LWnU1ordLEvzLC66t_dT8oBGc0bwUMyepf2oHiYDhcVLoqW57nu3RUSdrWNAH6ICVydlZDEVADoUKsq5hGAmzCcKQCVsvxG6NRBG-JLjP5hqykRm0tx6QAmzn2KN-VYcj4afaTtVZbYS8iSChHTwV9r-ahbdsE3toO1mazbUG0zl9FQKi8MpynZTDBvzK_Wa1QoJPcpRwQ4", text: "Maybe we can go over the project details first?", createdAt: now - 1000 * 60 * 4 },
+        { id: uid(), authorId: "biagis", authorName: "Biagis", authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdadjP9lUN-TEYcgvaMKakVoEjt5cXYvFPaJH90iV0_8NKk3E4r6vnFZhU9xGUEabov2fwjcKAf12ot4kGyt2i5RKZR9BO30RqAFuImVZ1mlVp_H25srG5r6RkWwl9Izmlvh-AKMgnxgWJNSZjryYxoQdR846pXAA1SijbvkyvLzXTSNLbGxKJ_Jq_ODhceOhNC7eGt95dIlmwYtGCJcSY9OXnMbp5RT7CJrVJcdW6F5HjjNlBhyCGlEZvM7E9VPJC77hl8PJyq1s", text: "Good idea!", createdAt: now - 1000 * 60 * 3 },
+        { id: uid(), authorId: "biagis", authorName: "Biagis", authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdadjP9lUN-TEYcgvaMKakVoEjt5cXYvFPaJH90iV0_8NKk3E4r6vnFZhU9xGUEabov2fwjcKAf12ot4kGyt2i5RKZR9BO30RqAFuImVZ1mlVp_H25srG5r6RkWwl9Izmlvh-AKMgnxgWJNSZjryYxoQdR846pXAA1SijbvkyvLzXTSNLbGxKJ_Jq_ODhceOhNC7eGt95dIlmwYtGCJcSY9OXnMbp5RT7CJrVJcdW6F5HjjNlBhyCGlEZvM7E9VPJC77hl8PJyq1s", text: "What about you all?", createdAt: now - 1000 * 60 * 2 },
+        { id: uid(), authorId: "me", authorName: "Jen", authorAvatarUrl: null, text: "Thanks everyone!", createdAt: now - 1000 * 60 },
+        { id: uid(), authorId: "liam", authorName: "Liam", authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAxt-gZckIOrgUHwcwhnNoB3v5KIjDe3PJ6izSg8xQO0_P8pg-53eXCZSKa5NA4uHK1cFTTm9WGkn1BDT_nfYcZDMZ2Jjkyr6XA1vaI0eOOZyo6tG6x4sHcNN4oIpsWC4czAAhmbF41aDjYms5ek0_h7woky6mY6RUF0SiwvLLjghPE1D4nNWlACn1oo-zJ-TVWXvOrrdi7cOnLD1e1f1Xc5ylunvm79-L9EQhSVzWHbkx5C-b-c2oEcJAy3gpxe97WHHNQVoIQWAg", text: "No problem!", createdAt: now - 1000 * 40 },
+      ];
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveMessages(messages) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } catch {
+      // ignore
+    }
+  }
+
+  let messages = loadMessages();
+  let unreadCount = 0;
+
+  function isNearBottom(scroller) {
+    const threshold = 40;
+    return scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < threshold;
+  }
+
+  function scrollToBottom() {
+    const scroller = messageList.parentElement;
+    if (!scroller) return;
+    scroller.scrollTop = scroller.scrollHeight;
+  }
+
+  function setChipVisible(visible) {
+    newMessagesChip.classList.toggle("hidden", !visible);
+    if (!visible) {
+      unreadCount = 0;
+    }
+    newMessagesText.textContent = unreadCount > 0 ? `New messages (${unreadCount})` : "New messages";
+  }
+
+  function escapeText(text) {
+    return text
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function render() {
+    const scroller = messageList.parentElement;
+    const shouldStick = scroller ? isNearBottom(scroller) : true;
+
+    messageList.innerHTML = "";
+
+    let prevAuthorId = null;
+    for (const message of messages) {
+      const isMe = message.authorId === "me";
+      const isNewGroup = message.authorId !== prevAuthorId;
+
+      const row = document.createElement("div");
+      row.className = isMe ? "flex flex-row-reverse gap-3" : "flex gap-3";
+
+      if (isMe) {
+        if (isNewGroup) {
+          const meBadge = document.createElement("div");
+          meBadge.className = "w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold";
+          meBadge.textContent = "ME";
+          row.appendChild(meBadge);
+        } else {
+          const spacer = document.createElement("div");
+          spacer.className = "w-10";
+          row.appendChild(spacer);
+        }
+
+        const stack = document.createElement("div");
+        stack.className = "space-y-1 max-w-[80%] flex flex-col items-end";
+
+        if (isNewGroup) {
+          const meta = document.createElement("p");
+          meta.className = "text-xs font-bold text-slate-500 dark:text-slate-400";
+          meta.textContent = `${message.authorName} - ${formatTime(message.createdAt)}`;
+          stack.appendChild(meta);
+        }
+
+        const bubble = document.createElement("div");
+        bubble.className = "bg-primary text-white p-3 rounded-2xl text-sm shadow-md";
+        if (isNewGroup) {
+          bubble.className += " rounded-tr-none";
+        }
+        bubble.innerHTML = escapeText(message.text).replaceAll("\n", "<br/>");
+        stack.appendChild(bubble);
+
+        row.appendChild(stack);
+      } else {
+        if (isNewGroup) {
+          const avatar = document.createElement("img");
+          avatar.className = "w-10 h-10 rounded-full object-cover";
+          avatar.alt = `Avatar ${message.authorName}`;
+          if (message.authorAvatarUrl) {
+            avatar.src = message.authorAvatarUrl;
+          }
+          row.appendChild(avatar);
+        } else {
+          const spacer = document.createElement("div");
+          spacer.className = "w-10";
+          row.appendChild(spacer);
+        }
+
+        const stack = document.createElement("div");
+        stack.className = "space-y-1 max-w-[80%]";
+
+        if (isNewGroup) {
+          const meta = document.createElement("p");
+          meta.className = "text-xs font-bold text-slate-500 dark:text-slate-400";
+          meta.textContent = `${message.authorName} - ${formatTime(message.createdAt)}`;
+          stack.appendChild(meta);
+        }
+
+        const bubble = document.createElement("div");
+        bubble.className = "bg-slate-100 dark:bg-bubble-other p-3 rounded-2xl text-sm";
+        if (isNewGroup) {
+          bubble.className += " rounded-tl-none";
+        }
+        bubble.innerHTML = escapeText(message.text).replaceAll("\n", "<br/>");
+        stack.appendChild(bubble);
+
+        row.appendChild(stack);
+      }
+
+      messageList.appendChild(row);
+      prevAuthorId = message.authorId;
+    }
+
+    if (shouldStick) {
+      scrollToBottom();
+      setChipVisible(false);
+    }
+  }
+
+  function openChat() {
+    chatSidebar.classList.remove("hidden");
+    chatSidebar.classList.remove("translate-x-full");
+    chatInput.focus();
+    scrollToBottom();
+  }
+
+  function closeChat() {
+    if (window.matchMedia && window.matchMedia("(min-width: 768px)").matches) {
+      chatSidebar.classList.add("hidden");
+      return;
+    }
+    chatSidebar.classList.add("translate-x-full");
+  }
+
+  function sendMessage(text) {
+    const trimmed = text.replace(/\s+$/g, "");
+    if (!trimmed.trim()) return;
+
+    messages.push({
+      id: uid(),
+      authorId: "me",
+      authorName: "Jen",
+      authorAvatarUrl: null,
+      text: trimmed,
+      createdAt: Date.now(),
+    });
+    saveMessages(messages);
+    render();
+    scrollToBottom();
+    setChipVisible(false);
+  }
+
+  function receiveMessage(message) {
+    const scroller = messageList.parentElement;
+    const shouldStick = scroller ? isNearBottom(scroller) : true;
+
+    messages.push(message);
+    saveMessages(messages);
+    render();
+
+    if (shouldStick) {
+      scrollToBottom();
+      setChipVisible(false);
+      return;
+    }
+
+    unreadCount += 1;
+    setChipVisible(true);
+  }
+
+  openChatButton.addEventListener("click", openChat);
+  closeChatButton.addEventListener("click", closeChat);
+  sendButton.addEventListener("click", () => {
+    const value = chatInput.value;
+    chatInput.value = "";
+    sendMessage(value);
+    chatInput.focus();
+  });
+  scrollToBottomButton.addEventListener("click", () => {
+    scrollToBottom();
+    setChipVisible(false);
+  });
+
+  chatInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      const value = chatInput.value;
+      chatInput.value = "";
+      sendMessage(value);
+      chatInput.focus();
+    }
+  });
+
+  const scroller = messageList.parentElement;
+  if (scroller) {
+    scroller.addEventListener("scroll", () => {
+      if (isNearBottom(scroller)) {
+        setChipVisible(false);
+      }
+    });
+  }
+
+  // Default state: on mobile, keep chat closed.
+  if (window.matchMedia && window.matchMedia("(min-width: 768px)").matches) {
+    chatSidebar.classList.remove("translate-x-full");
+    chatSidebar.classList.remove("hidden");
+  } else {
+    chatSidebar.classList.add("translate-x-full");
+    chatSidebar.classList.remove("hidden");
+  }
+
+  // Initial render
+  render();
+  scrollToBottom();
+
+  // Light demo behavior: simulate incoming messages.
+  const otherAuthors = [
+    {
+      authorId: "marina",
+      authorName: "Marina",
+      authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCGtlxIdZ6DCigRf3Dh6qYJAAc_9qh36Amm75FPZAnkenslQ_ITGEDPXzVMUWQ5dQpwJ5bgJDRuHzHb_TdV7_aZyk7KJEYKsvP_adkApCYAW1NTQrHvYHyIjMxveCUieMFhNdy4jAPL2lPG1GsGs8Iq-9DRSyw1Ee9N1E7NygE3qObUvmGCMeCo0RTy47vUMtpR0x-jNVpLipsZ1zxxjJv0E_Ifo0LeJSTy8UdsIq7fTrppZtH9fJgErAoCfVwHgyeP3bxDPi25oOw",
+    },
+    {
+      authorId: "sam",
+      authorName: "Sam",
+      authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuA6fFbiEsl2ggrgWz7w3yHIIDCOaTwSgMSbl0EUdSkG_VJOrHuFPwstm1GE69CUl3Lz1FjYLvJ3M6XalgmUzrJsciVK0uCZtnXv4SP2XDe0FufuoXFo-tMq9LxnMi6nXwQdA-DFDeFY-Q4co10Q91u84FmfHugJkmGsQJSF6JVonrhLxlKYO4-VagETSWbikiihtU0J4il-9-1IhSUzGG2eoJXIr6_5hMozBtGDDHUQkGFMTxy6F-AhlrW1Yue-iJMq52EfLItlmak",
+    },
+    {
+      authorId: "biagis",
+      authorName: "Biagis",
+      authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdadjP9lUN-TEYcgvaMKakVoEjt5cXYvFPaJH90iV0_8NKk3E4r6vnFZhU9xGUEabov2fwjcKAf12ot4kGyt2i5RKZR9BO30RqAFuImVZ1mlVp_H25srG5r6RkWwl9Izmlvh-AKMgnxgWJNSZjryYxoQdR846pXAA1SijbvkyvLzXTSNLbGxKJ_Jq_ODhceOhNC7eGt95dIlmwYtGCJcSY9OXnMbp5RT7CJrVJcdW6F5HjjNlBhyCGlEZvM7E9VPJC77hl8PJyq1s",
+    },
+    {
+      authorId: "liam",
+      authorName: "Liam",
+      authorAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAxt-gZckIOrgUHwcwhnNoB3v5KIjDe3PJ6izSg8xQO0_P8pg-53eXCZSKa5NA4uHK1cFTTm9WGkn1BDT_nfYcZDMZ2Jjkyr6XA1vaI0eOOZyo6tG6x4sHcNN4oIpsWC4czAAhmbF41aDjYms5ek0_h7woky6mY6RUF0SiwvLLjghPE1D4nNWlACn1oo-zJ-TVWXvOrrdi7cOnLD1e1f1Xc5ylunvm79-L9EQhSVzWHbkx5C-b-c2oEcJAy3gpxe97WHHNQVoIQWAg",
+    },
+  ];
+  const cannedTexts = [
+    "What section are you working on?",
+    "Nice - I can help review it.",
+    "Give me 2 minutes, grabbing notes.",
+    "Anyone want to pair on this part?",
+    "I think we should keep it simple.",
+    "Agreed. Let's ship a demo first.",
+  ];
+
+  function randomBetween(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function scheduleNextIncoming() {
+    const delayMs = randomBetween(7000, 14000);
+    window.setTimeout(() => {
+      const author = otherAuthors[randomBetween(0, otherAuthors.length - 1)];
+      const text = cannedTexts[randomBetween(0, cannedTexts.length - 1)];
+      receiveMessage({
+        id: uid(),
+        authorId: author.authorId,
+        authorName: author.authorName,
+        authorAvatarUrl: author.authorAvatarUrl,
+        text,
+        createdAt: Date.now(),
+      });
+      scheduleNextIncoming();
+    }, delayMs);
+  }
+
+  scheduleNextIncoming();
+})();
+</script>
 
 </body></html>
