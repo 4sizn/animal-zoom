@@ -1,0 +1,7 @@
+- [x] Add webapp routes for study/join/create under `/room`
+- [x] Implement `RoomStudyPage` rendering the existing Zoom-like UI for a given `roomId`
+- [x] Implement `RoomJoinPage` (`/room/join/:joomId`) to resolve/join then navigate to study route
+- [x] Implement `RoomCreatePage` (`/room/create`) to create a room then navigate to study route
+- [x] Wire Dashboard buttons to navigate to the new routes
+- [x] Update routing spec doc `client/webapp/docs/routing-spec.md` with the new routes + behavior
+- [x] Verification: typecheck/build passes for webapp

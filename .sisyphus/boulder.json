@@ -1,8 +1,9 @@
 {
-	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-20-webapp-routing-spec-doc.md",
-	"started_at": "2026-03-06T07:43:37Z",
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-21-webapp-room-routes.md",
+	"started_at": "2026-03-06T11:07:24.932Z",
 	"session_ids": [
 		"manual-prep",
+		"ses_33d303b69ffelosLb2kM5oT6F1",
 		"ses_3621eafacffeswbEAMQtx0wZ88",
 		"ses_360a66073ffevPQOh7BJLs0tsn",
 		"ses_3607007b2ffe17uNccNO75q1TJ",
@@ -17,6 +18,6 @@
 		"ses_3434593e9ffeltKV0pR8oiXuZS",
 		"ses_33e20224effeOPvW7c7XiTHUfF"
 	],
-	"plan_name": "plan-20-webapp-routing-spec-doc",
+	"plan_name": "plan-21-webapp-room-routes",
 	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }
