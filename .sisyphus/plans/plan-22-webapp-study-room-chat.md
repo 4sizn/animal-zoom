@@ -1,0 +1,5 @@
+- [x] Define behaviors + UX for the `study_room_chat` example (message model, send, grouping, scroll, keyboard)
+- [x] Implement chat logic in `client/webapp/example/study_room_chat/code.html` (state, rendering, send flow)
+- [x] Implement chat UI interactions in `client/webapp/example/study_room_chat/code.html` (close sidebar, mobile layout, focus)
+- [x] Add light demo behaviors (simulated incoming messages, timestamps) to validate logic without a backend
+- [x] Verification: open the HTML and verify sending/scrolling/keyboard works as expected
