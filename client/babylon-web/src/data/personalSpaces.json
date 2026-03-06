@@ -29,8 +29,8 @@
 				"type": "mesh",
 				"key": "chair",
 				"id": "chair-001",
-				"position": { "x": -0.8, "y": 0, "z": -0.7 },
-				"rotation": { "x": 0, "y": 0.6, "z": 0 },
+				"position": { "x": -0.95, "y": 0, "z": -0.55 },
+				"rotation": { "x": 0, "y": 0.9, "z": 0 },
 				"scale": { "x": 1, "y": 1, "z": 1 },
 				"options": {
 					"url": "/assets/personal-space/greenchair/GreenChair_01_1k.gltf"
@@ -40,9 +40,9 @@
 				"type": "mesh",
 				"key": "plant",
 				"id": "plant-001",
-				"position": { "x": 1.2, "y": 0, "z": 0.8 },
-				"rotation": { "x": 0, "y": 0.2, "z": 0 },
-				"scale": { "x": 0.65, "y": 0.65, "z": 0.65 },
+				"position": { "x": 1.45, "y": 0, "z": 1.35 },
+				"rotation": { "x": 0, "y": -0.3, "z": 0 },
+				"scale": { "x": 0.7, "y": 0.7, "z": 0.7 },
 				"options": { "url": "/assets/personal-space/plant/Avocado.glb" }
 			},
 			{
@@ -50,24 +50,24 @@
 				"key": "avatar",
 				"id": "avatar-001",
 				"avatarType": "apollo",
-				"position": { "x": 0.2, "y": 0, "z": -0.9 },
-				"rotation": { "x": 0, "y": 0, "z": 0 },
+				"position": { "x": 0.35, "y": 0, "z": -1.35 },
+				"rotation": { "x": 0, "y": 0.15, "z": 0 },
 				"scale": { "x": 1, "y": 1, "z": 1 }
 			},
 			{
 				"type": "light",
 				"key": "spotlight",
 				"id": "light-001",
-				"position": { "x": 0, "y": 3, "z": -2 },
+				"position": { "x": 1.2, "y": 3.6, "z": -1.4 },
 				"rotation": { "x": 0, "y": 0, "z": 0 },
 				"scale": { "x": 1, "y": 1, "z": 1 },
-				"options": { "intensity": 1.2 }
+				"options": { "intensity": 1.25 }
 			},
 			{
 				"type": "ui",
 				"key": "name_tag",
 				"id": "label-001",
-				"position": { "x": 0, "y": 2.0, "z": -1.6 },
+				"position": { "x": 0, "y": 2.1, "z": -1.9 },
 				"rotation": { "x": 0, "y": 0, "z": 0 },
 				"scale": { "x": 1, "y": 1, "z": 1 },
 				"options": { "text": "Cafe" }
@@ -104,8 +104,8 @@
 				"type": "mesh",
 				"key": "chair",
 				"id": "chair-002",
-				"position": { "x": -0.9, "y": 0, "z": -0.6 },
-				"rotation": { "x": 0, "y": 2.2, "z": 0 },
+				"position": { "x": -1.0, "y": 0, "z": -0.55 },
+				"rotation": { "x": 0, "y": 2.45, "z": 0 },
 				"scale": { "x": 1, "y": 1, "z": 1 },
 				"options": {
 					"url": "/assets/personal-space/greenchair/GreenChair_01_1k.gltf"
@@ -115,25 +115,25 @@
 				"type": "mesh",
 				"key": "plant",
 				"id": "plant-002",
-				"position": { "x": 1.2, "y": 0, "z": 0.8 },
-				"rotation": { "x": 0, "y": 0.2, "z": 0 },
-				"scale": { "x": 0.65, "y": 0.65, "z": 0.65 },
+				"position": { "x": 1.45, "y": 0, "z": 1.35 },
+				"rotation": { "x": 0, "y": -0.3, "z": 0 },
+				"scale": { "x": 0.7, "y": 0.7, "z": 0.7 },
 				"options": { "url": "/assets/personal-space/plant/Avocado.glb" }
 			},
 			{
 				"type": "light",
 				"key": "spotlight",
 				"id": "light-002",
-				"position": { "x": 0, "y": 3, "z": -2 },
+				"position": { "x": 1.2, "y": 3.6, "z": -1.4 },
 				"rotation": { "x": 0, "y": 0, "z": 0 },
 				"scale": { "x": 1, "y": 1, "z": 1 },
-				"options": { "intensity": 1.1 }
+				"options": { "intensity": 1.15 }
 			},
 			{
 				"type": "ui",
 				"key": "name_tag",
 				"id": "label-002",
-				"position": { "x": 0, "y": 2.0, "z": -1.6 },
+				"position": { "x": 0, "y": 2.1, "z": -1.9 },
 				"rotation": { "x": 0, "y": 0, "z": 0 },
 				"scale": { "x": 1, "y": 1, "z": 1 },
 				"options": { "text": "Cafe 2" }

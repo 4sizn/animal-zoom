@@ -2,14 +2,18 @@ import {
 	type AbstractMesh,
 	ArcRotateCamera,
 	Color3,
+	DefaultRenderingPipeline,
+	DirectionalLight,
 	DynamicTexture,
 	type Engine,
 	HemisphericLight,
+	ImageProcessingConfiguration,
 	Mesh,
 	MeshBuilder,
 	PointLight,
 	Scene,
 	SceneLoader,
+	ShadowGenerator,
 	SpotLight,
 	StandardMaterial,
 	TransformNode,
@@ -39,6 +43,107 @@ export type AsyncSingleViewSceneFactoryOptions = SceneFactoryOptions & {
 	proxyName?: string;
 	proxyColor?: Color3;
 };
+
+type StudioLights = {
+	key: DirectionalLight;
+	fill: HemisphericLight;
+	rim: PointLight;
+};
+
+function enableStudioShadows(scene: Scene, keyLight: DirectionalLight): void {
+	const shadowGenerator = new ShadowGenerator(1024, keyLight);
+	shadowGenerator.useBlurExponentialShadowMap = true;
+	shadowGenerator.blurKernel = 16;
+	shadowGenerator.setDarkness(0.35);
+
+	keyLight.shadowMinZ = 0.1;
+	keyLight.shadowMaxZ = 35;
+
+	scene.onNewMeshAddedObservable.add((mesh) => {
+		if (mesh.isDisposed() || mesh.getTotalVertices() <= 0) {
+			return;
+		}
+
+		const name = mesh.name.toLowerCase();
+		const isReceiver =
+			name.includes("ground") ||
+			name.includes("-floor") ||
+			name.includes("-wall");
+		if (isReceiver) {
+			mesh.receiveShadows = true;
+			return;
+		}
+
+		shadowGenerator.addShadowCaster(mesh, true);
+	});
+}
+
+function attachStudioPostProcessing(
+	scene: Scene,
+	camera: ArcRotateCamera,
+): DefaultRenderingPipeline {
+	const imageProcessing = scene.imageProcessingConfiguration;
+	imageProcessing.toneMappingEnabled = true;
+	imageProcessing.toneMappingType =
+		ImageProcessingConfiguration.TONEMAPPING_ACES;
+	imageProcessing.exposure = 1.1;
+	imageProcessing.contrast = 1.15;
+
+	const pipeline = new DefaultRenderingPipeline(
+		"studio-default-pipeline",
+		true,
+		scene,
+		[camera],
+	);
+	pipeline.samples = 1;
+	pipeline.bloomEnabled = true;
+	pipeline.bloomKernel = 64;
+	pipeline.bloomThreshold = 0.85;
+	pipeline.bloomWeight = 0.25;
+
+	return pipeline;
+}
+
+function applyStudioArtDirection(scene: Scene): StudioLights {
+	scene.clearColor.set(0.06, 0.08, 0.11, 1);
+
+	scene.fogMode = Scene.FOGMODE_EXP2;
+	scene.fogDensity = 0.012;
+	scene.fogColor = new Color3(0.06, 0.08, 0.11);
+
+	scene.ambientColor = new Color3(0.04, 0.04, 0.04);
+
+	const key = new DirectionalLight(
+		"studio-key-light",
+		new Vector3(-0.35, -1, -0.25),
+		scene,
+	);
+	key.position = new Vector3(4.2, 6.0, 2.6);
+	key.intensity = 0.9;
+	key.diffuse = new Color3(1.0, 0.96, 0.9);
+	key.specular = new Color3(0.7, 0.7, 0.7);
+
+	const fill = new HemisphericLight(
+		"studio-fill-light",
+		new Vector3(0, 1, 0),
+		scene,
+	);
+	fill.intensity = 0.45;
+	fill.diffuse = new Color3(0.66, 0.74, 0.92);
+	fill.groundColor = new Color3(0.18, 0.16, 0.14);
+	fill.specular = new Color3(0.06, 0.06, 0.06);
+
+	const rim = new PointLight(
+		"studio-rim-light",
+		new Vector3(-3.6, 2.5, -3.8),
+		scene,
+	);
+	rim.intensity = 0.25;
+	rim.diffuse = new Color3(0.7, 0.84, 1.0);
+	rim.specular = new Color3(0.5, 0.5, 0.5);
+
+	return { key, fill, rim };
+}
 
 function frameCameraToVisibleMeshes(
 	camera: ArcRotateCamera,
@@ -89,7 +194,7 @@ function createSingleViewSceneBase(
 	options: SceneFactoryOptions,
 ): SceneBundle {
 	const scene = new Scene(engine);
-	scene.clearColor.set(0.94, 0.97, 1.0, 1);
+	const studioLights = applyStudioArtDirection(scene);
 
 	const camera = new ArcRotateCamera(
 		"single-view-camera",
@@ -104,12 +209,7 @@ function createSingleViewSceneBase(
 		camera.attachControl(options.inputElement, true);
 	}
 
-	const light = new HemisphericLight(
-		"single-view-light",
-		new Vector3(0, 1, 0),
-		scene,
-	);
-	light.intensity = 0.95;
+	const pipeline = attachStudioPostProcessing(scene, camera);
 
 	MeshBuilder.CreateGround(
 		"single-view-ground",
@@ -117,11 +217,14 @@ function createSingleViewSceneBase(
 		scene,
 	);
 
+	enableStudioShadows(scene, studioLights.key);
+
 	return {
 		scene,
 		camera,
 		dispose: () => {
 			camera.detachControl();
+			pipeline.dispose();
 			scene.dispose();
 		},
 	};
@@ -175,7 +278,7 @@ export function createParticipantViewSceneBundle(
 	options: SceneFactoryOptions = {},
 ): SceneBundle {
 	const scene = new Scene(engine);
-	scene.clearColor.set(0.98, 0.97, 0.93, 1);
+	const studioLights = applyStudioArtDirection(scene);
 
 	const camera = new ArcRotateCamera(
 		`${participantId}-camera`,
@@ -190,18 +293,15 @@ export function createParticipantViewSceneBundle(
 		camera.attachControl(options.inputElement, true);
 	}
 
-	const light = new HemisphericLight(
-		`${participantId}-light`,
-		new Vector3(0, 1, 0),
-		scene,
-	);
-	light.intensity = 0.8;
+	const pipeline = attachStudioPostProcessing(scene, camera);
 
 	MeshBuilder.CreateGround(
 		`${participantId}-ground`,
 		{ width: 8, height: 8 },
 		scene,
 	);
+
+	enableStudioShadows(scene, studioLights.key);
 
 	const mesh = MeshBuilder.CreateSphere(
 		`${participantId}-avatar-proxy`,
@@ -255,6 +355,7 @@ export function createParticipantViewSceneBundle(
 		camera,
 		dispose: () => {
 			camera.detachControl();
+			pipeline.dispose();
 			scene.dispose();
 		},
 	};
@@ -334,39 +435,62 @@ function createBackgroundAssets(
 	const size = space.size ?? { width: 5, depth: 5 };
 	const theme = (space.theme ?? "default").toLowerCase();
 
+	const backgroundRoot = new TransformNode(
+		`${asset.id}-background-root`,
+		scene,
+	);
+	backgroundRoot.parent = spaceNode;
+	applyAssetTransform(backgroundRoot, asset);
+
+	const wallColor =
+		theme === "music"
+			? new Color3(0.18, 0.15, 0.22)
+			: theme === "cafe"
+				? new Color3(0.25, 0.21, 0.18)
+				: theme === "study"
+					? new Color3(0.2, 0.22, 0.18)
+					: new Color3(0.22, 0.24, 0.28);
+	const floorColor = wallColor.scale(0.72);
+
+	const floorMaterial = new StandardMaterial(
+		`${asset.id}-floor-material`,
+		scene,
+	);
+	floorMaterial.diffuseColor = floorColor;
+	floorMaterial.specularColor = new Color3(0.04, 0.04, 0.04);
+
+	const wallMaterial = new StandardMaterial(`${asset.id}-wall-material`, scene);
+	wallMaterial.diffuseColor = wallColor;
+	wallMaterial.specularColor = new Color3(0.05, 0.05, 0.05);
+	wallMaterial.emissiveColor = wallColor.scale(0.05);
+
 	const floor = MeshBuilder.CreateGround(
 		`${asset.id}-floor`,
 		{ width: size.width, height: size.depth },
 		scene,
 	);
-	floor.parent = spaceNode;
-	applyAssetTransform(floor, asset);
+	floor.parent = backgroundRoot;
+	floor.material = floorMaterial;
 
-	const wall = MeshBuilder.CreatePlane(
-		`${asset.id}-wall`,
+	const backWall = MeshBuilder.CreatePlane(
+		`${asset.id}-wall-back`,
 		{ width: size.width, height: 2.6 },
 		scene,
 	);
-	wall.parent = spaceNode;
-	wall.position = new Vector3(0, 1.3, size.depth / 2);
-	wall.rotation = new Vector3(0, Math.PI, 0);
+	backWall.parent = backgroundRoot;
+	backWall.position = new Vector3(0, 1.3, size.depth / 2);
+	backWall.rotation = new Vector3(0, Math.PI, 0);
+	backWall.material = wallMaterial;
 
-	const material = new StandardMaterial(
-		`${asset.id}-background-material`,
+	const sideWall = MeshBuilder.CreatePlane(
+		`${asset.id}-wall-side`,
+		{ width: size.depth, height: 2.6 },
 		scene,
 	);
-	if (theme === "music") {
-		material.diffuseColor = new Color3(0.18, 0.15, 0.22);
-	} else if (theme === "cafe") {
-		material.diffuseColor = new Color3(0.25, 0.21, 0.18);
-	} else if (theme === "study") {
-		material.diffuseColor = new Color3(0.2, 0.22, 0.18);
-	} else {
-		material.diffuseColor = new Color3(0.22, 0.24, 0.28);
-	}
-	material.specularColor = new Color3(0.05, 0.05, 0.05);
-	floor.material = material;
-	wall.material = material;
+	sideWall.parent = backgroundRoot;
+	sideWall.position = new Vector3(size.width / 2, 1.3, 0);
+	sideWall.rotation = new Vector3(0, -Math.PI / 2, 0);
+	sideWall.material = wallMaterial;
 }
 
 function createFurnitureMesh(
