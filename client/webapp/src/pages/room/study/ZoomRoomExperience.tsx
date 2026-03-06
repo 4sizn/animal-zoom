@@ -2,6 +2,7 @@ import type { ZoomParticipant } from "@animal-zoom/share";
 import React from "react";
 import { EMPTY, type Observable } from "rxjs";
 import { AssetImage } from "../../../ui/AssetImage";
+import { StudyRoomChatSidebar } from "./StudyRoomChatSidebar";
 
 export function resolveParticipantCountFromSearch(
 	search: string,
@@ -372,7 +373,7 @@ function FourParticipantLayout({
 	participantCount: number;
 }) {
 	return (
-		<div className="bg-[#1a1a1a] h-screen w-screen flex flex-col font-body overflow-hidden text-white">
+		<div className="bg-[#1a1a1a] h-screen w-full flex flex-col font-body overflow-hidden text-white">
 			<main className="flex-grow flex items-center justify-center p-4 lg:p-12 w-full h-full relative">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full max-w-7xl mx-auto items-center justify-center">
 					{participants.map((participant) => (
@@ -676,37 +677,86 @@ function ScrollableParticipantLayout({
 }
 
 export function ZoomRoomExperience({
+	roomId,
 	participantCount,
 }: {
+	roomId: string | undefined;
 	participantCount: number;
 }) {
+	const [isDesktop, setIsDesktop] = React.useState<boolean>(() => {
+		if (typeof window === "undefined") {
+			return true;
+		}
+		return window.matchMedia("(min-width: 768px)").matches;
+	});
+	const [isChatOpen, setIsChatOpen] = React.useState<boolean>(() => {
+		if (typeof window === "undefined") {
+			return true;
+		}
+		return window.matchMedia("(min-width: 768px)").matches;
+	});
+
+	React.useEffect(() => {
+		if (typeof window === "undefined") {
+			return;
+		}
+
+		const mediaQuery = window.matchMedia("(min-width: 768px)");
+		const update = (event: MediaQueryListEvent | MediaQueryList) => {
+			const next = "matches" in event ? event.matches : mediaQuery.matches;
+			setIsDesktop(next);
+			setIsChatOpen(next);
+		};
+
+		update(mediaQuery);
+		mediaQuery.addEventListener("change", update);
+		return () => mediaQuery.removeEventListener("change", update);
+	}, []);
+
 	React.useEffect(() => {
 		const subscription = zoomEvents$.subscribe({ next: () => {} });
 		return () => subscription.unsubscribe();
 	}, []);
 
+	let content: React.ReactNode;
+
 	if (participantCount <= 4) {
-		return (
+		content = (
 			<FourParticipantLayout
 				participants={participantsFour.slice(0, participantCount)}
 				participantCount={participantCount}
 			/>
 		);
-	}
-
-	if (participantCount <= 12) {
-		return (
+	} else if (participantCount <= 12) {
+		content = (
 			<TwelveParticipantLayout
 				participants={participantsTwelve.slice(0, participantCount)}
+				participantCount={participantCount}
+			/>
+		);
+	} else {
+		content = (
+			<ScrollableParticipantLayout
+				participants={participantsScroll.slice(0, participantCount)}
 				participantCount={participantCount}
 			/>
 		);
 	}
 
 	return (
-		<ScrollableParticipantLayout
-			participants={participantsScroll.slice(0, participantCount)}
-			participantCount={participantCount}
-		/>
+		<div
+			className={`relative h-screen w-screen ${
+				isDesktop && isChatOpen ? "md:pr-[400px]" : ""
+			}`}
+		>
+			{content}
+			<StudyRoomChatSidebar
+				roomId={roomId}
+				isDesktop={isDesktop}
+				isOpen={isChatOpen}
+				onOpen={() => setIsChatOpen(true)}
+				onClose={() => setIsChatOpen(false)}
+			/>
+		</div>
 	);
 }

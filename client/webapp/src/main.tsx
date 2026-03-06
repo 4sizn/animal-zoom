@@ -33,7 +33,12 @@ function App() {
 		MAX_ZOOM_DEMO_PARTICIPANTS,
 	);
 
-	return <ZoomRoomExperience participantCount={participantCount} />;
+	return (
+		<ZoomRoomExperience
+			roomId={undefined}
+			participantCount={participantCount}
+		/>
+	);
 }
 
 function AppRoutes() {

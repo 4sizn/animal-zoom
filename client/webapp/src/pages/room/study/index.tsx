@@ -33,5 +33,7 @@ export function RoomStudyPage() {
 	const { roomId } = useParams<{ roomId: string }>();
 	const participantCount = getRoomParticipantCount(roomId);
 
-	return <ZoomRoomExperience participantCount={participantCount} />;
+	return (
+		<ZoomRoomExperience roomId={roomId} participantCount={participantCount} />
+	);
 }
