@@ -1,0 +1,4 @@
+- [x] Fix Playwright-container asset loading: ensure MinIO presigned URLs are reachable (no `http://localhost:9000/...` leaks) when running webapp at `http://host.docker.internal:5173`
+- [x] Investigate Socket.IO `/zoom` websocket console errors seen during Playwright runs; fix if simple, otherwise document clear reproduction + root-cause hypothesis
+- [x] Run a full webapp E2E pass using the local `playwright-interactive` skill and capture an evidence bundle under `.sisyphus/artifacts/plan-26-webapp-e2e-playwright-fulltest/` (screenshots for key routes + console/network logs)
+- [x] Verification: `client/webapp` runs with `VITE_API_URL=http://host.docker.internal:3000`; Playwright run reaches `/login`, `/dashboard`, `/room/create`, `/room/study/:roomId` with no unexpected blocking errors

@@ -1,0 +1,22 @@
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +7ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUsersModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDashboardModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRoomsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mAnimal zoom gateway initialized[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mAnimalZoomGateway subscribed to the "zoom:update" message[39m[38;5;3m +1ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mRoomsController {/rooms}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/rooms, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/rooms/:roomId, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDashboardController {/dashboard}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/dashboard, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:51:40 AM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1ms[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:52:10 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient connected: bIXjzhdMWe3-zZqDAAAB[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:52:29 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient disconnected: bIXjzhdMWe3-zZqDAAAB[39m
+[32m[Nest] 94371  - [39m03/07/2026, 10:52:30 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient connected: APCvGs-K-NFpE8h3AAAE[39m
+[32m[Nest] 94371  - [39m03/09/2026, 9:29:04 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient disconnected: APCvGs-K-NFpE8h3AAAE[39m

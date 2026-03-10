@@ -68,6 +68,16 @@ The server is `@animal-zoom/server-app`.
 - Override:
   - `ASSET_PRESIGN_TTL_SECONDS=<number>`
 
+#### Presign Public Origin Override
+
+- Default: disabled (server returns MinIO client's native presigned URL origin)
+- Override:
+  - `ASSET_PRESIGN_PUBLIC_ORIGIN=http://host.docker.internal:9000`
+- Notes:
+  - Must be a valid `http`/`https` origin (protocol + host + optional port)
+  - When set and valid, only the origin is rewritten; path/query/signature are unchanged
+  - If malformed, the override is ignored and default behavior is preserved
+
 ### Webapp `asset:` Convention
 
 In `@animal-zoom/webapp`, image `src` can use an object key instead of a public URL:
@@ -89,6 +99,7 @@ MinIO config env vars (loaded by `@animal-zoom/server-minio`):
 - `MINIO_ACCESS_KEY` (default `minioadmin`)
 - `MINIO_SECRET_KEY` (default `minioadmin`)
 - `MINIO_BUCKET` (default `assets`)
+- `ASSET_PRESIGN_PUBLIC_ORIGIN` (optional public origin override for returned presigned URLs)
 
 ### Webapp
 

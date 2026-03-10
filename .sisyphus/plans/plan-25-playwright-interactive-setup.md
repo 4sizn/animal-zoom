@@ -1,0 +1,4 @@
+- [x] Inventory upstream `openai/skills` `playwright-interactive` skill files (SKILL.md + any supporting assets) and decide what to vendor vs adapt for OpenCode
+- [x] Add a new local skill at `.agents/skills/playwright-interactive/` with `SKILL.md` adapted to OpenCode Playwright MCP tools (persistent session workflow)
+- [x] (Optional) Vendor non-binary upstream support files that make sense here (LICENSE/NOTICE, svg icon, agents metadata)
+- [x] Verification: confirm the skill is present under `.agents/skills/` and the repo remains healthy (no broken symlink mirrors)

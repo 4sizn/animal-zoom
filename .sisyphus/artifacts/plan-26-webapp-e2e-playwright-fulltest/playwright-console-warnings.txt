@@ -1,0 +1,6 @@
+Total messages: 7 (Errors: 1, Warnings: 3)
+
+[ERROR] Failed to load resource: net::ERR_UNKNOWN_URL_SCHEME @ asset:personal-space/greenchair/textures/GreenChair_01_diff_1k.jpg:0
+[WARNING] React Router future flag warning (startTransition) @ react-router-dom.js
+[WARNING] React Router future flag warning (relative splat) @ react-router-dom.js
+[WARNING] WebSocket connection failed: ws://host.docker.internal:3002/socket.io/?EIO=4&transport=websocket (closed before established)

@@ -1,0 +1,60 @@
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +7ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUsersModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDashboardModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRoomsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mAnimal zoom gateway initialized[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mAnimalZoomGateway subscribed to the "zoom:update" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mRoomsController {/rooms}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/rooms, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/rooms/:roomId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDashboardController {/dashboard}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/dashboard, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 85704  - [39m03/07/2026, 10:20:43 AM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1ms[39m
+/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/pg-pool@3.12.0_pg@8.19.0/node_modules/pg-pool/index.js:45
+    Error.captureStackTrace(err)
+          ^
+
+Error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+    at /Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/pg-pool@3.12.0_pg@8.19.0/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async PostgresDriver.acquireConnection (/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/kysely@0.27.6/node_modules/kysely/dist/cjs/dialect/postgres/postgres-driver.js:21:24)
+    at async RuntimeDriver.acquireConnection (/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/kysely@0.27.6/node_modules/kysely/dist/cjs/driver/runtime-driver.js:46:28)
+    at async DefaultConnectionProvider.provideConnection (/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/kysely@0.27.6/node_modules/kysely/dist/cjs/driver/default-connection-provider.js:10:28)
+    at async DefaultQueryExecutor.executeQuery (/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/kysely@0.27.6/node_modules/kysely/dist/cjs/query-executor/query-executor-base.js:36:16)
+    at async InsertQueryBuilder.execute (/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/kysely@0.27.6/node_modules/kysely/dist/cjs/query-builder/insert-query-builder.js:918:24)
+    at async InsertQueryBuilder.executeTakeFirst (/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/kysely@0.27.6/node_modules/kysely/dist/cjs/query-builder/insert-query-builder.js:936:26)
+    at async InsertQueryBuilder.executeTakeFirstOrThrow (/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/node_modules/.pnpm/kysely@0.27.6/node_modules/kysely/dist/cjs/query-builder/insert-query-builder.js:948:24)
+    at async UsersService.createUser (/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/server/app/dist/users/users.service.js:57:26)
+
+Node.js v22.13.1
+Seed users: defaults always included
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +7ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUsersModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDashboardModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRoomsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mAnimal zoom gateway initialized[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mAnimalZoomGateway subscribed to the "zoom:update" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mRoomsController {/rooms}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/rooms, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/rooms/:roomId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDashboardController {/dashboard}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/dashboard, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:14 AM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1ms[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:22:45 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient connected: qVnH-rn33iRK6Q45AAAB[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:28:02 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient disconnected: qVnH-rn33iRK6Q45AAAB[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:28:02 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient connected: w6jxaj6AUJQobFoiAAAE[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:49:33 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient disconnected: w6jxaj6AUJQobFoiAAAE[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:49:34 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient connected: aP4EO0IMkKfAPQQkAAAH[39m
+[32m[Nest] 87139  - [39m03/07/2026, 10:49:38 AM [32m    LOG[39m [38;5;3m[AnimalZoomGateway] [39m[32mClient disconnected: aP4EO0IMkKfAPQQkAAAH[39m

@@ -10,6 +10,43 @@ import { AuthService } from "./auth/auth.service";
 import { MailService } from "./mail/mail.service";
 import { UsersService } from "./users/users.service";
 
+function parseHttpOrigin(rawOrigin: string): URL | null {
+	const value = rawOrigin.trim();
+	if (value.length === 0) {
+		return null;
+	}
+
+	try {
+		const url = new URL(value);
+		if (url.protocol !== "http:" && url.protocol !== "https:") {
+			return null;
+		}
+
+		if (url.pathname !== "/" || url.search.length > 0 || url.hash.length > 0) {
+			return null;
+		}
+
+		return url;
+	} catch {
+		return null;
+	}
+}
+
+function rewriteUrlOrigin(rawUrl: string, publicOrigin: URL | null): string {
+	if (!publicOrigin) {
+		return rawUrl;
+	}
+
+	try {
+		const url = new URL(rawUrl);
+		url.protocol = publicOrigin.protocol;
+		url.host = publicOrigin.host;
+		return url.toString();
+	} catch {
+		return rawUrl;
+	}
+}
+
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	app.enableCors();
@@ -45,6 +82,9 @@ async function bootstrap() {
 		Number.isFinite(rawAssetPresignTtl) && rawAssetPresignTtl > 0
 			? rawAssetPresignTtl
 			: 600;
+	const assetPresignPublicOrigin = parseHttpOrigin(
+		process.env.ASSET_PRESIGN_PUBLIC_ORIGIN ?? "",
+	);
 	const assetAllowedPrefixes = ["characters/", "personal-space/"];
 	const minioClient = new MinioClient({
 		endPoint: minioConfig.endpoint,
@@ -134,11 +174,12 @@ async function bootstrap() {
 		}
 
 		try {
-			const url = await minioClient.presignedGetObject(
+			const rawUrl = await minioClient.presignedGetObject(
 				minioConfig.bucket,
 				key,
 				assetPresignTtlSeconds,
 			);
+			const url = rewriteUrlOrigin(rawUrl, assetPresignPublicOrigin);
 			return res.json({ ok: true, url });
 		} catch {
 			return res.status(400).json({ ok: false, error: "failed to presign" });

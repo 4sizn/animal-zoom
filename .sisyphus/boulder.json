@@ -1,6 +1,6 @@
 {
-	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-23-webapp-room-create-flow.md",
-	"started_at": "2026-03-06T15:08:15.522Z",
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-26-webapp-e2e-playwright-fulltest.md",
+	"started_at": "2026-03-06T23:46:53.259Z",
 	"session_ids": [
 		"manual-prep",
 		"ses_33cc26542ffeUZCpFaftHuFoHC",
@@ -17,8 +17,9 @@
 		"ses_34889d27cffeUD0GkghFmbV9Ta",
 		"ses_3441251a4ffeS5HV818B9lAE54",
 		"ses_3434593e9ffeltKV0pR8oiXuZS",
-		"ses_33e20224effeOPvW7c7XiTHUfF"
+		"ses_33e20224effeOPvW7c7XiTHUfF",
+		"ses_33c01c25ffferkwxQy1TQ02DEW"
 	],
-	"plan_name": "plan-23-webapp-room-create-flow",
+	"plan_name": "plan-26-webapp-e2e-playwright-fulltest",
 	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

@@ -1,0 +1,8 @@
+- [x] Locate the BabylonJS 3D view entrypoints (engine/canvas + scene creation) and confirm which routes are user-facing (/solo, /room, /my-room)
+- [x] Define a cohesive art direction for the base scene (background color, fog, key/fill/rim lighting) using only @babylonjs/core (no new deps/assets)
+- [x] Implement improved lighting + shadows for scenes created in `client/babylon-web/src/scene/sceneFactory.ts` (key directional + soft fill + local accents)
+- [x] Add image-processing / post-process tuning for scenes (exposure/contrast + subtle bloom) without harming performance
+- [x] Improve environment/background geometry created by `createBackgroundAssets` (floor + walls) for stronger composition (depth, corner feel, material contrast)
+- [x] Re-tune object placement for the default personal space and my-room (chair/plant/avatar/light positions) to look intentionally composed
+- [x] Hands-on QA: run `npm --prefix client/babylon-web run dev`, open `/solo` and `/my-room`, visually verify improved scene aesthetics and no console errors
+- [x] Verification: `npm --prefix client/babylon-web run lint` and `npm --prefix client/babylon-web run build` pass
