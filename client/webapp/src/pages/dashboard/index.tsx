@@ -22,7 +22,7 @@ function toDashboardRoomFromApiRoom(apiRoom: ApiRoom): DashboardRoom {
 	return {
 		id: apiRoom.id,
 		name: apiRoom.name,
-		description: `${apiRoom.name} room`,
+		description: "Continue studying in this room.",
 		tone: toneFromId(apiRoom.id),
 		participants: [{ name: "You" }],
 	};
@@ -417,10 +417,40 @@ export function DashboardPage() {
 							</div>
 
 							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+								<button
+									type="button"
+									onClick={goToCreateRoom}
+									className="rounded-lg bg-surface-dark p-5 text-left ring-1 ring-white/10 hover:ring-white/20 transition flex flex-col"
+								>
+									<div className="mb-4 flex items-start justify-between">
+										<div className="grid h-14 w-14 place-items-center rounded-lg bg-control-bg text-gray-200 ring-1 ring-white/10">
+											<span className="material-symbols-outlined text-[28px]">
+												add
+											</span>
+										</div>
+										<div className="grid h-8 w-8 place-items-center rounded-full bg-charcoal-light text-[11px] font-semibold text-gray-100 ring-2 ring-charcoal-dark">
+											Y
+										</div>
+									</div>
+									<h3 className="text-base font-semibold text-gray-100">
+										Create a new room
+									</h3>
+									<p className="mt-1 text-sm text-gray-400">
+										Start fresh with a new link.
+									</p>
+									<div className="mt-auto pt-4">
+										<div className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-red-600 active:scale-[0.99] transition">
+											<span className="material-symbols-outlined text-[18px]">
+												add
+											</span>
+											Create new room
+										</div>
+									</div>
+								</button>
 								{rooms.map((room) => (
 									<article
 										key={room.id}
-										className="rounded-lg bg-surface-dark p-5 ring-1 ring-white/10 hover:ring-white/20 transition"
+										className="rounded-lg bg-surface-dark p-5 ring-1 ring-white/10 hover:ring-white/20 transition flex flex-col"
 									>
 										<div className="mb-4 flex items-start justify-between">
 											<div
@@ -458,40 +488,20 @@ export function DashboardPage() {
 											{room.description}
 										</p>
 
-										<button
-											type="button"
-											onClick={() => goToJoinRoom(room.id)}
-											className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-red-600 active:scale-[0.99] transition"
-										>
-											<span className="material-symbols-outlined text-[18px]">
-												eco
-											</span>
-											Join room
-										</button>
+										<div className="mt-auto pt-4">
+											<button
+												type="button"
+												onClick={() => goToJoinRoom(room.id)}
+												className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-red-600 active:scale-[0.99] transition"
+											>
+												<span className="material-symbols-outlined text-[18px]">
+													door_open
+												</span>
+												Enter room
+											</button>
+										</div>
 									</article>
 								))}
-
-								<button
-									type="button"
-									onClick={goToCreateRoom}
-									className="rounded-lg border border-dashed border-white/15 bg-surface-dark/30 p-5 text-left ring-1 ring-white/10 hover:ring-white/20 transition"
-								>
-									<div className="flex items-center gap-3">
-										<div className="grid h-12 w-12 place-items-center rounded-full bg-control-bg text-gray-200 ring-1 ring-white/10">
-											<span className="material-symbols-outlined text-[22px]">
-												add
-											</span>
-										</div>
-										<div>
-											<div className="text-base font-semibold text-gray-100">
-												New room
-											</div>
-											<div className="text-sm text-gray-400">
-												Start your own session
-											</div>
-										</div>
-									</div>
-								</button>
 							</div>
 						</section>
 					</div>

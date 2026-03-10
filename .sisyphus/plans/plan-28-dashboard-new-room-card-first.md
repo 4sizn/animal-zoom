@@ -1,0 +1,3 @@
+- [x] Dashboard: ensure the "New room" card is always first in the room list (`client/webapp/src/pages/dashboard/index.tsx`)
+- [x] Dashboard: make "New room" card height match other room cards (same visual height; consistent layout)
+- [x] Verification: Safari shows "New room" card first and heights match; no console errors; `pnpm -C client/webapp run typecheck` passes

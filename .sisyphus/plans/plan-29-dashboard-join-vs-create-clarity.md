@@ -1,0 +1,2 @@
+- [x] Dashboard: clarify join vs create actions using minimal copy/icon changes while keeping equal card heights (`client/webapp/src/pages/dashboard/index.tsx`)
+- [x] Verification: Safari shows create card clearly distinct from existing room cards; no console errors; `pnpm -C client/webapp run typecheck` passes
