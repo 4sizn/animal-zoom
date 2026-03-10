@@ -36,6 +36,7 @@ This repo is a local bundle of LLM/agent skills (mostly Markdown + a few scripts
 - OpenCode `task` calls must use `run_in_background` (boolean). Do not use `run_background`.
 - Default execution mode for independent agent tasks is parallel background: launch multiple `task(...)` calls with `run_in_background: true`.
 - Only use `run_in_background: false` when downstream steps require immediate, sequential task output.
+- For requests to show browser automation live to users (for example auto-filling forms), prioritize real Safari window control via `open -a Safari` + `osascript` DOM input/verification, keep the browser visible, and do not default to screenshot-first/headless-only flows.
 
 ## ANTI-PATTERNS (THIS PROJECT)
 - Do not edit `.agent/skills/`, `.claude/skills/`, `.cline/skills/` directly; they are symlink mirrors.

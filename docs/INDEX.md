@@ -25,3 +25,4 @@ This directory is the project documentation hub.
 ## Guides
 
 - MinIO presigned assets (webapp): `docs/guides/minio-presigned-assets.md`
+- Live browser auto-control priority: `docs/guides/live-browser-autocontrol.md`
