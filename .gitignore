@@ -4,3 +4,10 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Live login smoke artifacts: keep only latest snapshots tracked
+test-results/live-login-success-*.png
+test-results/live-login-success-*.html
+!test-results/live-login-success-latest.png
+!test-results/live-login-success-latest.html
+!test-results/live-login-success-latest.json

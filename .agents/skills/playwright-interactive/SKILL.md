@@ -17,6 +17,7 @@ If a task explicitly requires Playwright-only capabilities, use Playwright as a 
 
 1. Ensure target page is reachable.
 2. Open Safari to target URL using `open -a Safari`.
-3. Fill target fields via `osascript` + `document.getElementById(...)`.
-4. Verify values via `osascript` JavaScript return value.
-5. Leave window open and report current state.
+3. Fill target fields via `osascript` using native value setter + `input/change` dispatch (React-safe).
+4. Click submit after field state update.
+5. Verify values/token/error state via `osascript` JavaScript return value.
+6. Leave window open and report current state.
