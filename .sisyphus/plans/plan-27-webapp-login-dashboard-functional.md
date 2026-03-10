@@ -1,0 +1,11 @@
+- [x] Add shared API contracts for authenticated dashboard + rooms (`client/share/src/index.ts`)
+- [x] Wire webapp dashboard to real backend `GET /dashboard` using stored auth token; handle 401 by redirecting to `/login`
+- [x] Implement post-login redirect behavior on `/login` (navigate to `/dashboard` after successful login; preserve optional return path)
+- [x] Replace dashboard mock rooms with real rooms from backend while keeping demo-only widgets (friends/goal/bars) clearly non-blocking
+- [x] Ensure all visible dashboard controls do something deterministic:
+      - Search input filters rooms locally
+      - "View all" opens a simple full list view (or expands section)
+      - Notifications/Settings buttons open lightweight in-page modal panels (no backend required)
+      - Provide a logout affordance on dashboard header
+- [x] Room study route uses real room details when logged-in: fetch `GET /rooms/:roomId` and use it for participant count fallback; demo rooms still work
+- [x] Verification: local manual pass (Safari) shows successful login -> dashboard -> create room -> join room -> study route; no console errors; `pnpm -r run typecheck` passes

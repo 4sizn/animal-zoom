@@ -25,6 +25,11 @@ export type DashboardData = {
 	weeklyBars: number[];
 };
 
+export type DashboardDemoWidgets = Pick<
+	DashboardData,
+	"friends" | "dailyGoal" | "weeklyBars"
+>;
+
 const mockDashboardData: DashboardData = {
 	rooms: [
 		{
@@ -74,21 +79,29 @@ const mockDashboardData: DashboardData = {
 };
 
 export async function loadDashboardData(): Promise<DashboardData> {
-	await new Promise<void>((resolve) => {
-		setTimeout(() => resolve(), 250);
-	});
+	await new Promise<void>((resolve) => setTimeout(resolve, 250));
+	return createDashboardDataWithRooms(mockDashboardData.rooms);
+}
 
+export function getDashboardDemoWidgets(): DashboardDemoWidgets {
 	return {
-		...mockDashboardData,
-		rooms: mockDashboardData.rooms.map((room) => ({
+		friends: mockDashboardData.friends.map((friend) => ({ ...friend })),
+		dailyGoal: { ...mockDashboardData.dailyGoal },
+		weeklyBars: [...mockDashboardData.weeklyBars],
+	};
+}
+
+export function createDashboardDataWithRooms(
+	rooms: DashboardRoom[],
+): DashboardData {
+	return {
+		rooms: rooms.map((room) => ({
 			...room,
 			participants: room.participants.map((participant) => ({
 				...participant,
 			})),
 		})),
-		friends: mockDashboardData.friends.map((friend) => ({ ...friend })),
-		dailyGoal: { ...mockDashboardData.dailyGoal },
-		weeklyBars: [...mockDashboardData.weeklyBars],
+		...getDashboardDemoWidgets(),
 	};
 }
 

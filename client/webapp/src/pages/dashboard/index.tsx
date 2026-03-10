@@ -1,8 +1,32 @@
+import type { Room as ApiRoom, DashboardResponse } from "@animal-zoom/share";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "../../auth/AuthContext";
+import { apiRequest } from "../../network/apiClient";
 import type { DashboardRoom, FriendStatus } from "./data";
-import { type DashboardData, loadDashboardData } from "./data";
+import { createDashboardDataWithRooms, type DashboardData } from "./data";
+
+function toneFromId(id: string): DashboardRoom["tone"] {
+	let sum = 0;
+	for (let i = 0; i < id.length; i += 1) {
+		sum += id.charCodeAt(i);
+	}
+	const bucket = sum % 3;
+	if (bucket === 0) return "cozy";
+	if (bucket === 1) return "focus";
+	return "deep";
+}
+
+function toDashboardRoomFromApiRoom(apiRoom: ApiRoom): DashboardRoom {
+	return {
+		id: apiRoom.id,
+		name: apiRoom.name,
+		description: `${apiRoom.name} room`,
+		tone: toneFromId(apiRoom.id),
+		participants: [{ name: "You" }],
+	};
+}
 
 function toneToIcon(tone: DashboardRoom["tone"]): string {
 	switch (tone) {
@@ -39,6 +63,12 @@ function statusDot(status: FriendStatus): string {
 
 export function DashboardPage() {
 	const navigate = useNavigate();
+	const { token, logout } = useAuth();
+	const [search, setSearch] = React.useState("");
+	const [showAllRooms, setShowAllRooms] = React.useState(false);
+	const [panel, setPanel] = React.useState<null | "notifications" | "settings">(
+		null,
+	);
 	const [state, setState] = React.useState<
 		| { status: "loading" }
 		| { status: "error"; message: string }
@@ -46,16 +76,43 @@ export function DashboardPage() {
 	>(() => ({ status: "loading" }));
 
 	const load = React.useCallback(() => {
+		if (!token) {
+			navigate(`/login?next=${encodeURIComponent("/dashboard")}`, {
+				replace: true,
+			});
+			return;
+		}
+
 		setState({ status: "loading" });
-		loadDashboardData()
-			.then((data) => setState({ status: "ready", data }))
+		apiRequest<DashboardResponse>({ path: "/dashboard", method: "GET", token })
+			.then((res) => {
+				if (!res.ok) {
+					if (res.error === "unauthorized") {
+						logout();
+						navigate(`/login?next=${encodeURIComponent("/dashboard")}`, {
+							replace: true,
+						});
+						return;
+					}
+					setState({ status: "error", message: res.error ?? "Failed to load" });
+					return;
+				}
+
+				const rooms: DashboardRoom[] = (res.rooms ?? []).map(
+					toDashboardRoomFromApiRoom,
+				);
+				setState({
+					status: "ready",
+					data: createDashboardDataWithRooms(rooms),
+				});
+			})
 			.catch((e: unknown) =>
 				setState({
 					status: "error",
 					message: e instanceof Error ? e.message : String(e),
 				}),
 			);
-	}, []);
+	}, [createDashboardDataWithRooms, logout, navigate, token]);
 
 	const goToCreateRoom = React.useCallback(() => {
 		navigate("/room/create");
@@ -71,6 +128,17 @@ export function DashboardPage() {
 	React.useEffect(() => {
 		load();
 	}, [load]);
+
+	const filteredRooms = React.useMemo(() => {
+		if (state.status !== "ready") return [];
+		const needle = search.trim().toLowerCase();
+		const list = needle.length
+			? state.data.rooms.filter((room) =>
+					room.name.toLowerCase().includes(needle),
+				)
+			: state.data.rooms;
+		return showAllRooms ? list : list.slice(0, 4);
+	}, [search, showAllRooms, state]);
 
 	if (state.status === "loading") {
 		return (
@@ -166,7 +234,8 @@ export function DashboardPage() {
 		);
 	}
 
-	const { rooms, friends, dailyGoal, weeklyBars } = state.data;
+	const { friends, dailyGoal, weeklyBars } = state.data;
+	const rooms = filteredRooms;
 	const dailyPct = Math.max(
 		0,
 		Math.min(100, (dailyGoal.done / dailyGoal.target) * 100),
@@ -180,7 +249,9 @@ export function DashboardPage() {
 						No active rooms
 					</h1>
 					<p className="mt-2 text-sm text-gray-400">
-						Create a new room to get started.
+						{search.trim().length > 0
+							? "No rooms match your search."
+							: "Create a new room to get started."}
 					</p>
 					<div className="mt-6 grid gap-3">
 						<button
@@ -230,8 +301,8 @@ export function DashboardPage() {
 							<input
 								className="form-input h-full w-full border-none bg-transparent px-0 text-sm text-gray-100 placeholder:text-gray-500 focus:ring-0"
 								placeholder="Find a room..."
-								value=""
-								readOnly
+								value={search}
+								onChange={(e) => setSearch(e.target.value)}
 							/>
 							<span className="px-4 text-[11px] text-gray-500">Ctrl K</span>
 						</div>
@@ -240,6 +311,7 @@ export function DashboardPage() {
 					<div className="flex items-center gap-2">
 						<button
 							type="button"
+							onClick={() => setPanel("notifications")}
 							className="flex h-10 w-10 items-center justify-center rounded-full bg-control-bg ring-1 ring-white/10 hover:bg-control-bg/80"
 							title="Notifications"
 						>
@@ -249,12 +321,24 @@ export function DashboardPage() {
 						</button>
 						<button
 							type="button"
+							onClick={() => setPanel("settings")}
 							className="flex h-10 w-10 items-center justify-center rounded-full bg-control-bg ring-1 ring-white/10 hover:bg-control-bg/80"
 							title="Settings"
 						>
 							<span className="material-symbols-outlined text-[20px]">
 								settings
 							</span>
+						</button>
+						<button
+							type="button"
+							onClick={() => {
+								logout();
+								navigate("/login", { replace: true });
+							}}
+							className="h-10 px-4 rounded-full bg-control-bg ring-1 ring-white/10 text-sm font-semibold hover:bg-control-bg/80"
+							title="Logout"
+						>
+							Logout
 						</button>
 						<div className="h-10 w-10 overflow-hidden rounded-full bg-surface-dark ring-2 ring-primary/60">
 							<div className="grid h-full w-full place-items-center text-sm font-semibold text-gray-100">
@@ -325,9 +409,10 @@ export function DashboardPage() {
 								</h2>
 								<button
 									type="button"
+									onClick={() => setShowAllRooms((prev) => !prev)}
 									className="text-sm font-semibold text-gray-300 hover:text-white"
 								>
-									View all
+									{showAllRooms ? "Collapse" : "View all"}
 								</button>
 							</div>
 
@@ -520,6 +605,65 @@ export function DashboardPage() {
 					</aside>
 				</div>
 			</main>
+
+			{panel ? (
+				<div
+					className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 px-6"
+					role="dialog"
+					aria-modal="true"
+					onClick={() => setPanel(null)}
+				>
+					<div
+						className="w-full max-w-[520px] rounded-2xl bg-surface-dark ring-1 ring-white/10 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<div className="flex items-start justify-between gap-4">
+							<div>
+								<p className="text-sm text-gray-400">
+									{panel === "notifications" ? "Notifications" : "Settings"}
+								</p>
+								<h3 className="mt-1 text-2xl font-semibold text-gray-100 tracking-tight">
+									{panel === "notifications"
+										? "All caught up"
+										: "Quick settings"}
+								</h3>
+							</div>
+							<button
+								type="button"
+								onClick={() => setPanel(null)}
+								className="h-10 w-10 rounded-full bg-control-bg ring-1 ring-white/10 hover:bg-control-bg/80"
+								title="Close"
+							>
+								<span className="material-symbols-outlined text-[20px]">
+									close
+								</span>
+							</button>
+						</div>
+						<div className="mt-6 space-y-3 text-sm text-gray-300">
+							{panel === "notifications" ? (
+								<p>
+									No new notifications right now. Jump into a room when you're
+									ready.
+								</p>
+							) : (
+								<>
+									<p>This panel is UI-only for now.</p>
+									<button
+										type="button"
+										onClick={() => {
+											logout();
+											navigate("/login", { replace: true });
+										}}
+										className="mt-2 w-full h-12 rounded-xl bg-control-bg text-gray-100 text-sm font-semibold ring-1 ring-white/10 hover:bg-control-bg/80"
+									>
+										Sign out
+									</button>
+								</>
+							)}
+						</div>
+					</div>
+				</div>
+			) : null}
 
 			<nav className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-charcoal-dark/90 backdrop-blur-md md:hidden">
 				<div className="mx-auto flex max-w-[1440px] items-center justify-around py-3">

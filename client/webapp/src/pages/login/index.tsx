@@ -1,9 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../auth/AuthContext";
 
 export function LoginPage() {
+	const navigate = useNavigate();
+	const location = useLocation();
 	const { login, token, socketStatus, logout } = useAuth();
 	const [email, setEmail] = React.useState("");
 	const [password, setPassword] = React.useState("");
@@ -18,7 +20,16 @@ export function LoginPage() {
 			const res = await login({ email, password });
 			if (!res.ok) {
 				setError(res.error ?? "login failed");
+				return;
 			}
+
+			const params = new URLSearchParams(location.search);
+			const nextRaw = params.get("next") ?? "";
+			const next =
+				nextRaw.startsWith("/") && !nextRaw.startsWith("//")
+					? nextRaw
+					: "/dashboard";
+			navigate(next, { replace: true });
 		} finally {
 			setIsSubmitting(false);
 		}
