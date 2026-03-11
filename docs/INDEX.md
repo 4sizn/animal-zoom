@@ -26,3 +26,4 @@ This directory is the project documentation hub.
 
 - MinIO presigned assets (webapp): `docs/guides/minio-presigned-assets.md`
 - Live browser auto-control priority: `docs/guides/live-browser-autocontrol.md`
+- Localhost demo room (DB -> REST -> UI): `docs/guides/localhost-demo-room.md`
