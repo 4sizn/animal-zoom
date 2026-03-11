@@ -1,27 +1,8 @@
 {
-	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-32-room-chat-hardening.md",
-	"started_at": "2026-03-11T11:24:20.300Z",
-	"session_ids": [
-		"manual-prep",
-		"ses_33cc26542ffeUZCpFaftHuFoHC",
-		"ses_33d303b69ffelosLb2kM5oT6F1",
-		"ses_3621eafacffeswbEAMQtx0wZ88",
-		"ses_360a66073ffevPQOh7BJLs0tsn",
-		"ses_3607007b2ffe17uNccNO75q1TJ",
-		"ses_352f94ca5ffexsVvK7LiLenp85",
-		"ses_35273eca5ffe4U0SR0M2OsKi9m",
-		"ses_351e7d729ffeXGCFiKcyM7gLC1",
-		"ses_3511fa1e4ffe6FBca4mIJ8eC1S",
-		"ses_350f59f67ffepQf0gjz7INnLyi",
-		"ses_34d2f4b12ffeLq5LKwU9yx4ble",
-		"ses_34889d27cffeUD0GkghFmbV9Ta",
-		"ses_3441251a4ffeS5HV818B9lAE54",
-		"ses_3434593e9ffeltKV0pR8oiXuZS",
-		"ses_33e20224effeOPvW7c7XiTHUfF",
-		"ses_33c01c25ffferkwxQy1TQ02DEW",
-		"ses_329260a2affeZCYZVjp40VwV9S",
-		"ses_325d61bd2ffecT6mcUaZ92dWis"
-	],
-	"plan_name": "plan-32-room-chat-hardening",
-	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-33-dashboard-always-layout.md",
+	"started_at": "2026-03-11T12:38:15.596Z",
+	"session_ids": ["ses_325d61bd2ffecT6mcUaZ92dWis"],
+	"plan_name": "plan-33-dashboard-always-layout",
+	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom",
+	"agent": "atlas"
 }
