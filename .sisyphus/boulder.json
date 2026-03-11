@@ -1,6 +1,6 @@
 {
-	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-29-dashboard-join-vs-create-clarity.md",
-	"started_at": "2026-03-10T23:31:41.667Z",
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-30-localhost-always-on-demo-room.md",
+	"started_at": "2026-03-10T23:51:44.460Z",
 	"session_ids": [
 		"manual-prep",
 		"ses_33cc26542ffeUZCpFaftHuFoHC",
@@ -19,8 +19,9 @@
 		"ses_3434593e9ffeltKV0pR8oiXuZS",
 		"ses_33e20224effeOPvW7c7XiTHUfF",
 		"ses_33c01c25ffferkwxQy1TQ02DEW",
-		"ses_329260a2affeZCYZVjp40VwV9S"
+		"ses_329260a2affeZCYZVjp40VwV9S",
+		"ses_325d61bd2ffecT6mcUaZ92dWis"
 	],
-	"plan_name": "plan-29-dashboard-join-vs-create-clarity",
+	"plan_name": "plan-30-localhost-always-on-demo-room",
 	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

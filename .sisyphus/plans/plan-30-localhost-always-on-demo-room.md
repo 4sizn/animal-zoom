@@ -1,0 +1,5 @@
+- [x] Demo stack: ensure `docker compose up -d` (postgres/minio) + `pnpm --filter @animal-zoom/server-app dev` + `pnpm --filter @animal-zoom/webapp dev` yields a usable end-to-end demo (DB save -> REST -> UI)
+- [x] Server seed: make the seeded sample room deterministic (stable id/name) so the demo room is always available after seeding
+- [x] Webapp login: add a one-click "Continue as demo" action that logs in using the guaranteed dev account and redirects to `/dashboard`
+- [x] Verification: `pnpm -r run typecheck` and `pnpm -r run build` pass
+- [x] Manual QA: start docker services, start server+webapp, confirm demo login -> dashboard shows seeded room -> create room (POST /rooms) persists -> study route fetches room (GET /rooms/:roomId); no console errors
