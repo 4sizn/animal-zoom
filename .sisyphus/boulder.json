@@ -1,6 +1,6 @@
 {
-	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-30-localhost-always-on-demo-room.md",
-	"started_at": "2026-03-10T23:51:44.460Z",
+	"active_plan": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom/.sisyphus/plans/plan-32-room-chat-hardening.md",
+	"started_at": "2026-03-11T11:24:20.300Z",
 	"session_ids": [
 		"manual-prep",
 		"ses_33cc26542ffeUZCpFaftHuFoHC",
@@ -22,6 +22,6 @@
 		"ses_329260a2affeZCYZVjp40VwV9S",
 		"ses_325d61bd2ffecT6mcUaZ92dWis"
 	],
-	"plan_name": "plan-30-localhost-always-on-demo-room",
+	"plan_name": "plan-32-room-chat-hardening",
 	"worktree_path": "/Users/hsshin-rsupport/ghq/github.com/4sizn/animal-zoom"
 }

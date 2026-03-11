@@ -1,0 +1,5 @@
+- [x] Server: harden chat authorization/validation (room existence check, message length limit, basic rate limit)
+- [x] Client: improve chat UX for production (handle server errors, disable send while disconnected)
+- [x] Docs: document Socket.IO chat events and payloads for future work
+- [x] Verification: `pnpm -r run typecheck` and `pnpm -r run build` pass
+- [x] Manual QA: 2 sessions send spam/long messages; server rejects; messages persist and history loads

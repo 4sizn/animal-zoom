@@ -1,0 +1,6 @@
+- [x] Discovery: locate current demo chat UI implementation and identify integration points (client + server)
+- [x] DB: add minimal migration(s) for room chat messages (room_id, user_id/email, message, created_at)
+- [x] Server: implement real-time room chat over existing Socket.IO, with auth + room scoping + message persistence
+- [x] Client: replace demo chat with real chat (load history + live updates) inside study room
+- [x] Verification: `pnpm -r run typecheck` and `pnpm -r run build` pass
+- [x] Manual QA: run docker postgres, run server+webapp, join a room with 2 browser sessions, send messages, see realtime delivery + refresh shows history; no console/server errors
