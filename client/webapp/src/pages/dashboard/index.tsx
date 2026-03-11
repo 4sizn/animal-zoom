@@ -241,39 +241,6 @@ export function DashboardPage() {
 		Math.min(100, (dailyGoal.done / dailyGoal.target) * 100),
 	);
 
-	if (rooms.length === 0) {
-		return (
-			<div className="min-h-screen bg-charcoal-dark text-gray-200 font-sans flex items-center justify-center px-6 py-10">
-				<div className="w-full max-w-[560px] rounded-2xl bg-surface-dark ring-1 ring-white/10 p-6 md:p-8">
-					<h1 className="text-xl font-semibold text-gray-100">
-						No active rooms
-					</h1>
-					<p className="mt-2 text-sm text-gray-400">
-						{search.trim().length > 0
-							? "No rooms match your search."
-							: "Create a new room to get started."}
-					</p>
-					<div className="mt-6 grid gap-3">
-						<button
-							type="button"
-							onClick={goToCreateRoom}
-							className="w-full h-12 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-red-600 active:scale-[0.99] transition"
-						>
-							New room
-						</button>
-						<button
-							type="button"
-							onClick={load}
-							className="w-full h-12 rounded-xl bg-control-bg text-gray-100 text-sm font-semibold ring-1 ring-white/10 hover:bg-control-bg/80 active:scale-[0.99] transition"
-						>
-							Refresh
-						</button>
-					</div>
-				</div>
-			</div>
-		);
-	}
-
 	return (
 		<div className="min-h-screen bg-charcoal-dark text-gray-200 font-sans">
 			<header className="sticky top-0 z-50 border-b border-white/10 bg-charcoal-dark/80 backdrop-blur-md">
@@ -407,14 +374,24 @@ export function DashboardPage() {
 									</span>
 									Active rooms
 								</h2>
-								<button
-									type="button"
-									onClick={() => setShowAllRooms((prev) => !prev)}
-									className="text-sm font-semibold text-gray-300 hover:text-white"
-								>
-									{showAllRooms ? "Collapse" : "View all"}
-								</button>
+								{state.data.rooms.length > 4 ? (
+									<button
+										type="button"
+										onClick={() => setShowAllRooms((prev) => !prev)}
+										className="text-sm font-semibold text-gray-300 hover:text-white"
+									>
+										{showAllRooms ? "Collapse" : "View all"}
+									</button>
+								) : null}
 							</div>
+
+							{rooms.length === 0 ? (
+								<p className="mb-4 text-sm text-gray-400">
+									{state.data.rooms.length === 0
+										? "No rooms yet. Create one to get started."
+										: "No rooms match your search."}
+								</p>
+							) : null}
 
 							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 								<button
