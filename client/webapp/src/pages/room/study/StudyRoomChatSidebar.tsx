@@ -1,172 +1,22 @@
 import React from "react";
 
-type StudyChatMessage = {
-	id: string;
-	authorId: string;
-	authorName: string;
-	authorAvatarUrl?: string;
+import { useAuth } from "../../../auth/AuthContext";
+
+type ServerStudyChatMessage = {
+	id: number;
+	roomId: string;
+	authorUserId: number;
 	text: string;
-	createdAt: number;
+	createdAt: string | Date;
 };
 
-type ChatAuthor = {
-	authorId: string;
-	authorName: string;
-	authorAvatarUrl: string;
+type StudyChatMessage = {
+	id: number;
+	roomId: string;
+	authorUserId: number;
+	text: string;
+	createdAtMs: number;
 };
-
-const chatAuthors: ChatAuthor[] = [
-	{
-		authorId: "marina",
-		authorName: "Marina",
-		authorAvatarUrl:
-			"https://lh3.googleusercontent.com/aida-public/AB6AXuCGtlxIdZ6DCigRf3Dh6qYJAAc_9qh36Amm75FPZAnkenslQ_ITGEDPXzVMUWQ5dQpwJ5bgJDRuHzHb_TdV7_aZyk7KJEYKsvP_adkApCYAW1NTQrHvYHyIjMxveCUieMFhNdy4jAPL2lPG1GsGs8Iq-9DRSyw1Ee9N1E7NygE3qObUvmGCMeCo0RTy47vUMtpR0x-jNVpLipsZ1zxxjJv0E_Ifo0LeJSTy8UdsIq7fTrppZtH9fJgErAoCfVwHgyeP3bxDPi25oOw",
-	},
-	{
-		authorId: "sam",
-		authorName: "Sam",
-		authorAvatarUrl:
-			"https://lh3.googleusercontent.com/aida-public/AB6AXuA6fFbiEsl2ggrgWz7w3yHIIDCOaTwSgMSbl0EUdSkG_VJOrHuFPwstm1GE69CUl3Lz1FjYLvJ3M6XalgmUzrJsciVK0uCZtnXv4SP2XDe0FufuoXFo-tMq9LxnMi6nXwQdA-DFDeFY-Q4co10Q91u84FmfHugJkmGsQJSF6JVonrhLxlKYO4-VagETSWbikiihtU0J4il-9-1IhSUzGG2eoJXIr6_5hMozBtGDDHUQkGFMTxy6F-AhlrW1Yue-iJMq52EfLItlmak",
-	},
-	{
-		authorId: "biagis",
-		authorName: "Biagis",
-		authorAvatarUrl:
-			"https://lh3.googleusercontent.com/aida-public/AB6AXuAdadjP9lUN-TEYcgvaMKakVoEjt5cXYvFPaJH90iV0_8NKk3E4r6vnFZhU9xGUEabov2fwjcKAf12ot4kGyt2i5RKZR9BO30RqAFuImVZ1mlVp_H25srG5r6RkWwl9Izmlvh-AKMgnxgWJNSZjryYxoQdR846pXAA1SijbvkyvLzXTSNLbGxKJ_Jq_ODhceOhNC7eGt95dIlmwYtGCJcSY9OXnMbp5RT7CJrVJcdW6F5HjjNlBhyCGlEZvM7E9VPJC77hl8PJyq1s",
-	},
-	{
-		authorId: "liam",
-		authorName: "Liam",
-		authorAvatarUrl:
-			"https://lh3.googleusercontent.com/aida-public/AB6AXuAxt-gZckIOrgUHwcwhnNoB3v5KIjDe3PJ6izSg8xQO0_P8pg-53eXCZSKa5NA4uHK1cFTTm9WGkn1BDT_nfYcZDMZ2Jjkyr6XA1vaI0eOOZyo6tG6x4sHcNN4oIpsWC4czAAhmbF41aDjYms5ek0_h7woky6mY6RUF0SiwvLLjghPE1D4nNWlACn1oo-zJ-TVWXvOrrdi7cOnLD1e1f1Xc5ylunvm79-L9EQhSVzWHbkx5C-b-c2oEcJAy3gpxe97WHHNQVoIQWAg",
-	},
-];
-
-const cannedTexts = [
-	"What section are you working on?",
-	"Nice - I can help review it.",
-	"Give me 2 minutes, grabbing notes.",
-	"Anyone want to pair on this part?",
-	"I think we should keep it simple.",
-	"Agreed. Let's ship a demo first.",
-];
-
-function uid(): string {
-	return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
-function randomBetween(min: number, max: number): number {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function formatTime(ms: number): string {
-	return new Date(ms).toLocaleTimeString([], {
-		hour: "2-digit",
-		minute: "2-digit",
-	});
-}
-
-function buildDefaultMessages(now: number): StudyChatMessage[] {
-	return [
-		{
-			id: uid(),
-			authorId: "marina",
-			authorName: "Marina",
-			authorAvatarUrl: chatAuthors[0].authorAvatarUrl,
-			text: "omg yes!!",
-			createdAt: now - 1000 * 60 * 8,
-		},
-		{
-			id: uid(),
-			authorId: "marina",
-			authorName: "Marina",
-			authorAvatarUrl: chatAuthors[0].authorAvatarUrl,
-			text: "I have a lot of ideas to share!",
-			createdAt: now - 1000 * 60 * 7,
-		},
-		{
-			id: uid(),
-			authorId: "sam",
-			authorName: "Sam",
-			authorAvatarUrl: chatAuthors[1].authorAvatarUrl,
-			text: "Same here, excited to brainstorm!",
-			createdAt: now - 1000 * 60 * 6,
-		},
-		{
-			id: uid(),
-			authorId: "me",
-			authorName: "Jen",
-			text: "Great! How do you want to start?",
-			createdAt: now - 1000 * 60 * 5,
-		},
-		{
-			id: uid(),
-			authorId: "marina",
-			authorName: "Marina",
-			authorAvatarUrl: chatAuthors[0].authorAvatarUrl,
-			text: "Maybe we can go over the project details first?",
-			createdAt: now - 1000 * 60 * 4,
-		},
-		{
-			id: uid(),
-			authorId: "biagis",
-			authorName: "Biagis",
-			authorAvatarUrl: chatAuthors[2].authorAvatarUrl,
-			text: "Good idea!",
-			createdAt: now - 1000 * 60 * 3,
-		},
-		{
-			id: uid(),
-			authorId: "biagis",
-			authorName: "Biagis",
-			authorAvatarUrl: chatAuthors[2].authorAvatarUrl,
-			text: "What about you all?",
-			createdAt: now - 1000 * 60 * 2,
-		},
-		{
-			id: uid(),
-			authorId: "me",
-			authorName: "Jen",
-			text: "Thanks everyone!",
-			createdAt: now - 1000 * 60,
-		},
-		{
-			id: uid(),
-			authorId: "liam",
-			authorName: "Liam",
-			authorAvatarUrl: chatAuthors[3].authorAvatarUrl,
-			text: "No problem!",
-			createdAt: now - 1000 * 40,
-		},
-	];
-}
-
-function isMessage(value: unknown): value is StudyChatMessage {
-	if (typeof value !== "object" || value === null) return false;
-	const maybe = value as Record<string, unknown>;
-	return (
-		typeof maybe.id === "string" &&
-		typeof maybe.authorId === "string" &&
-		typeof maybe.authorName === "string" &&
-		typeof maybe.text === "string" &&
-		typeof maybe.createdAt === "number"
-	);
-}
-
-function loadMessages(storageKey: string): StudyChatMessage[] {
-	const raw = window.localStorage.getItem(storageKey);
-	if (raw === null) {
-		return buildDefaultMessages(Date.now());
-	}
-
-	try {
-		const parsed = JSON.parse(raw);
-		if (!Array.isArray(parsed)) return [];
-		return parsed.filter(isMessage);
-	} catch {
-		return [];
-	}
-}
 
 type StudyRoomChatSidebarProps = {
 	roomId: string | undefined;
@@ -176,6 +26,141 @@ type StudyRoomChatSidebarProps = {
 	onClose: () => void;
 };
 
+function formatTime(ms: number): string {
+	return new Date(ms).toLocaleTimeString([], {
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+}
+
+function decodeJwtUserId(token: string | null): number | null {
+	if (!token) return null;
+	const parts = token.split(".");
+	if (parts.length < 2) return null;
+
+	try {
+		const normalized = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+		const payload = JSON.parse(atob(normalized)) as Record<string, unknown>;
+		const idCandidate = payload.userId ?? payload.id ?? payload.sub;
+		if (typeof idCandidate === "number") return idCandidate;
+		if (typeof idCandidate === "string") {
+			const n = Number(idCandidate);
+			return Number.isFinite(n) ? n : null;
+		}
+		return null;
+	} catch {
+		return null;
+	}
+}
+
+function parseCreatedAtMs(value: unknown): number | null {
+	if (value instanceof Date) {
+		const ms = value.getTime();
+		return Number.isFinite(ms) ? ms : null;
+	}
+
+	if (typeof value === "string") {
+		const ms = Date.parse(value);
+		return Number.isFinite(ms) ? ms : null;
+	}
+
+	if (typeof value === "number") {
+		return Number.isFinite(value) ? value : null;
+	}
+
+	return null;
+}
+
+function normalizeMessage(value: unknown): StudyChatMessage | null {
+	if (typeof value !== "object" || value === null) return null;
+	const maybe = value as Partial<ServerStudyChatMessage>;
+
+	if (
+		typeof maybe.id !== "number" ||
+		typeof maybe.roomId !== "string" ||
+		typeof maybe.authorUserId !== "number" ||
+		typeof maybe.text !== "string"
+	) {
+		return null;
+	}
+
+	const createdAtMs = parseCreatedAtMs(maybe.createdAt);
+	if (createdAtMs === null) return null;
+
+	return {
+		id: maybe.id,
+		roomId: maybe.roomId,
+		authorUserId: maybe.authorUserId,
+		text: maybe.text,
+		createdAtMs,
+	};
+}
+
+function extractHistoryMessages(value: unknown): StudyChatMessage[] {
+	if (Array.isArray(value)) {
+		return value
+			.map(normalizeMessage)
+			.filter((v): v is StudyChatMessage => v !== null);
+	}
+
+	if (typeof value !== "object" || value === null) return [];
+	const maybe = value as { messages?: unknown; data?: unknown; ok?: unknown };
+
+	if (Array.isArray(maybe.messages)) {
+		return maybe.messages
+			.map(normalizeMessage)
+			.filter((v): v is StudyChatMessage => v !== null);
+	}
+
+	if (Array.isArray(maybe.data)) {
+		return maybe.data
+			.map(normalizeMessage)
+			.filter((v): v is StudyChatMessage => v !== null);
+	}
+
+	if (maybe.ok === false) return [];
+
+	return [];
+}
+
+function isAckOk(value: unknown): boolean {
+	if (typeof value === "boolean") return value;
+	if (typeof value !== "object" || value === null) return true;
+	const maybe = value as { ok?: unknown };
+	if (typeof maybe.ok === "boolean") return maybe.ok;
+	return true;
+}
+
+function getAckErrorMessage(value: unknown): string {
+	if (typeof value !== "object" || value === null) {
+		return "Message failed to send.";
+	}
+
+	const maybe = value as { error?: unknown };
+	switch (maybe.error) {
+		case "unauthorized":
+			return "Session expired. Please sign in again.";
+		case "room_not_found":
+			return "Room no longer exists.";
+		case "rate_limited":
+			return "You're sending messages too fast.";
+		case "message_too_long":
+			return "Message is too long (max 500 chars).";
+		case "invalid_text":
+			return "Message can't be empty.";
+		default:
+			return "Message failed to send.";
+	}
+}
+
+function upsertMessage(
+	prev: StudyChatMessage[],
+	next: StudyChatMessage,
+): StudyChatMessage[] {
+	if (prev.some((item) => item.id === next.id)) return prev;
+	return [...prev, next].sort((a, b) => a.createdAtMs - b.createdAtMs);
+}
+
 export function StudyRoomChatSidebar({
 	roomId,
 	isDesktop,
@@ -183,26 +168,19 @@ export function StudyRoomChatSidebar({
 	onOpen,
 	onClose,
 }: StudyRoomChatSidebarProps) {
-	const storageKey = React.useMemo(
-		() => `animal-zoom:study-room-chat:${roomId ?? "default"}:v1`,
-		[roomId],
-	);
+	const { token, socket, socketStatus } = useAuth();
+	const currentUserId = React.useMemo(() => decodeJwtUserId(token), [token]);
 
 	const [messages, setMessages] = React.useState<StudyChatMessage[]>([]);
 	const [draft, setDraft] = React.useState("");
 	const [unreadCount, setUnreadCount] = React.useState(0);
+	const [error, setError] = React.useState<string | null>(null);
 
 	const listRef = React.useRef<HTMLDivElement | null>(null);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
 
-	React.useEffect(() => {
-		setMessages(loadMessages(storageKey));
-		setUnreadCount(0);
-	}, [storageKey]);
-
-	React.useEffect(() => {
-		window.localStorage.setItem(storageKey, JSON.stringify(messages));
-	}, [messages, storageKey]);
+	const isRealtimeEnabled = Boolean(token && socket && roomId);
+	const isSendEnabled = isRealtimeEnabled && socketStatus === "connected";
 
 	const isNearBottom = React.useCallback((): boolean => {
 		const list = listRef.current;
@@ -219,6 +197,12 @@ export function StudyRoomChatSidebar({
 	}, []);
 
 	React.useEffect(() => {
+		setMessages([]);
+		setUnreadCount(0);
+		setError(null);
+	}, [roomId]);
+
+	React.useEffect(() => {
 		if (!isOpen) return;
 		setUnreadCount(0);
 		scrollToBottom();
@@ -228,7 +212,7 @@ export function StudyRoomChatSidebar({
 	const appendMessage = React.useCallback(
 		(next: StudyChatMessage, isSelf: boolean) => {
 			const shouldStickToBottom = isOpen && isNearBottom();
-			setMessages((prev) => [...prev, next]);
+			setMessages((prev) => upsertMessage(prev, next));
 
 			window.requestAnimationFrame(() => {
 				if (isSelf || shouldStickToBottom) {
@@ -242,61 +226,81 @@ export function StudyRoomChatSidebar({
 		[isNearBottom, isOpen, scrollToBottom],
 	);
 
-	const sendMessage = React.useCallback(() => {
-		const trimmed = draft.replace(/\s+$/g, "");
-		if (!trimmed.trim()) return;
-
-		appendMessage(
-			{
-				id: uid(),
-				authorId: "me",
-				authorName: "Jen",
-				text: trimmed,
-				createdAt: Date.now(),
-			},
-			true,
-		);
-
-		setDraft("");
-		inputRef.current?.focus();
-	}, [appendMessage, draft]);
-
 	React.useEffect(() => {
-		let isCancelled = false;
-		let timerId: number | undefined;
+		if (!isOpen || !roomId || !socket || !token) return;
 
-		const schedule = () => {
-			timerId = window.setTimeout(
-				() => {
-					if (isCancelled) return;
-					const author = chatAuthors[randomBetween(0, chatAuthors.length - 1)];
-					const text = cannedTexts[randomBetween(0, cannedTexts.length - 1)];
-					appendMessage(
-						{
-							id: uid(),
-							authorId: author.authorId,
-							authorName: author.authorName,
-							authorAvatarUrl: author.authorAvatarUrl,
-							text,
-							createdAt: Date.now(),
-						},
-						false,
-					);
-					schedule();
-				},
-				randomBetween(7000, 14000),
+		let isCancelled = false;
+
+		const onCreated = (payload: unknown) => {
+			if (isCancelled) return;
+			const next = normalizeMessage(payload);
+			if (next === null || next.roomId !== roomId) return;
+			appendMessage(
+				next,
+				currentUserId !== null && next.authorUserId === currentUserId,
 			);
 		};
 
-		schedule();
+		socket.emit("room:join", { roomId }, (ack: unknown) => {
+			if (isCancelled) return;
+			if (!isAckOk(ack)) {
+				setError(getAckErrorMessage(ack));
+			}
+		});
+		socket.on("room:message:created", onCreated);
+
+		socket.emit("room:history", { roomId, limit: 50 }, (ack: unknown) => {
+			if (isCancelled) return;
+			if (!isAckOk(ack)) {
+				setError(getAckErrorMessage(ack));
+				return;
+			}
+			const history = extractHistoryMessages(ack).filter(
+				(message) => message.roomId === roomId,
+			);
+			setMessages(history.sort((a, b) => a.createdAtMs - b.createdAtMs));
+			setUnreadCount(0);
+			window.requestAnimationFrame(() => {
+				scrollToBottom();
+			});
+		});
 
 		return () => {
 			isCancelled = true;
-			if (timerId !== undefined) {
-				window.clearTimeout(timerId);
-			}
+			socket.off("room:message:created", onCreated);
+			socket.emit("room:leave", { roomId });
 		};
-	}, [appendMessage]);
+	}, [
+		appendMessage,
+		currentUserId,
+		isOpen,
+		roomId,
+		scrollToBottom,
+		socket,
+		token,
+	]);
+
+	const sendMessage = React.useCallback(() => {
+		const trimmed = draft.replace(/\s+$/g, "");
+		if (!trimmed.trim()) return;
+		if (!roomId || !socket || !token) {
+			setError("Sign in to use room chat.");
+			return;
+		}
+		if (socketStatus !== "connected") {
+			setError("Chat is reconnecting. Try again in a moment.");
+			return;
+		}
+
+		setError(null);
+		setDraft("");
+		socket.emit("room:message", { roomId, text: trimmed }, (ack: unknown) => {
+			if (!isAckOk(ack)) {
+				setError(getAckErrorMessage(ack));
+			}
+		});
+		inputRef.current?.focus();
+	}, [draft, roomId, socket, socketStatus, token]);
 
 	const isVisible = isDesktop ? isOpen : isOpen;
 
@@ -352,13 +356,28 @@ export function StudyRoomChatSidebar({
 						</div>
 					) : null}
 
-					<div className="space-y-6">
+					{!token ? (
+						<div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 p-4 text-sm text-slate-600 dark:text-slate-300">
+							Sign in to join live room chat.
+						</div>
+					) : null}
+
+					{token && socketStatus !== "connected" ? (
+						<div className="rounded-xl border border-amber-200 dark:border-amber-900 bg-amber-50/80 dark:bg-amber-950/30 p-4 text-sm text-amber-900 dark:text-amber-200">
+							Connecting chat...
+						</div>
+					) : null}
+
+					<div className="space-y-6 mt-4">
 						{messages.map((message, index) => {
 							const previous = messages[index - 1];
 							const isNewGroup =
 								previous === undefined ||
-								previous.authorId !== message.authorId;
-							const isMe = message.authorId === "me";
+								previous.authorUserId !== message.authorUserId;
+							const isMe =
+								currentUserId !== null &&
+								message.authorUserId === currentUserId;
+							const authorLabel = isMe ? "You" : `User ${message.authorUserId}`;
 
 							return (
 								<div
@@ -379,7 +398,7 @@ export function StudyRoomChatSidebar({
 											<div className="space-y-1 max-w-[80%] flex flex-col items-end">
 												{isNewGroup ? (
 													<p className="text-xs font-bold text-slate-500 dark:text-slate-400">
-														{`${message.authorName} - ${formatTime(message.createdAt)}`}
+														{`${authorLabel} - ${formatTime(message.createdAtMs)}`}
 													</p>
 												) : null}
 												<div
@@ -394,18 +413,16 @@ export function StudyRoomChatSidebar({
 									) : (
 										<>
 											{isNewGroup ? (
-												<img
-													alt={`Avatar ${message.authorName}`}
-													src={message.authorAvatarUrl}
-													className="w-10 h-10 rounded-full object-cover"
-												/>
+												<div className="w-10 h-10 rounded-full bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-xs font-semibold">
+													{`U${message.authorUserId}`}
+												</div>
 											) : (
 												<div className="w-10" />
 											)}
 											<div className="space-y-1 max-w-[80%]">
 												{isNewGroup ? (
 													<p className="text-xs font-bold text-slate-500 dark:text-slate-400">
-														{`${message.authorName} - ${formatTime(message.createdAt)}`}
+														{`${authorLabel} - ${formatTime(message.createdAtMs)}`}
 													</p>
 												) : null}
 												<div
@@ -421,10 +438,21 @@ export function StudyRoomChatSidebar({
 								</div>
 							);
 						})}
+
+						{isRealtimeEnabled && messages.length === 0 ? (
+							<p className="text-center text-sm text-slate-500 dark:text-slate-400 py-6">
+								No messages yet.
+							</p>
+						) : null}
 					</div>
 				</div>
 
 				<div className="p-6 border-t border-slate-200 dark:border-slate-800">
+					{error ? (
+						<p className="mb-3 text-xs text-red-600 dark:text-red-400">
+							{error}
+						</p>
+					) : null}
 					<div className="relative">
 						<label className="sr-only" htmlFor="study-chat-input">
 							Message
@@ -434,6 +462,7 @@ export function StudyRoomChatSidebar({
 							ref={inputRef}
 							rows={1}
 							value={draft}
+							disabled={!isSendEnabled}
 							onChange={(event) => setDraft(event.target.value)}
 							onKeyDown={(event) => {
 								if (event.key === "Enter" && !event.shiftKey) {
@@ -441,14 +470,17 @@ export function StudyRoomChatSidebar({
 									sendMessage();
 								}
 							}}
-							placeholder="Type a message..."
-							className="w-full resize-none bg-slate-100 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-primary rounded-xl py-4 pl-4 pr-12 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400"
+							placeholder={
+								isSendEnabled ? "Type a message..." : "Chat unavailable"
+							}
+							className="w-full resize-none bg-slate-100 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-primary rounded-xl py-4 pl-4 pr-12 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400 disabled:opacity-70"
 						/>
 						<button
 							type="button"
 							aria-label="Send message"
 							onClick={sendMessage}
-							className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
+							disabled={!isSendEnabled || draft.trim().length === 0}
+							className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:hover:bg-primary"
 						>
 							<span className="material-symbols-outlined text-sm">send</span>
 						</button>

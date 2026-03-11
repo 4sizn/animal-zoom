@@ -14,6 +14,7 @@ import { getString, remove, setString } from "../system/storage";
 
 type AuthState = {
 	token: string | null;
+	socket: Socket | null;
 	socketStatus: "disconnected" | "connecting" | "connected";
 	setToken: (token: string | null) => void;
 	login: (dto: LoginDto) => Promise<AuthResponse>;
@@ -112,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const value: AuthState = {
 		token,
+		socket: socketRef.current,
 		socketStatus,
 		setToken,
 		login,
