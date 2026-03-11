@@ -12,27 +12,55 @@ export function LoginPage() {
 	const [error, setError] = React.useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-	async function onSubmit(e: React.FormEvent) {
-		e.preventDefault();
-		setIsSubmitting(true);
-		setError(null);
-		try {
-			const res = await login({ email, password });
-			if (!res.ok) {
-				setError(res.error ?? "login failed");
+	const demoCredentials = {
+		email: "dev1@animal-zoom.local",
+		password: "password123!",
+	};
+
+	const getNextPath = React.useCallback(() => {
+		const params = new URLSearchParams(location.search);
+		const nextRaw = params.get("next") ?? "";
+		return nextRaw.startsWith("/") && !nextRaw.startsWith("//")
+			? nextRaw
+			: "/dashboard";
+	}, [location.search]);
+
+	const submitLogin = React.useCallback(
+		async (
+			credentials: { email: string; password: string },
+			fallbackError: string,
+		) => {
+			if (isSubmitting) {
 				return;
 			}
 
-			const params = new URLSearchParams(location.search);
-			const nextRaw = params.get("next") ?? "";
-			const next =
-				nextRaw.startsWith("/") && !nextRaw.startsWith("//")
-					? nextRaw
-					: "/dashboard";
-			navigate(next, { replace: true });
-		} finally {
-			setIsSubmitting(false);
-		}
+			setIsSubmitting(true);
+			setError(null);
+			try {
+				const res = await login(credentials);
+				if (!res.ok) {
+					setError(res.error ?? fallbackError);
+					return;
+				}
+
+				navigate(getNextPath(), { replace: true });
+			} finally {
+				setIsSubmitting(false);
+			}
+		},
+		[getNextPath, isSubmitting, login, navigate],
+	);
+
+	async function onSubmit(e: React.FormEvent) {
+		e.preventDefault();
+		await submitLogin({ email, password }, "login failed");
+	}
+
+	async function onContinueAsDemo() {
+		await submitLogin(
+			demoCredentials,
+			"Demo login failed. Please verify the local dev account seed.",
+		);
 	}
 
 	return (
@@ -134,18 +162,28 @@ export function LoginPage() {
 							</div>
 						) : null}
 
-						<button
-							type="submit"
-							disabled={isSubmitting}
-							className="w-full h-12 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99] transition"
-						>
-							<span className="inline-flex items-center justify-center gap-2">
-								<span>{isSubmitting ? "Signing in..." : "Sign in"}</span>
-								<span className="material-symbols-outlined text-[18px]">
-									door_open
+						<div className="space-y-3">
+							<button
+								type="submit"
+								disabled={isSubmitting}
+								className="w-full h-12 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99] transition"
+							>
+								<span className="inline-flex items-center justify-center gap-2">
+									<span>{isSubmitting ? "Signing in..." : "Sign in"}</span>
+									<span className="material-symbols-outlined text-[18px]">
+										door_open
+									</span>
 								</span>
-							</span>
-						</button>
+							</button>
+							<button
+								type="button"
+								onClick={onContinueAsDemo}
+								disabled={isSubmitting}
+								className="w-full h-12 rounded-xl bg-control-bg ring-1 ring-white/10 text-gray-100 text-sm font-semibold hover:bg-control-bg/80 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99] transition"
+							>
+								Continue as demo
+							</button>
+						</div>
 					</form>
 
 					<div className="mt-6 flex items-center justify-between gap-4 text-sm">
