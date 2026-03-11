@@ -9,6 +9,10 @@ This document reflects the current REST endpoints implemented in `server/app/src
 - Error responses use `{ ok: false, error: string }`.
 - Timestamps (for example `createdAt`) are serialized as ISO 8601 strings.
 
+Related docs:
+
+- Socket.IO events: `server/app/docs/socket-events.md`
+
 ### Auth
 
 Auth-required endpoints expect:
