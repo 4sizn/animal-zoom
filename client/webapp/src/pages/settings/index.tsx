@@ -1,3 +1,8 @@
+import type {
+	Me3DProfileResponse,
+	UserAvatarType,
+	UserEnvironmentTheme,
+} from "@animal-zoom/share";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -38,6 +43,23 @@ const TIMEZONE_OPTIONS: Array<{ value: string; label: string }> = [
 	{ value: "America/Los_Angeles", label: "US West (America/Los_Angeles)" },
 ];
 
+const AVATAR_OPTIONS: Array<{ value: UserAvatarType; label: string }> = [
+	{ value: "apollo", label: "Apollo" },
+	{ value: "villager_oc", label: "Villager OC" },
+	{ value: "macchiato", label: "Macchiato" },
+	{ value: "molly_duck", label: "Molly Duck" },
+];
+
+const ENVIRONMENT_THEME_OPTIONS: Array<{
+	value: UserEnvironmentTheme;
+	label: string;
+}> = [
+	{ value: "cafe", label: "Cafe" },
+	{ value: "study", label: "Study" },
+	{ value: "music", label: "Music" },
+	{ value: "default", label: "Default" },
+];
+
 function formatNowInTimezone(timezone: string) {
 	try {
 		return new Intl.DateTimeFormat(undefined, {
@@ -75,6 +97,17 @@ export function SettingsPage() {
 	);
 	const [isChangingPassword, setIsChangingPassword] = React.useState(false);
 
+	const [avatarType, setAvatarType] = React.useState<UserAvatarType>("apollo");
+	const [environmentTheme, setEnvironmentTheme] =
+		React.useState<UserEnvironmentTheme>("cafe");
+	const [profile3DError, setProfile3DError] = React.useState<string | null>(
+		null,
+	);
+	const [profile3DSuccess, setProfile3DSuccess] = React.useState<string | null>(
+		null,
+	);
+	const [isSaving3DProfile, setIsSaving3DProfile] = React.useState(false);
+
 	React.useEffect(() => {
 		if (token) return;
 		navigate(`/login?next=${encodeURIComponent("/settings")}`, {
@@ -106,6 +139,36 @@ export function SettingsPage() {
 				if (cancelled) return;
 				setIsLoading(false);
 			});
+		return () => {
+			cancelled = true;
+		};
+	}, [token]);
+
+	React.useEffect(() => {
+		if (!token) return;
+		let cancelled = false;
+		apiRequest<Me3DProfileResponse>({
+			path: "/users/me/3d-profile",
+			method: "GET",
+			token,
+		})
+			.then((res) => {
+				if (cancelled) return;
+				if (!res.ok || !res.profile) {
+					setProfile3DError(res.error ?? "Failed to load 3D profile.");
+					return;
+				}
+				setAvatarType(res.profile.avatarType);
+				setEnvironmentTheme(res.profile.environmentTheme);
+				setProfile3DError(null);
+			})
+			.catch((e: unknown) => {
+				if (cancelled) return;
+				setProfile3DError(
+					e instanceof Error ? e.message : "Failed to load 3D profile.",
+				);
+			});
+
 		return () => {
 			cancelled = true;
 		};
@@ -182,6 +245,38 @@ export function SettingsPage() {
 		newPassword,
 		token,
 	]);
+
+	const onSave3DProfile = React.useCallback(async () => {
+		if (!token) return;
+		if (isSaving3DProfile) return;
+		setProfile3DError(null);
+		setProfile3DSuccess(null);
+		setIsSaving3DProfile(true);
+
+		try {
+			const res = await apiRequest<Me3DProfileResponse>({
+				path: "/users/me/3d-profile",
+				method: "PATCH",
+				token,
+				body: { avatarType, environmentTheme },
+			});
+
+			if (!res.ok || !res.profile) {
+				setProfile3DError(res.error ?? "Failed to save 3D profile.");
+				return;
+			}
+
+			setAvatarType(res.profile.avatarType);
+			setEnvironmentTheme(res.profile.environmentTheme);
+			setProfile3DSuccess("3D profile updated.");
+		} catch (e: unknown) {
+			setProfile3DError(
+				e instanceof Error ? e.message : "Failed to save 3D profile.",
+			);
+		} finally {
+			setIsSaving3DProfile(false);
+		}
+	}, [avatarType, environmentTheme, isSaving3DProfile, token]);
 
 	const preview = React.useMemo(
 		() => formatNowInTimezone(timezone),
@@ -342,6 +437,86 @@ export function SettingsPage() {
 									className="h-10 px-4 rounded-full bg-primary ring-1 ring-white/10 text-sm font-semibold text-white hover:bg-red-600 active:scale-[0.99] transition disabled:opacity-60 disabled:cursor-not-allowed"
 								>
 									{isSavingProfile ? "Saving..." : "Save"}
+								</button>
+							</div>
+						</section>
+
+						<section className="rounded-lg bg-surface-dark p-6 ring-1 ring-white/10">
+							<h2 className="text-lg font-semibold text-gray-100">
+								3D Profile
+							</h2>
+							<p className="mt-1 text-sm text-gray-400">
+								Your avatar and room theme used in 3D study scenes.
+							</p>
+
+							<div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
+								<label className="block">
+									<span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+										Avatar
+									</span>
+									<div className="mt-2 rounded-xl bg-charcoal-light/60 px-4 py-3 ring-1 ring-white/10">
+										<select
+											className="w-full bg-transparent text-sm text-gray-100 focus:outline-none"
+											value={avatarType}
+											onChange={(e) => {
+												setAvatarType(e.target.value as UserAvatarType);
+												setProfile3DError(null);
+												setProfile3DSuccess(null);
+											}}
+										>
+											{AVATAR_OPTIONS.map((opt) => (
+												<option key={opt.value} value={opt.value}>
+													{opt.label}
+												</option>
+											))}
+										</select>
+									</div>
+								</label>
+
+								<label className="block">
+									<span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+										Environment
+									</span>
+									<div className="mt-2 rounded-xl bg-charcoal-light/60 px-4 py-3 ring-1 ring-white/10">
+										<select
+											className="w-full bg-transparent text-sm text-gray-100 focus:outline-none"
+											value={environmentTheme}
+											onChange={(e) => {
+												setEnvironmentTheme(
+													e.target.value as UserEnvironmentTheme,
+												);
+												setProfile3DError(null);
+												setProfile3DSuccess(null);
+											}}
+										>
+											{ENVIRONMENT_THEME_OPTIONS.map((opt) => (
+												<option key={opt.value} value={opt.value}>
+													{opt.label}
+												</option>
+											))}
+										</select>
+									</div>
+								</label>
+							</div>
+
+							{profile3DError ? (
+								<div className="mt-4 text-sm text-red-300">
+									{profile3DError}
+								</div>
+							) : profile3DSuccess ? (
+								<div className="mt-4 text-sm text-green-300">
+									{profile3DSuccess}
+								</div>
+							) : null}
+
+							<div className="mt-6 flex items-center justify-end">
+								<button
+									type="button"
+									onClick={onSave3DProfile}
+									disabled={isSaving3DProfile}
+									className="h-10 px-4 rounded-full bg-primary ring-1 ring-white/10 text-sm font-semibold text-white hover:bg-red-600 active:scale-[0.99] transition disabled:opacity-60 disabled:cursor-not-allowed"
+								>
+									{isSaving3DProfile ? "Saving..." : "Save 3D Profile"}
 								</button>
 							</div>
 						</section>

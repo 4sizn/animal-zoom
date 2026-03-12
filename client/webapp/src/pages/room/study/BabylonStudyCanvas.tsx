@@ -1,4 +1,4 @@
-import type { ZoomParticipant } from "@animal-zoom/share";
+import type { User3DProfile, ZoomParticipant } from "@animal-zoom/share";
 import { Color3, Engine } from "@babylonjs/core";
 import React from "react";
 
@@ -14,6 +14,7 @@ import { AssetImage } from "../../../ui/AssetImage";
 
 type BabylonStudyCanvasProps = {
 	participant: ZoomParticipant;
+	my3DProfile: User3DProfile | null;
 	alt: string;
 	className?: string;
 };
@@ -40,6 +41,7 @@ function resolveAvatarType(participantId: string): AvatarType {
 
 export function BabylonStudyCanvas({
 	participant,
+	my3DProfile,
 	alt,
 	className,
 }: BabylonStudyCanvasProps) {
@@ -76,7 +78,8 @@ export function BabylonStudyCanvas({
 		void createSingleViewSceneBundleAsync(engine, {
 			attachControl: false,
 			inputElement: canvas,
-			avatarType: resolveAvatarType(participant.animal.id),
+			avatarType:
+				my3DProfile?.avatarType ?? resolveAvatarType(participant.animal.id),
 			proxyName: `${participant.animal.id}-avatar-proxy`,
 			proxyColor: new Color3(0.23, 0.48, 0.88),
 		})
@@ -91,6 +94,7 @@ export function BabylonStudyCanvas({
 					: [];
 				const spacesWithoutAvatarAssets = spacesConfig.map((space) => ({
 					...space,
+					theme: my3DProfile?.environmentTheme ?? space.theme,
 					assets: space.assets.filter((asset) => asset.type !== "avatar"),
 				}));
 				if (spacesWithoutAvatarAssets.length > 0) {
@@ -128,7 +132,11 @@ export function BabylonStudyCanvas({
 			}
 			engine.dispose();
 		};
-	}, [participant.animal.id]);
+	}, [
+		my3DProfile?.avatarType,
+		my3DProfile?.environmentTheme,
+		participant.animal.id,
+	]);
 
 	if (hasError) {
 		return (

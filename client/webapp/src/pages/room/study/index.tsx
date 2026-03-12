@@ -1,4 +1,8 @@
-import type { GetRoomResponse } from "@animal-zoom/share";
+import type {
+	GetRoomResponse,
+	Me3DProfileResponse,
+	User3DProfile,
+} from "@animal-zoom/share";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -48,6 +52,9 @@ export function RoomStudyPage() {
 	const [participantCount, setParticipantCount] = React.useState(() =>
 		getRoomParticipantCount(roomId),
 	);
+	const [my3DProfile, setMy3DProfile] = React.useState<User3DProfile | null>(
+		null,
+	);
 
 	React.useEffect(() => {
 		setParticipantCount(getRoomParticipantCount(roomId));
@@ -83,7 +90,41 @@ export function RoomStudyPage() {
 		};
 	}, [logout, navigate, roomId, token]);
 
+	React.useEffect(() => {
+		if (!token) {
+			setMy3DProfile(null);
+			return;
+		}
+
+		let cancelled = false;
+		apiRequest<Me3DProfileResponse>({
+			path: "/users/me/3d-profile",
+			method: "GET",
+			token,
+		})
+			.then((res) => {
+				if (cancelled) return;
+				if (!res.ok || !res.profile) {
+					setMy3DProfile(null);
+					return;
+				}
+				setMy3DProfile(res.profile);
+			})
+			.catch(() => {
+				if (cancelled) return;
+				setMy3DProfile(null);
+			});
+
+		return () => {
+			cancelled = true;
+		};
+	}, [token]);
+
 	return (
-		<ZoomRoomExperience roomId={roomId} participantCount={participantCount} />
+		<ZoomRoomExperience
+			roomId={roomId}
+			participantCount={participantCount}
+			my3DProfile={my3DProfile}
+		/>
 	);
 }

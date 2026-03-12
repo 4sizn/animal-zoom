@@ -12,6 +12,20 @@ export type PublicUser = {
 	timezone?: string | null;
 };
 
+export type UserAvatarType =
+	| "apollo"
+	| "villager_oc"
+	| "macchiato"
+	| "molly_duck";
+
+export type UserEnvironmentTheme = "default" | "music" | "cafe" | "study";
+
+export type User3DProfile = {
+	avatarType: UserAvatarType;
+	environmentTheme: UserEnvironmentTheme;
+	updatedAt: Date;
+};
+
 @Injectable()
 export class UsersService {
 	constructor(private readonly db: Kysely<Database>) {}
@@ -150,5 +164,73 @@ export class UsersService {
 			})
 			.where("email", "=", input.email)
 			.execute();
+	}
+
+	async getOrCreate3DProfile(userId: number): Promise<User3DProfile> {
+		const existing = await this.db
+			.selectFrom("user_3d_profiles")
+			.select(["avatar_type", "environment_theme", "updated_at"])
+			.where("user_id", "=", userId)
+			.executeTakeFirst();
+
+		if (existing) {
+			return {
+				avatarType: existing.avatar_type as UserAvatarType,
+				environmentTheme: existing.environment_theme as UserEnvironmentTheme,
+				updatedAt: existing.updated_at,
+			};
+		}
+
+		const created = await this.db
+			.insertInto("user_3d_profiles")
+			.values({
+				user_id: userId,
+				avatar_type: "apollo",
+				environment_theme: "cafe",
+			})
+			.returning(["avatar_type", "environment_theme", "updated_at"])
+			.executeTakeFirstOrThrow();
+
+		return {
+			avatarType: created.avatar_type as UserAvatarType,
+			environmentTheme: created.environment_theme as UserEnvironmentTheme,
+			updatedAt: created.updated_at,
+		};
+	}
+
+	async update3DProfile(input: {
+		userId: number;
+		avatarType: UserAvatarType;
+		environmentTheme: UserEnvironmentTheme;
+	}): Promise<User3DProfile> {
+		const existing = await this.db
+			.selectFrom("user_3d_profiles")
+			.select(["user_id"])
+			.where("user_id", "=", input.userId)
+			.executeTakeFirst();
+
+		if (!existing) {
+			await this.db
+				.insertInto("user_3d_profiles")
+				.values({
+					user_id: input.userId,
+					avatar_type: input.avatarType,
+					environment_theme: input.environmentTheme,
+					updated_at: new Date(),
+				})
+				.executeTakeFirst();
+		} else {
+			await this.db
+				.updateTable("user_3d_profiles")
+				.set({
+					avatar_type: input.avatarType,
+					environment_theme: input.environmentTheme,
+					updated_at: new Date(),
+				})
+				.where("user_id", "=", input.userId)
+				.execute();
+		}
+
+		return await this.getOrCreate3DProfile(input.userId);
 	}
 }

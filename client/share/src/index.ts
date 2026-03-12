@@ -34,6 +34,26 @@ export interface User {
 	timezone?: string | null;
 }
 
+export type UserAvatarType =
+	| "apollo"
+	| "villager_oc"
+	| "macchiato"
+	| "molly_duck";
+
+export type UserEnvironmentTheme = "default" | "music" | "cafe" | "study";
+
+export interface User3DProfile {
+	avatarType: UserAvatarType;
+	environmentTheme: UserEnvironmentTheme;
+	updatedAt: string;
+}
+
+export interface Me3DProfileResponse {
+	ok: boolean;
+	profile?: User3DProfile;
+	error?: string;
+}
+
 export interface RegisterDto {
 	email: string;
 	password: string;

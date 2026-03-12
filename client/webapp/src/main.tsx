@@ -38,6 +38,7 @@ function App() {
 		<ZoomRoomExperience
 			roomId={undefined}
 			participantCount={participantCount}
+			my3DProfile={null}
 		/>
 	);
 }

@@ -1,4 +1,4 @@
-import type { ZoomParticipant } from "@animal-zoom/share";
+import type { User3DProfile, ZoomParticipant } from "@animal-zoom/share";
 import React from "react";
 import { EMPTY, type Observable } from "rxjs";
 import { BabylonStudyCanvas } from "./BabylonStudyCanvas";
@@ -372,9 +372,11 @@ export const MAX_ZOOM_DEMO_PARTICIPANTS = participantsScroll.length;
 function FourParticipantLayout({
 	participants,
 	participantCount,
+	my3DProfile,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
+	my3DProfile: User3DProfile | null;
 }) {
 	return (
 		<div className="bg-[#1a1a1a] h-screen w-full flex flex-col font-body overflow-hidden text-white">
@@ -387,6 +389,7 @@ function FourParticipantLayout({
 						>
 							<BabylonStudyCanvas
 								participant={participant}
+								my3DProfile={my3DProfile}
 								alt={`${participant.animal.name}'s video feed`}
 								className="w-full h-full object-cover"
 							/>
@@ -478,9 +481,11 @@ function FourParticipantLayout({
 function TwelveParticipantLayout({
 	participants,
 	participantCount,
+	my3DProfile,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
+	my3DProfile: User3DProfile | null;
 }) {
 	const displayedParticipantCount =
 		participantCount === 12 ? 13 : participantCount;
@@ -496,6 +501,7 @@ function TwelveParticipantLayout({
 						>
 							<BabylonStudyCanvas
 								participant={participant}
+								my3DProfile={my3DProfile}
 								alt={
 									twelveAltById[participant.animal.id] ??
 									`${participant.animal.name}`
@@ -587,9 +593,11 @@ function TwelveParticipantLayout({
 function ScrollableParticipantLayout({
 	participants,
 	participantCount,
+	my3DProfile,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
+	my3DProfile: User3DProfile | null;
 }) {
 	return (
 		<div className="bg-[#202124] text-gray-100 font-display h-screen flex flex-col overflow-hidden transition-colors duration-300">
@@ -605,6 +613,7 @@ function ScrollableParticipantLayout({
 						>
 							<BabylonStudyCanvas
 								participant={participant}
+								my3DProfile={my3DProfile}
 								alt={`${participant.animal.name} avatar`}
 								className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 							/>
@@ -683,9 +692,11 @@ function ScrollableParticipantLayout({
 export function ZoomRoomExperience({
 	roomId,
 	participantCount,
+	my3DProfile,
 }: {
 	roomId: string | undefined;
 	participantCount: number;
+	my3DProfile: User3DProfile | null;
 }) {
 	const [isDesktop, setIsDesktop] = React.useState<boolean>(() => {
 		if (typeof window === "undefined") {
@@ -729,6 +740,7 @@ export function ZoomRoomExperience({
 			<FourParticipantLayout
 				participants={participantsFour.slice(0, participantCount)}
 				participantCount={participantCount}
+				my3DProfile={my3DProfile}
 			/>
 		);
 	} else if (participantCount <= 12) {
@@ -736,6 +748,7 @@ export function ZoomRoomExperience({
 			<TwelveParticipantLayout
 				participants={participantsTwelve.slice(0, participantCount)}
 				participantCount={participantCount}
+				my3DProfile={my3DProfile}
 			/>
 		);
 	} else {
@@ -743,6 +756,7 @@ export function ZoomRoomExperience({
 			<ScrollableParticipantLayout
 				participants={participantsScroll.slice(0, participantCount)}
 				participantCount={participantCount}
+				my3DProfile={my3DProfile}
 			/>
 		);
 	}

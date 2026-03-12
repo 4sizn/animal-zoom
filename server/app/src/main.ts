@@ -9,7 +9,11 @@ import { AppModule } from "./app.module";
 import { getMinioConfig } from "./assets/minio";
 import { AuthService } from "./auth/auth.service";
 import { MailService } from "./mail/mail.service";
-import { UsersService } from "./users/users.service";
+import {
+	type UserAvatarType,
+	type UserEnvironmentTheme,
+	UsersService,
+} from "./users/users.service";
 
 function parseHttpOrigin(rawOrigin: string): URL | null {
 	const value = rawOrigin.trim();
@@ -250,6 +254,66 @@ async function bootstrap() {
 		});
 	});
 
+	http.get("/users/me/3d-profile", async (req, res) => {
+		const user = await requireUser(req);
+		if (!user) {
+			return res.status(401).json({ ok: false, error: "unauthorized" });
+		}
+
+		const profile = await usersService.getOrCreate3DProfile(user.id);
+		return res.json({
+			ok: true,
+			profile: {
+				avatarType: profile.avatarType,
+				environmentTheme: profile.environmentTheme,
+				updatedAt: profile.updatedAt,
+			},
+		});
+	});
+
+	http.patch("/users/me/3d-profile", json as any, async (req, res) => {
+		const user = await requireUser(req);
+		if (!user) {
+			return res.status(401).json({ ok: false, error: "unauthorized" });
+		}
+
+		const body = (req.body ?? {}) as Record<string, unknown>;
+		const avatarType =
+			typeof body.avatarType === "string" ? body.avatarType.trim() : "";
+		const environmentTheme =
+			typeof body.environmentTheme === "string"
+				? body.environmentTheme.trim()
+				: "";
+
+		if (!allowedAvatarTypes.includes(avatarType as UserAvatarType)) {
+			return res.status(400).json({ ok: false, error: "invalid avatarType" });
+		}
+		if (
+			!allowedEnvironmentThemes.includes(
+				environmentTheme as UserEnvironmentTheme,
+			)
+		) {
+			return res
+				.status(400)
+				.json({ ok: false, error: "invalid environmentTheme" });
+		}
+
+		const profile = await usersService.update3DProfile({
+			userId: user.id,
+			avatarType: avatarType as UserAvatarType,
+			environmentTheme: environmentTheme as UserEnvironmentTheme,
+		});
+
+		return res.json({
+			ok: true,
+			profile: {
+				avatarType: profile.avatarType,
+				environmentTheme: profile.environmentTheme,
+				updatedAt: profile.updatedAt,
+			},
+		});
+	});
+
 	http.post("/auth/change-password", json as any, async (req, res) => {
 		const user = await requireUser(req);
 		if (!user) {
@@ -326,3 +390,15 @@ async function bootstrap() {
 }
 
 bootstrap();
+const allowedAvatarTypes: readonly UserAvatarType[] = [
+	"apollo",
+	"villager_oc",
+	"macchiato",
+	"molly_duck",
+];
+const allowedEnvironmentThemes: readonly UserEnvironmentTheme[] = [
+	"default",
+	"music",
+	"cafe",
+	"study",
+];

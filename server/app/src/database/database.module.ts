@@ -30,10 +30,19 @@ export interface RoomMessagesTable {
 	created_at: Generated<Date>;
 }
 
+export interface User3DProfilesTable {
+	user_id: number;
+	avatar_type: string;
+	environment_theme: string;
+	created_at: Generated<Date>;
+	updated_at: Generated<Date>;
+}
+
 export interface Database {
 	users: UsersTable;
 	rooms: RoomsTable;
 	room_messages: RoomMessagesTable;
+	user_3d_profiles: User3DProfilesTable;
 }
 
 function createKysely(): Kysely<Database> {
