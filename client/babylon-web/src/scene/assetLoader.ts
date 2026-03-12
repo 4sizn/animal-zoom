@@ -9,6 +9,8 @@ import "@babylonjs/loaders/glTF";
 
 export type AvatarType = "apollo" | "villager_oc" | "macchiato" | "molly_duck";
 
+const DEFAULT_AVATAR_TYPE: AvatarType = "apollo";
+
 const AVATAR_ROOT_URL_BY_TYPE: Record<AvatarType, string> = {
 	apollo: "/assets/characters/apollo/model/",
 	villager_oc: "/assets/characters/villager_oc/model/",
@@ -26,21 +28,38 @@ export async function loadCharacterByAvatarType(
 	avatarType: AvatarType,
 	options: LoadCharacterOptions = {},
 ): Promise<AbstractMesh[]> {
-	const rootUrl = AVATAR_ROOT_URL_BY_TYPE[avatarType];
-
-	try {
-		const result = await SceneLoader.ImportMeshAsync(
-			"",
-			rootUrl,
-			"scene.gltf",
-			scene,
-		);
-
-		if (result.meshes.length > 0) {
-			return result.meshes;
+	const tryLoadAvatar = async (
+		type: AvatarType,
+	): Promise<AbstractMesh[] | null> => {
+		const rootUrl = AVATAR_ROOT_URL_BY_TYPE[type];
+		try {
+			const result = await SceneLoader.ImportMeshAsync(
+				"",
+				rootUrl,
+				"scene.gltf",
+				scene,
+			);
+			if (result.meshes.length > 0) {
+				return result.meshes;
+			}
+			console.error(`Avatar glTF loaded without meshes (${type})`);
+			return null;
+		} catch (error) {
+			console.error(`Failed to load avatar glTF (${type})`, error);
+			return null;
 		}
-	} catch (error) {
-		console.error(`Failed to load avatar glTF (${avatarType})`, error);
+	};
+
+	const requested = await tryLoadAvatar(avatarType);
+	if (requested) {
+		return requested;
+	}
+
+	if (avatarType !== DEFAULT_AVATAR_TYPE) {
+		const fallbackProfile = await tryLoadAvatar(DEFAULT_AVATAR_TYPE);
+		if (fallbackProfile) {
+			return fallbackProfile;
+		}
 	}
 
 	return createFallbackProxyMeshes(scene, options);
