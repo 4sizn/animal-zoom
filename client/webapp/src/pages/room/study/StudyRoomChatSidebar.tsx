@@ -230,6 +230,30 @@ export function StudyRoomChatSidebar({
 		if (!isOpen || !roomId || !socket || !token) return;
 
 		let isCancelled = false;
+		const joinAndLoadHistory = () => {
+			socket.emit("room:join", { roomId }, (ack: unknown) => {
+				if (isCancelled) return;
+				if (!isAckOk(ack)) {
+					setError(getAckErrorMessage(ack));
+				}
+			});
+
+			socket.emit("room:history", { roomId, limit: 50 }, (ack: unknown) => {
+				if (isCancelled) return;
+				if (!isAckOk(ack)) {
+					setError(getAckErrorMessage(ack));
+					return;
+				}
+				const history = extractHistoryMessages(ack).filter(
+					(message) => message.roomId === roomId,
+				);
+				setMessages(history.sort((a, b) => a.createdAtMs - b.createdAtMs));
+				setUnreadCount(0);
+				window.requestAnimationFrame(() => {
+					scrollToBottom();
+				});
+			});
+		};
 
 		const onCreated = (payload: unknown) => {
 			if (isCancelled) return;
@@ -241,33 +265,14 @@ export function StudyRoomChatSidebar({
 			);
 		};
 
-		socket.emit("room:join", { roomId }, (ack: unknown) => {
-			if (isCancelled) return;
-			if (!isAckOk(ack)) {
-				setError(getAckErrorMessage(ack));
-			}
-		});
 		socket.on("room:message:created", onCreated);
-
-		socket.emit("room:history", { roomId, limit: 50 }, (ack: unknown) => {
-			if (isCancelled) return;
-			if (!isAckOk(ack)) {
-				setError(getAckErrorMessage(ack));
-				return;
-			}
-			const history = extractHistoryMessages(ack).filter(
-				(message) => message.roomId === roomId,
-			);
-			setMessages(history.sort((a, b) => a.createdAtMs - b.createdAtMs));
-			setUnreadCount(0);
-			window.requestAnimationFrame(() => {
-				scrollToBottom();
-			});
-		});
+		socket.on("connect", joinAndLoadHistory);
+		joinAndLoadHistory();
 
 		return () => {
 			isCancelled = true;
 			socket.off("room:message:created", onCreated);
+			socket.off("connect", joinAndLoadHistory);
 			socket.emit("room:leave", { roomId });
 		};
 	}, [
