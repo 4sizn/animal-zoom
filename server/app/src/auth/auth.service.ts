@@ -9,38 +9,57 @@ void JwtService;
 void UsersService;
 
 export type JwtPayload = {
-  sub: number;
-  email: string;
+	sub: number;
+	email: string;
 };
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
-  ) {}
+	constructor(
+		private readonly usersService: UsersService,
+		private readonly jwtService: JwtService,
+	) {}
 
-  async login(input: { email: string; password: string }): Promise<{ accessToken: string; user: PublicUser }> {
-    const user = await this.usersService.findByEmail(input.email);
-    if (!user) {
-      throw new UnauthorizedException("invalid credentials");
-    }
+	private async issueAccessToken(user: { id: number; email: string }) {
+		const payload: JwtPayload = { sub: user.id, email: user.email };
+		return await this.jwtService.signAsync(payload);
+	}
 
-    const ok = await bcrypt.compare(input.password, user.password_hash);
-    if (!ok) {
-      throw new UnauthorizedException("invalid credentials");
-    }
+	async login(input: {
+		email: string;
+		password: string;
+	}): Promise<{ accessToken: string; user: PublicUser }> {
+		const user = await this.usersService.findByEmail(input.email);
+		if (!user) {
+			throw new UnauthorizedException("invalid credentials");
+		}
 
-    const payload: JwtPayload = { sub: user.id, email: user.email };
-    const accessToken = await this.jwtService.signAsync(payload);
+		const ok = await bcrypt.compare(input.password, user.password_hash);
+		if (!ok) {
+			throw new UnauthorizedException("invalid credentials");
+		}
 
-    return {
-      accessToken,
-      user: {
-        id: user.id,
-        email: user.email,
-        createdAt: user.created_at
-      }
-    };
-  }
+		const accessToken = await this.issueAccessToken(user);
+
+		return {
+			accessToken,
+			user: {
+				id: user.id,
+				email: user.email,
+				createdAt: user.created_at,
+			},
+		};
+	}
+
+	async createDemoSession(input: {
+		email: string;
+		password: string;
+	}): Promise<{ accessToken: string; user: PublicUser }> {
+		const user = await this.usersService.createUser({
+			email: input.email,
+			password: input.password,
+		});
+		const accessToken = await this.issueAccessToken(user);
+		return { accessToken, user };
+	}
 }

@@ -1,22 +1,18 @@
+import type { AuthResponse } from "@animal-zoom/share";
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import { useAuth } from "../../auth/AuthContext";
+import { apiRequest } from "../../network/apiClient";
 
 export function LoginPage() {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { login, token, logout } = useAuth();
+	const { login, token, logout, setToken } = useAuth();
 	const [email, setEmail] = React.useState("");
 	const [password, setPassword] = React.useState("");
 	const [error, setError] = React.useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = React.useState(false);
 	const [redirectTo, setRedirectTo] = React.useState<string | null>(null);
-
-	const demoCredentials = {
-		email: "dev1@animal-zoom.local",
-		password: "password123!",
-	};
 
 	const getNextPath = React.useCallback(() => {
 		const params = new URLSearchParams(location.search);
@@ -64,10 +60,26 @@ export function LoginPage() {
 	}
 
 	async function onContinueAsDemo() {
-		await submitLogin(
-			demoCredentials,
-			"Demo login failed. Please verify the local dev account seed.",
-		);
+		if (isSubmitting) return;
+		setIsSubmitting(true);
+		setError(null);
+		try {
+			const res = await apiRequest<AuthResponse>({
+				path: "/auth/demo",
+				method: "POST",
+				token: null,
+			});
+			if (!res.ok || !res.accessToken) {
+				setError(res.error ?? "Demo login failed");
+				return;
+			}
+			setToken(res.accessToken);
+			setRedirectTo(getNextPath());
+		} catch (e) {
+			setError(e instanceof Error ? e.message : "Demo login failed");
+		} finally {
+			setIsSubmitting(false);
+		}
 	}
 
 	return (

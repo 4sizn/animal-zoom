@@ -124,6 +124,25 @@ async function bootstrap() {
 		}
 	});
 
+	http.post("/auth/demo", json as any, async (_req, res) => {
+		const allowDemoLogin =
+			process.env.ALLOW_DEMO_LOGIN === "true" ||
+			process.env.NODE_ENV !== "production";
+		if (!allowDemoLogin) {
+			return res.status(404).json({ ok: false, error: "not found" });
+		}
+
+		const email = `demo+${Date.now()}-${crypto.randomBytes(6).toString("hex")}@animal-zoom.local`;
+		const password = crypto.randomBytes(18).toString("base64url");
+		try {
+			const auth = await authService.createDemoSession({ email, password });
+			return res.json({ ok: true, ...auth });
+		} catch (e) {
+			const message = e instanceof Error ? e.message : String(e);
+			return res.status(400).json({ ok: false, error: message });
+		}
+	});
+
 	http.post("/auth/forgot-password", json as any, async (req, res) => {
 		const body = (req.body ?? {}) as Record<string, unknown>;
 		const email = typeof body.email === "string" ? body.email : "";
