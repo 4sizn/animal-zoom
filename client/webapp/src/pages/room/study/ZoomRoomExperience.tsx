@@ -1,7 +1,7 @@
 import type { ZoomParticipant } from "@animal-zoom/share";
 import React from "react";
 import { EMPTY, type Observable } from "rxjs";
-import { AssetImage } from "../../../ui/AssetImage";
+import { BabylonStudyCanvas } from "./BabylonStudyCanvas";
 import { StudyRoomChatSidebar } from "./StudyRoomChatSidebar";
 
 export function resolveParticipantCountFromSearch(
@@ -385,10 +385,10 @@ function FourParticipantLayout({
 							key={participant.animal.id}
 							className="relative group rounded-2xl overflow-hidden shadow-2xl aspect-video-custom bg-[#2c2c2c]"
 						>
-							<AssetImage
+							<BabylonStudyCanvas
+								participant={participant}
 								alt={`${participant.animal.name}'s video feed`}
 								className="w-full h-full object-cover"
-								src={participant.animal.imageUrl}
 							/>
 							<div className="absolute bottom-4 left-4 z-10">
 								<span className="text-white text-xl font-medium drop-shadow-md">
@@ -494,13 +494,13 @@ function TwelveParticipantLayout({
 							key={participant.animal.id}
 							className="relative group aspect-video rounded-xl overflow-hidden bg-charcoal-light ring-1 ring-white/5 shadow-lg"
 						>
-							<AssetImage
+							<BabylonStudyCanvas
+								participant={participant}
 								alt={
 									twelveAltById[participant.animal.id] ??
 									`${participant.animal.name}`
 								}
 								className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
-								src={participant.animal.imageUrl}
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
 							<div className="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
@@ -603,10 +603,10 @@ function ScrollableParticipantLayout({
 							key={participant.animal.id}
 							className="video-tile bg-surface-dark rounded-2xl shadow-lg group ring-1 ring-white/10"
 						>
-							<AssetImage
+							<BabylonStudyCanvas
+								participant={participant}
 								alt={`${participant.animal.name} avatar`}
 								className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-								src={participant.animal.imageUrl}
 							/>
 							<div className="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
 								<span className="text-white text-lg font-bold tracking-wide drop-shadow-md">
