@@ -378,14 +378,22 @@ function FourParticipantLayout({
 	participantCount: number;
 	my3DProfile: User3DProfile | null;
 }) {
+	const isSingleParticipant = participantCount === 1;
+
 	return (
 		<div className="bg-[#1a1a1a] h-screen w-full flex flex-col font-body overflow-hidden text-white">
 			<main className="flex-grow flex items-center justify-center p-4 lg:p-12 w-full h-full relative">
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full max-w-7xl mx-auto items-center justify-center">
+				<div
+					className={`grid grid-cols-1 gap-4 md:gap-6 w-full max-w-7xl mx-auto items-center justify-center ${
+						isSingleParticipant ? "" : "md:grid-cols-2"
+					}`}
+				>
 					{participants.map((participant) => (
 						<div
 							key={participant.animal.id}
-							className="relative group rounded-2xl overflow-hidden shadow-2xl aspect-video-custom bg-[#2c2c2c]"
+							className={`relative group rounded-2xl overflow-hidden shadow-2xl aspect-video-custom bg-[#2c2c2c] ${
+								isSingleParticipant ? "w-full" : ""
+							}`}
 						>
 							<BabylonStudyCanvas
 								participant={participant}
