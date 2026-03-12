@@ -62,4 +62,26 @@ export class AuthService {
 		const accessToken = await this.issueAccessToken(user);
 		return { accessToken, user };
 	}
+
+	async changePassword(input: {
+		userId: number;
+		currentPassword: string;
+		newPassword: string;
+	}): Promise<void> {
+		const record = await this.usersService.findByIdForAuth(input.userId);
+		if (!record) {
+			throw new UnauthorizedException("invalid credentials");
+		}
+		const ok = await bcrypt.compare(
+			input.currentPassword,
+			record.password_hash,
+		);
+		if (!ok) {
+			throw new UnauthorizedException("invalid credentials");
+		}
+		await this.usersService.updatePassword({
+			userId: input.userId,
+			password: input.newPassword,
+		});
+	}
 }

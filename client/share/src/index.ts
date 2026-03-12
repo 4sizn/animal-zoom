@@ -30,6 +30,8 @@ export interface User {
 	id: number;
 	email: string;
 	createdAt: string;
+	nickname?: string | null;
+	timezone?: string | null;
 }
 
 export interface RegisterDto {

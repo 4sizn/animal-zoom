@@ -2,6 +2,7 @@ import "reflect-metadata";
 import "dotenv/config";
 import crypto from "node:crypto";
 import { NestFactory } from "@nestjs/core";
+import { JwtService } from "@nestjs/jwt";
 import express from "express";
 import { Client as MinioClient } from "minio";
 import { AppModule } from "./app.module";
@@ -65,12 +66,39 @@ async function bootstrap() {
 			path: string,
 			...handlers: Array<(req: HttpRequest, res: HttpResponse) => unknown>
 		) => void;
+		patch: (
+			path: string,
+			...handlers: Array<(req: HttpRequest, res: HttpResponse) => unknown>
+		) => void;
 	};
 
 	const http = app.getHttpAdapter().getInstance() as unknown as HttpAdapter;
 	const usersService = app.get(UsersService);
 	const authService = app.get(AuthService);
+	const jwtService = app.get(JwtService);
 	const mailService = app.get(MailService);
+
+	type RequestWithHeaders = HttpRequest & {
+		headers?: { authorization?: unknown };
+	};
+	async function requireUser(req: HttpRequest) {
+		const headers = (req as RequestWithHeaders).headers ?? {};
+		const authHeader = headers.authorization;
+		const raw = typeof authHeader === "string" ? authHeader : "";
+		const token = raw.startsWith("Bearer ") ? raw.slice("Bearer ".length) : "";
+		if (!token) {
+			return null;
+		}
+		try {
+			const payload = await jwtService.verifyAsync(token);
+			const userId = Number((payload as { sub?: unknown }).sub);
+			if (!Number.isSafeInteger(userId) || userId <= 0) return null;
+			const user = await usersService.findById(userId);
+			return user ?? null;
+		} catch {
+			return null;
+		}
+	}
 
 	const json = express.json();
 	const minioConfig = getMinioConfig();
@@ -157,6 +185,94 @@ async function bootstrap() {
 		}
 
 		return res.json({ ok: true });
+	});
+
+	http.get("/users/me", async (req, res) => {
+		const user = await requireUser(req);
+		if (!user) {
+			return res.status(401).json({ ok: false, error: "unauthorized" });
+		}
+		return res.json({
+			ok: true,
+			user: {
+				id: user.id,
+				email: user.email,
+				createdAt: user.createdAt,
+				nickname: user.nickname ?? null,
+				timezone: user.timezone ?? null,
+			},
+		});
+	});
+
+	http.patch("/users/me", json as any, async (req, res) => {
+		const user = await requireUser(req);
+		if (!user) {
+			return res.status(401).json({ ok: false, error: "unauthorized" });
+		}
+		const body = (req.body ?? {}) as Record<string, unknown>;
+		const nicknameRaw =
+			typeof body.nickname === "string" ? body.nickname : undefined;
+		const timezoneRaw =
+			typeof body.timezone === "string" ? body.timezone : undefined;
+
+		const nickname = nicknameRaw !== undefined ? nicknameRaw.trim() : null;
+		const timezone = timezoneRaw !== undefined ? timezoneRaw.trim() : null;
+
+		if (nickname !== null && nickname.length > 40) {
+			return res.status(400).json({ ok: false, error: "nickname too long" });
+		}
+		if (timezone !== null && timezone.length > 64) {
+			return res.status(400).json({ ok: false, error: "timezone too long" });
+		}
+		if (timezone !== null && timezone.length > 0) {
+			const ok =
+				timezone === "UTC" ||
+				/^[A-Za-z_]+(?:\/[A-Za-z0-9_+-]+){1,2}$/.test(timezone);
+			if (!ok) {
+				return res.status(400).json({ ok: false, error: "invalid timezone" });
+			}
+		}
+
+		const updated = await usersService.updateProfile({
+			userId: user.id,
+			nickname: nickname && nickname.length > 0 ? nickname : null,
+			timezone: timezone && timezone.length > 0 ? timezone : null,
+		});
+		return res.json({
+			ok: true,
+			user: {
+				id: updated.id,
+				email: updated.email,
+				createdAt: updated.createdAt,
+				nickname: updated.nickname ?? null,
+				timezone: updated.timezone ?? null,
+			},
+		});
+	});
+
+	http.post("/auth/change-password", json as any, async (req, res) => {
+		const user = await requireUser(req);
+		if (!user) {
+			return res.status(401).json({ ok: false, error: "unauthorized" });
+		}
+		const body = (req.body ?? {}) as Record<string, unknown>;
+		const currentPassword =
+			typeof body.currentPassword === "string" ? body.currentPassword : "";
+		const newPassword =
+			typeof body.newPassword === "string" ? body.newPassword : "";
+		if (newPassword.length < 8) {
+			return res.status(400).json({ ok: false, error: "password too short" });
+		}
+		try {
+			await authService.changePassword({
+				userId: user.id,
+				currentPassword,
+				newPassword,
+			});
+			return res.json({ ok: true });
+		} catch {
+			return res.status(401).json({ ok: false, error: "invalid credentials" });
+		}
 	});
 
 	http.get("/assets/meta", (_req, res) => {

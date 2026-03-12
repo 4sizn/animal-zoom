@@ -6,6 +6,8 @@ export interface UsersTable {
 	id: Generated<number>;
 	email: string;
 	password_hash: string;
+	nickname: string | null;
+	timezone: string | null;
 	reset_password_token: string | null;
 	reset_password_token_expires_at: Date | null;
 	created_at: Generated<Date>;

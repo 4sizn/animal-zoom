@@ -66,9 +66,7 @@ export function DashboardPage() {
 	const { token, logout } = useAuth();
 	const [search, setSearch] = React.useState("");
 	const [showAllRooms, setShowAllRooms] = React.useState(false);
-	const [panel, setPanel] = React.useState<null | "notifications" | "settings">(
-		null,
-	);
+	const [panel, setPanel] = React.useState<null | "notifications">(null);
 	const [state, setState] = React.useState<
 		| { status: "loading" }
 		| { status: "error"; message: string }
@@ -288,7 +286,7 @@ export function DashboardPage() {
 						</button>
 						<button
 							type="button"
-							onClick={() => setPanel("settings")}
+							onClick={() => navigate("/settings")}
 							className="flex h-10 w-10 items-center justify-center rounded-full bg-control-bg ring-1 ring-white/10 hover:bg-control-bg/80"
 							title="Settings"
 						>
@@ -595,7 +593,7 @@ export function DashboardPage() {
 				</div>
 			</main>
 
-			{panel ? (
+			{panel === "notifications" ? (
 				<div
 					className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 px-6"
 					role="dialog"
@@ -608,13 +606,9 @@ export function DashboardPage() {
 					>
 						<div className="flex items-start justify-between gap-4">
 							<div>
-								<p className="text-sm text-gray-400">
-									{panel === "notifications" ? "Notifications" : "Settings"}
-								</p>
+								<p className="text-sm text-gray-400">Notifications</p>
 								<h3 className="mt-1 text-2xl font-semibold text-gray-100 tracking-tight">
-									{panel === "notifications"
-										? "All caught up"
-										: "Quick settings"}
+									All caught up
 								</h3>
 							</div>
 							<button
@@ -629,26 +623,10 @@ export function DashboardPage() {
 							</button>
 						</div>
 						<div className="mt-6 space-y-3 text-sm text-gray-300">
-							{panel === "notifications" ? (
-								<p>
-									No new notifications right now. Jump into a room when you're
-									ready.
-								</p>
-							) : (
-								<>
-									<p>This panel is UI-only for now.</p>
-									<button
-										type="button"
-										onClick={() => {
-											logout();
-											navigate("/login", { replace: true });
-										}}
-										className="mt-2 w-full h-12 rounded-xl bg-control-bg text-gray-100 text-sm font-semibold ring-1 ring-white/10 hover:bg-control-bg/80"
-									>
-										Sign out
-									</button>
-								</>
-							)}
+							<p>
+								No new notifications right now. Jump into a room when you're
+								ready.
+							</p>
 						</div>
 					</div>
 				</div>

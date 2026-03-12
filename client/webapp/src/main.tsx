@@ -19,6 +19,7 @@ import {
 	resolveParticipantCountFromSearch,
 	ZoomRoomExperience,
 } from "./pages/room/study/ZoomRoomExperience";
+import { SettingsPage } from "./pages/settings";
 
 SystemControllerManager.getInstance().registerSystemController(
 	new SystemController(new StorageController()),
@@ -59,6 +60,7 @@ function AppRoutes() {
 			<Route path="/register" element={<RegisterPage />} />
 			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
 			<Route path="/dashboard" element={<DashboardPage />} />
+			<Route path="/settings" element={<SettingsPage />} />
 			<Route path="/room/study/:roomId" element={<RoomStudyPage />} />
 			<Route path="/room/join/:roomId" element={<RoomJoinPage />} />
 			<Route path="/room/create" element={<RoomCreatePage />} />
