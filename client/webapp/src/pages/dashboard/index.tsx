@@ -296,17 +296,19 @@ export function DashboardPage() {
 								settings
 							</span>
 						</button>
-						<button
-							type="button"
-							onClick={() => {
-								logout();
-								navigate("/login", { replace: true });
-							}}
-							className="h-10 px-4 rounded-full bg-control-bg ring-1 ring-white/10 text-sm font-semibold hover:bg-control-bg/80"
-							title="Logout"
-						>
-							Logout
-						</button>
+						{token ? (
+							<button
+								type="button"
+								onClick={() => {
+									logout();
+									navigate("/login", { replace: true });
+								}}
+								className="h-10 px-4 rounded-full bg-control-bg ring-1 ring-white/10 text-sm font-semibold hover:bg-control-bg/80"
+								title="Logout"
+							>
+								Logout
+							</button>
+						) : null}
 						<div className="h-10 w-10 overflow-hidden rounded-full bg-surface-dark ring-2 ring-primary/60">
 							<div className="grid h-full w-full place-items-center text-sm font-semibold text-gray-100">
 								AZ

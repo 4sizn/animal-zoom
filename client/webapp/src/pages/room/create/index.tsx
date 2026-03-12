@@ -31,6 +31,9 @@ export function RoomCreatePage() {
 
 	const onSubmit = React.useCallback(
 		async (e: React.FormEvent) => {
+			if (isSubmitting) {
+				return;
+			}
 			e.preventDefault();
 			setError(null);
 			const trimmed = roomName.trim();
@@ -60,13 +63,13 @@ export function RoomCreatePage() {
 				}
 
 				setError(res.error ?? "Failed to create room.");
-				setIsSubmitting(false);
 			} catch (e2: unknown) {
 				setError(e2 instanceof Error ? e2.message : "Network error.");
+			} finally {
 				setIsSubmitting(false);
 			}
 		},
-		[navigate, roomName, token],
+		[isSubmitting, navigate, roomName, token],
 	);
 
 	return (
@@ -121,10 +124,12 @@ export function RoomCreatePage() {
 									id="room-name"
 									className="form-input w-full border-none bg-transparent px-0 text-sm text-gray-100 placeholder:text-gray-500 focus:ring-0"
 									value={roomName}
-									onChange={(e) => setRoomName(e.target.value)}
+									onChange={(e) => {
+										setRoomName(e.target.value);
+										setError(null);
+									}}
 									placeholder="e.g. The Cozy Cafe"
 									autoComplete="off"
-									required
 								/>
 							</div>
 							<p className="text-xs text-gray-500">
@@ -165,12 +170,14 @@ export function RoomCreatePage() {
 									type="button"
 									disabled={isSubmitting}
 									onClick={() => {
+										if (isSubmitting) return;
 										setError(null);
 										const trimmed = roomName.trim();
 										if (trimmed.length === 0) {
 											setError("Room name is required.");
 											return;
 										}
+										setIsSubmitting(true);
 										const demoRoomId = createRoomId();
 										navigate(`/room/study/${demoRoomId}`, { replace: true });
 									}}

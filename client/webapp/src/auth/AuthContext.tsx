@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 		setSocketStatus("connecting");
 		const socket = io(ZOOM_SOCKET_URL, {
-			transports: ["websocket"],
+			transports: ["websocket", "polling"],
 			auth: { token },
 		});
 		socketRef.current = socket;

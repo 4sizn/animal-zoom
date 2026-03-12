@@ -297,10 +297,35 @@ export function StudyRoomChatSidebar({
 		socket.emit("room:message", { roomId, text: trimmed }, (ack: unknown) => {
 			if (!isAckOk(ack)) {
 				setError(getAckErrorMessage(ack));
+				setDraft(trimmed);
+				return;
 			}
+
+			const messageValue =
+				typeof ack === "object" &&
+				ack !== null &&
+				"message" in ack &&
+				typeof (ack as { message?: unknown }).message !== "undefined"
+					? (ack as { message?: unknown }).message
+					: undefined;
+
+			const next = normalizeMessage(messageValue);
+			if (next === null) return;
+			appendMessage(
+				next,
+				currentUserId !== null && next.authorUserId === currentUserId,
+			);
 		});
 		inputRef.current?.focus();
-	}, [draft, roomId, socket, socketStatus, token]);
+	}, [
+		appendMessage,
+		currentUserId,
+		draft,
+		roomId,
+		socket,
+		socketStatus,
+		token,
+	]);
 
 	const isVisible = isDesktop ? isOpen : isOpen;
 

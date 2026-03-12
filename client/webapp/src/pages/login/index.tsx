@@ -6,11 +6,12 @@ import { useAuth } from "../../auth/AuthContext";
 export function LoginPage() {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { login, token, socketStatus, logout } = useAuth();
+	const { login, token, logout } = useAuth();
 	const [email, setEmail] = React.useState("");
 	const [password, setPassword] = React.useState("");
 	const [error, setError] = React.useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = React.useState(false);
+	const [redirectTo, setRedirectTo] = React.useState<string | null>(null);
 
 	const demoCredentials = {
 		email: "dev1@animal-zoom.local",
@@ -42,14 +43,20 @@ export function LoginPage() {
 					setError(res.error ?? fallbackError);
 					return;
 				}
-
-				navigate(getNextPath(), { replace: true });
+				setRedirectTo(getNextPath());
 			} finally {
 				setIsSubmitting(false);
 			}
 		},
-		[getNextPath, isSubmitting, login, navigate],
+		[getNextPath, isSubmitting, login],
 	);
+
+	React.useEffect(() => {
+		if (!redirectTo) return;
+		if (!token) return;
+		navigate(redirectTo, { replace: true });
+		setRedirectTo(null);
+	}, [navigate, redirectTo, token]);
 
 	async function onSubmit(e: React.FormEvent) {
 		e.preventDefault();
@@ -99,10 +106,6 @@ export function LoginPage() {
 							<h2 className="mt-1 text-2xl font-semibold text-gray-100 tracking-tight">
 								Let’s get you in.
 							</h2>
-						</div>
-						<div className="hidden sm:flex flex-col items-end text-[11px] text-gray-500">
-							<span>Token: {token ? "present" : "none"}</span>
-							<span>WebSocket: {socketStatus}</span>
 						</div>
 					</div>
 
@@ -191,12 +194,14 @@ export function LoginPage() {
 							<Link className="text-gray-300 hover:text-white" to="/register">
 								Create account
 							</Link>
-							<Link
-								className="text-gray-400 hover:text-gray-200"
-								to="/dashboard"
-							>
-								Dashboard
-							</Link>
+							{token ? (
+								<Link
+									className="text-gray-400 hover:text-gray-200"
+									to="/dashboard"
+								>
+									Dashboard
+								</Link>
+							) : null}
 						</div>
 						<Link
 							className="text-gray-400 hover:text-gray-200"
@@ -206,10 +211,6 @@ export function LoginPage() {
 						</Link>
 					</div>
 				</div>
-
-				<p className="mt-6 text-center text-xs text-gray-500">
-					UI only for now; backend wiring comes later.
-				</p>
 			</div>
 		</div>
 	);
