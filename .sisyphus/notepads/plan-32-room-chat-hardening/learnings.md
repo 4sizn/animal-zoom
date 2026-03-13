@@ -1,0 +1,1 @@
+2026-03-11: Added gateway hardening with DB-backed room existence checks on join/history/message, 500-char chat cap, and per-socket sliding-window rate limit (5 messages per 5 seconds) with disconnect cleanup.
