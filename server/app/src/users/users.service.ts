@@ -167,34 +167,26 @@ export class UsersService {
 	}
 
 	async getOrCreate3DProfile(userId: number): Promise<User3DProfile> {
-		const existing = await this.db
-			.selectFrom("user_3d_profiles")
-			.select(["avatar_type", "environment_theme", "updated_at"])
-			.where("user_id", "=", userId)
-			.executeTakeFirst();
-
-		if (existing) {
-			return {
-				avatarType: existing.avatar_type as UserAvatarType,
-				environmentTheme: existing.environment_theme as UserEnvironmentTheme,
-				updatedAt: existing.updated_at,
-			};
-		}
-
-		const created = await this.db
+		await this.db
 			.insertInto("user_3d_profiles")
 			.values({
 				user_id: userId,
 				avatar_type: "apollo",
 				environment_theme: "cafe",
 			})
-			.returning(["avatar_type", "environment_theme", "updated_at"])
+			.onConflict((oc) => oc.column("user_id").doNothing())
+			.execute();
+
+		const profile = await this.db
+			.selectFrom("user_3d_profiles")
+			.select(["avatar_type", "environment_theme", "updated_at"])
+			.where("user_id", "=", userId)
 			.executeTakeFirstOrThrow();
 
 		return {
-			avatarType: created.avatar_type as UserAvatarType,
-			environmentTheme: created.environment_theme as UserEnvironmentTheme,
-			updatedAt: created.updated_at,
+			avatarType: profile.avatar_type as UserAvatarType,
+			environmentTheme: profile.environment_theme as UserEnvironmentTheme,
+			updatedAt: profile.updated_at,
 		};
 	}
 
