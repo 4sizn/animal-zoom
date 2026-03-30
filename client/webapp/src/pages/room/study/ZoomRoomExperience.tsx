@@ -375,17 +375,11 @@ function FourParticipantLayout({
 	participantCount,
 	my3DProfile,
 	isStudying,
-	isPomodoroOpen,
-	onTogglePomodoro,
-	pomodoroPanel,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
 	my3DProfile: User3DProfile | null;
 	isStudying: boolean;
-	isPomodoroOpen: boolean;
-	onTogglePomodoro: () => void;
-	pomodoroPanel: React.ReactNode;
 }) {
 	const isSingleParticipant = participantCount === 1;
 
@@ -440,7 +434,6 @@ function FourParticipantLayout({
 					))}
 				</div>
 			</main>
-			{pomodoroPanel}
 			<footer className="h-20 flex-shrink-0 grid grid-cols-3 items-center px-8 bg-[#1a1a1a] z-50 mb-2">
 				<div className="flex flex-col justify-center">
 					<h1 className="text-base font-medium text-gray-200">
@@ -453,52 +446,34 @@ function FourParticipantLayout({
 						className="w-12 h-12 rounded-full bg-[#EA4335] hover:bg-red-600 text-white flex items-center justify-center transition-all active:scale-95"
 						title="Turn on microphone"
 					>
-						<span className="material-symbols-outlined text-[24px]">
-							mic_off
-						</span>
+						<span className="material-symbols-outlined text-[24px]">mic_off</span>
 					</button>
 					<button
 						type="button"
 						className="w-12 h-12 rounded-full bg-[#3C4043] hover:bg-[#4a4e52] text-white flex items-center justify-center transition-all active:scale-95"
 						title="Turn off camera"
 					>
-						<span className="material-symbols-outlined text-[24px]">
-							videocam_off
-						</span>
+						<span className="material-symbols-outlined text-[24px]">videocam_off</span>
 					</button>
 					<button
 						type="button"
 						className="w-12 h-12 rounded-full bg-[#3C4043] hover:bg-[#4a4e52] text-white flex items-center justify-center transition-all active:scale-95"
 						title="More options"
 					>
-						<span className="material-symbols-outlined text-[24px]">
-							more_horiz
-						</span>
-					</button>
-					<button
-						type="button"
-						onClick={onTogglePomodoro}
-						className={`w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ${isPomodoroOpen ? "bg-primary/20 text-primary" : "bg-[#3C4043] hover:bg-[#4a4e52] text-white"}`}
-						title="뽀모도로 타이머"
-					>
-						<span className="material-symbols-outlined text-[24px]">timer</span>
+						<span className="material-symbols-outlined text-[24px]">more_horiz</span>
 					</button>
 					<button
 						type="button"
 						className="w-12 h-12 rounded-full bg-[#EA4335] hover:bg-red-600 text-white flex items-center justify-center transition-all active:scale-95 ml-1"
 						title="Leave call"
 					>
-						<span className="material-symbols-outlined text-[28px]">
-							call_end
-						</span>
+						<span className="material-symbols-outlined text-[28px]">call_end</span>
 					</button>
 				</div>
 				<div className="flex items-center justify-end text-gray-300">
-					<div className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/5 cursor-pointer transition-colors">
-						<span className="text-sm font-medium">
-							{formatPeople(participantCount)}
-						</span>
-					</div>
+					<span className="text-sm font-medium px-3">
+						{formatPeople(participantCount)}
+					</span>
 				</div>
 			</footer>
 		</div>
@@ -510,17 +485,11 @@ function TwelveParticipantLayout({
 	participantCount,
 	my3DProfile,
 	isStudying,
-	isPomodoroOpen,
-	onTogglePomodoro,
-	pomodoroPanel,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
 	my3DProfile: User3DProfile | null;
 	isStudying: boolean;
-	isPomodoroOpen: boolean;
-	onTogglePomodoro: () => void;
-	pomodoroPanel: React.ReactNode;
 }) {
 	const displayedParticipantCount =
 		participantCount === 12 ? 13 : participantCount;
@@ -568,7 +537,6 @@ function TwelveParticipantLayout({
 					))}
 				</div>
 			</main>
-			{pomodoroPanel}
 			<footer className="h-20 shrink-0 bg-charcoal-dark flex items-center justify-between px-6 md:px-10 z-50">
 				<div className="w-48 hidden md:block">
 					<h2 className="text-base font-medium text-gray-200 tracking-wide">
@@ -578,49 +546,31 @@ function TwelveParticipantLayout({
 				<div className="flex items-center gap-3">
 					<button
 						type="button"
-						className="w-11 h-11 rounded-full flex items-center justify-center bg-primary hover:bg-red-600 text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-[#181a1d]"
+						className="w-11 h-11 rounded-full flex items-center justify-center bg-primary hover:bg-red-600 text-white transition-all duration-200"
 					>
-						<span className="material-symbols-outlined text-[20px] filled">
-							mic_off
-						</span>
+						<span className="material-symbols-outlined text-[20px] filled">mic_off</span>
 					</button>
 					<button
 						type="button"
-						className="w-11 h-11 rounded-full flex items-center justify-center bg-control-bg hover:bg-gray-600 text-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 focus:ring-offset-[#181a1d]"
+						className="w-11 h-11 rounded-full flex items-center justify-center bg-control-bg hover:bg-gray-600 text-gray-300 transition-all duration-200"
 					>
-						<span className="material-symbols-outlined text-[20px] filled">
-							videocam_off
-						</span>
+						<span className="material-symbols-outlined text-[20px] filled">videocam_off</span>
 					</button>
 					<button
 						type="button"
-						className="w-11 h-11 rounded-full flex items-center justify-center bg-control-bg hover:bg-gray-600 text-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 focus:ring-offset-[#181a1d]"
+						className="w-11 h-11 rounded-full flex items-center justify-center bg-control-bg hover:bg-gray-600 text-gray-300 transition-all duration-200"
 					>
-						<span className="material-symbols-outlined text-[20px]">
-							more_horiz
-						</span>
+						<span className="material-symbols-outlined text-[20px]">more_horiz</span>
 					</button>
 					<button
 						type="button"
-						onClick={onTogglePomodoro}
-						className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#181a1d] ${isPomodoroOpen ? "bg-primary/20 text-primary focus:ring-primary" : "bg-control-bg hover:bg-gray-600 text-gray-300 focus:ring-gray-500"}`}
-						title="뽀모도로 타이머"
+						className="w-16 h-10 rounded-full flex items-center justify-center bg-primary hover:bg-red-600 text-white transition-all duration-200 ml-1 shadow-md"
 					>
-						<span className="material-symbols-outlined text-[20px]">timer</span>
-					</button>
-					<button
-						type="button"
-						className="w-16 h-10 rounded-full flex items-center justify-center bg-primary hover:bg-red-600 text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-[#181a1d] ml-1 shadow-md"
-					>
-						<span className="material-symbols-outlined text-[24px] filled">
-							call_end
-						</span>
+						<span className="material-symbols-outlined text-[24px] filled">call_end</span>
 					</button>
 				</div>
-				<div className="w-48 hidden md:flex justify-end items-center text-gray-400">
-					<span className="material-symbols-outlined text-[20px] mr-2">
-						group
-					</span>
+				<div className="w-48 hidden md:flex justify-end items-center gap-2 text-gray-400">
+					<span className="material-symbols-outlined text-[20px]">group</span>
 					<span className="text-sm font-medium tracking-wide">
 						{formatPeople(displayedParticipantCount)}
 					</span>
@@ -640,17 +590,11 @@ function ScrollableParticipantLayout({
 	participantCount,
 	my3DProfile,
 	isStudying,
-	isPomodoroOpen,
-	onTogglePomodoro,
-	pomodoroPanel,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
 	my3DProfile: User3DProfile | null;
 	isStudying: boolean;
-	isPomodoroOpen: boolean;
-	onTogglePomodoro: () => void;
-	pomodoroPanel: React.ReactNode;
 }) {
 	return (
 		<div className="bg-[#202124] text-gray-100 font-display h-screen flex flex-col overflow-hidden transition-colors duration-300">
@@ -694,7 +638,6 @@ function ScrollableParticipantLayout({
 					))}
 				</div>
 			</main>
-			{pomodoroPanel}
 			<footer className="relative flex-none h-20 bg-[#202124] border-t border-white/5 px-4 md:px-8 flex items-center gap-3 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
 				<div className="hidden md:flex flex-col">
 					<h1 className="text-base font-semibold text-gray-100">
@@ -723,29 +666,15 @@ function ScrollableParticipantLayout({
 					</button>
 					<button
 						type="button"
-						onClick={onTogglePomodoro}
-						className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isPomodoroOpen ? "bg-primary/20 text-primary" : "bg-[#3C4043] text-gray-200 hover:bg-[#5F6368]"}`}
-						title="뽀모도로 타이머"
-					>
-						<span className="material-icons-round text-xl">timer</span>
-					</button>
-					<button
-						type="button"
 						className="w-12 h-12 rounded-full flex items-center justify-center bg-[#EA4335] text-white hover:bg-red-600 transition-colors shadow-lg ml-1"
 					>
 						<span className="material-icons-round text-2xl">call_end</span>
 					</button>
 				</div>
-				<div className="flex items-center gap-3">
+				<div className="flex items-center">
 					<span className="text-sm text-gray-300">
 						{formatPeople(participantCount)}
 					</span>
-					<button
-						type="button"
-						className="p-2 rounded-full hover:bg-white/10 transition-colors"
-					>
-						<span className="material-icons-round text-gray-300">people</span>
-					</button>
 				</div>
 			</footer>
 		</div>
@@ -843,7 +772,17 @@ export function ZoomRoomExperience({
 	}, [pomodoroPhase]);
 
 	const onTogglePomodoro = React.useCallback(() => {
-		setIsPomodoroOpen((prev) => !prev);
+		setIsPomodoroOpen((prev) => {
+			if (!prev) setIsChatOpen(false);
+			return !prev;
+		});
+	}, []);
+
+	const onToggleChat = React.useCallback(() => {
+		setIsChatOpen((prev) => {
+			if (!prev) setIsPomodoroOpen(false);
+			return !prev;
+		});
 	}, []);
 
 	const todayStudyMin = getTodayStudyMin();
@@ -882,9 +821,6 @@ export function ZoomRoomExperience({
 				participantCount={participantCount}
 				my3DProfile={my3DProfile}
 				isStudying={isStudying}
-				isPomodoroOpen={isPomodoroOpen}
-				onTogglePomodoro={onTogglePomodoro}
-				pomodoroPanel={pomodoroPanel}
 			/>
 		);
 	} else if (participantCount <= 12) {
@@ -894,9 +830,6 @@ export function ZoomRoomExperience({
 				participantCount={participantCount}
 				my3DProfile={my3DProfile}
 				isStudying={isStudying}
-				isPomodoroOpen={isPomodoroOpen}
-				onTogglePomodoro={onTogglePomodoro}
-				pomodoroPanel={pomodoroPanel}
 			/>
 		);
 	} else {
@@ -906,23 +839,24 @@ export function ZoomRoomExperience({
 				participantCount={participantCount}
 				my3DProfile={my3DProfile}
 				isStudying={isStudying}
-				isPomodoroOpen={isPomodoroOpen}
-				onTogglePomodoro={onTogglePomodoro}
-				pomodoroPanel={pomodoroPanel}
 			/>
 		);
 	}
 
 	return (
 		<div
-			className={`relative h-screen w-screen ${isDesktop && isPomodoroOpen ? "md:pl-[320px]" : ""} ${
-				isDesktop && isChatOpen ? "md:pr-[400px]" : ""
+			className={`relative h-screen w-screen ${
+				isDesktop && isPomodoroOpen
+					? "md:pr-[376px]"
+					: isDesktop && isChatOpen
+					? "md:pr-[456px]"
+					: "md:pr-[56px]"
 			}`}
 		>
 			{/* 뽀모도로 사이드바 */}
 			<aside
-				className={`fixed inset-y-0 left-0 z-[100] w-[320px] bg-[#1c222d] border-r border-slate-800 flex flex-col transition-transform duration-200 ease-out ${
-					isPomodoroOpen ? "translate-x-0" : "-translate-x-full"
+				className={`fixed inset-y-0 right-[56px] z-[95] w-[320px] bg-[#1c222d] border-l border-slate-800 flex flex-col transition-transform duration-200 ease-out ${
+					isPomodoroOpen ? "translate-x-0" : "translate-x-[calc(100%+56px)]"
 				}`}
 			>
 				{/* 헤더 */}
@@ -1063,23 +997,41 @@ export function ZoomRoomExperience({
 
 				</div>
 			</aside>
-			{/* 뽀모도로 열기 버튼 (사이드바 닫혔을 때) */}
-			{!isPomodoroOpen && (
+			{content}
+
+			{/* 우측 아이콘 Nav */}
+			<nav className="fixed inset-y-0 right-0 z-[100] hidden md:flex w-[56px] flex-col items-center justify-center gap-1 bg-[#161b25] border-l border-slate-800/60">
 				<button
 					type="button"
-					aria-label="Open pomodoro"
-					onClick={() => setIsPomodoroOpen(true)}
-					className="fixed left-6 top-6 z-[90] w-11 h-11 rounded-full bg-slate-900/80 text-white backdrop-blur-md border border-white/10 hover:bg-slate-800 transition-colors flex items-center justify-center"
+					onClick={onTogglePomodoro}
+					title="뽀모도로"
+					className={`flex flex-col items-center gap-1 w-full py-3 transition-colors ${
+						isPomodoroOpen
+							? "text-primary bg-primary/10 border-r-2 border-primary"
+							: "text-slate-400 hover:text-white hover:bg-white/5"
+					}`}
 				>
-					<span className="material-symbols-outlined text-[20px]">timer</span>
+					<span className="material-symbols-outlined text-[22px]">timer</span>
+					<span className="text-[9px] font-medium tracking-wide leading-none">타이머</span>
 				</button>
-			)}
-			{content}
+				<button
+					type="button"
+					onClick={onToggleChat}
+					title="채팅"
+					className={`flex flex-col items-center gap-1 w-full py-3 transition-colors ${
+						isChatOpen
+							? "text-primary bg-primary/10 border-r-2 border-primary"
+							: "text-slate-400 hover:text-white hover:bg-white/5"
+					}`}
+				>
+					<span className="material-symbols-outlined text-[22px]">chat</span>
+					<span className="text-[9px] font-medium tracking-wide leading-none">채팅</span>
+				</button>
+			</nav>
+
 			<StudyRoomChatSidebar
 				roomId={roomId}
-				isDesktop={isDesktop}
 				isOpen={isChatOpen}
-				onOpen={() => setIsChatOpen(true)}
 				onClose={() => setIsChatOpen(false)}
 			/>
 		</div>

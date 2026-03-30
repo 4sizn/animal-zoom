@@ -20,9 +20,7 @@ type StudyChatMessage = {
 
 type StudyRoomChatSidebarProps = {
 	roomId: string | undefined;
-	isDesktop: boolean;
 	isOpen: boolean;
-	onOpen: () => void;
 	onClose: () => void;
 };
 
@@ -163,9 +161,7 @@ function upsertMessage(
 
 export function StudyRoomChatSidebar({
 	roomId,
-	isDesktop,
 	isOpen,
-	onOpen,
 	onClose,
 }: StudyRoomChatSidebarProps) {
 	const { token, socket, socketStatus } = useAuth();
@@ -332,22 +328,13 @@ export function StudyRoomChatSidebar({
 		token,
 	]);
 
-	const isVisible = isDesktop ? isOpen : isOpen;
+	const isVisible = isOpen;
 
 	return (
 		<>
-			<button
-				type="button"
-				aria-label="Open chat"
-				onClick={onOpen}
-				className="fixed right-6 top-6 z-[90] w-11 h-11 rounded-full bg-slate-900/80 text-white backdrop-blur-md border border-white/10 hover:bg-slate-800 transition-colors flex items-center justify-center"
-			>
-				<span className="material-symbols-outlined text-[20px]">chat</span>
-			</button>
-
 			<aside
-				className={`fixed inset-y-0 right-0 z-[100] w-[min(400px,100vw)] bg-white dark:bg-[#1c222d] border-l border-slate-200 dark:border-slate-800 flex flex-col transition-transform duration-200 ease-out ${
-					isVisible ? "translate-x-0" : "translate-x-full"
+				className={`fixed inset-y-0 right-[56px] z-[95] w-[min(400px,calc(100vw-56px))] bg-white dark:bg-[#1c222d] border-l border-slate-200 dark:border-slate-800 flex flex-col transition-transform duration-200 ease-out ${
+					isVisible ? "translate-x-0" : "translate-x-[calc(100%+56px)]"
 				}`}
 			>
 				<div className="p-6 flex items-center justify-between">
