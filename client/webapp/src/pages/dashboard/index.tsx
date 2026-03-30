@@ -4,8 +4,37 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../auth/AuthContext";
 import { apiRequest } from "../../network/apiClient";
+import { getSessionsByDate } from "../calendar/data";
 import type { DashboardRoom, FriendStatus } from "./data";
 import { createDashboardDataWithRooms, type DashboardData } from "./data";
+
+function getTodayFocusKey() {
+	return `today_focus_${new Date().toISOString().slice(0, 10)}`;
+}
+
+function loadTodayFocus(): string | null {
+	try {
+		const raw = localStorage.getItem(getTodayFocusKey());
+		if (!raw) return null;
+		const parsed = JSON.parse(raw) as { text: string; setAt: string };
+		return parsed.text ?? null;
+	} catch {
+		return null;
+	}
+}
+
+function saveTodayFocus(text: string): void {
+	try {
+		localStorage.setItem(
+			getTodayFocusKey(),
+			JSON.stringify({ text, setAt: new Date().toISOString() }),
+		);
+	} catch {
+		// ignore storage errors
+	}
+}
+
+const QUICK_CHIPS = ["코딩 공부", "자격증 준비", "외국어 학습", "업무 집중"] as const;
 
 function toneFromId(id: string): DashboardRoom["tone"] {
 	let sum = 0;
@@ -50,6 +79,17 @@ function toneToAccent(tone: DashboardRoom["tone"]): string {
 	}
 }
 
+function sessionToneBadgeClass(tone: "focus" | "cozy" | "deep"): string {
+	switch (tone) {
+		case "focus":
+			return "text-xs px-1.5 py-0.5 rounded bg-white/5 text-blue-400";
+		case "deep":
+			return "text-xs px-1.5 py-0.5 rounded bg-white/5 text-purple-400";
+		case "cozy":
+			return "text-xs px-1.5 py-0.5 rounded bg-white/5 text-green-400";
+	}
+}
+
 function statusDot(status: FriendStatus): string {
 	switch (status) {
 		case "online":
@@ -67,6 +107,30 @@ export function DashboardPage() {
 	const [search, setSearch] = React.useState("");
 	const [showAllRooms, setShowAllRooms] = React.useState(false);
 	const [panel, setPanel] = React.useState<null | "notifications">(null);
+	const [todayFocus, setTodayFocus] = React.useState<string | null>(() =>
+		loadTodayFocus(),
+	);
+	const [focusInput, setFocusInput] = React.useState("");
+
+	const handleSetFocus = React.useCallback((text: string) => {
+		const trimmed = text.trim();
+		if (!trimmed) return;
+		saveTodayFocus(trimmed);
+		setTodayFocus(trimmed);
+		setFocusInput("");
+	}, []);
+
+	const handleResetFocus = React.useCallback(() => {
+		localStorage.removeItem(getTodayFocusKey());
+		setTodayFocus(null);
+		setFocusInput("");
+	}, []);
+
+	const todaySessions = React.useMemo(() => {
+		const today = new Date().toISOString().slice(0, 10);
+		return getSessionsByDate(today);
+	}, []);
+
 	const [state, setState] = React.useState<
 		| { status: "loading" }
 		| { status: "error"; message: string }
@@ -319,30 +383,130 @@ export function DashboardPage() {
 			<main className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-8 md:px-10">
 				<div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
 					<div className="flex flex-col gap-8">
-						<section className="relative overflow-hidden rounded-lg bg-surface-dark ring-1 ring-white/10">
-							<div className="absolute -right-10 -bottom-10 opacity-10">
-								<span className="material-symbols-outlined text-[180px] text-primary">
-									eco
-								</span>
-							</div>
-							<div className="relative flex flex-col gap-6 p-6 md:flex-row md:items-center md:p-8">
-								<div className="flex items-center gap-4">
-									<div className="grid h-16 w-16 place-items-center rounded-full bg-primary/20 ring-4 ring-charcoal-dark/60">
-										<span className="material-symbols-outlined text-[28px] text-primary">
-											person
-										</span>
-									</div>
+						{todayFocus === null ? (
+							<section className="relative overflow-hidden rounded-lg bg-surface-dark ring-2 ring-primary/40">
+								<div className="absolute -right-10 -bottom-10 opacity-10">
+									<span className="material-symbols-outlined text-[180px] text-primary">
+										edit_note
+									</span>
+								</div>
+								<div className="relative flex flex-col gap-5 p-6 md:p-8">
 									<div>
-										<h1 className="text-2xl font-semibold tracking-tight text-gray-100 md:text-3xl">
-											Welcome back
+										<h1 className="text-xl font-semibold tracking-tight text-gray-100 md:text-2xl">
+											What's on your agenda today?
 										</h1>
-										<p className="mt-1 text-sm text-gray-400 md:text-base">
-											Ready for a focused session?
+										<p className="mt-1 text-sm text-gray-400">
+											오늘 목표를 설정하면 더 집중된 세션을 시작할 수 있어요.
 										</p>
+									</div>
+
+									{todaySessions.length > 0 ? (
+										<div className="mb-3">
+											<p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+												오늘 예정된 세션
+											</p>
+											<div className="flex flex-col">
+												{todaySessions.map((session) => (
+													<button
+														key={session.id}
+														type="button"
+														onClick={() => handleSetFocus(session.roomName)}
+														className="flex items-center gap-2 text-sm text-slate-300 py-1 cursor-pointer hover:bg-white/5 rounded px-1 -mx-1 transition-colors"
+													>
+														<span className="text-xs text-slate-400 font-mono w-24 shrink-0">
+															{session.startTime}–{session.endTime}
+														</span>
+														<span className="flex-1 truncate text-left">
+															{session.roomName}
+														</span>
+														<span className={sessionToneBadgeClass(session.tone)}>
+															{session.tone}
+														</span>
+													</button>
+												))}
+											</div>
+										</div>
+									) : null}
+
+									<div className="flex flex-wrap gap-2">
+										{QUICK_CHIPS.map((chip) => (
+											<button
+												key={chip}
+												type="button"
+												onClick={() => setFocusInput(chip)}
+												className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-gray-200 hover:bg-white/10 transition"
+											>
+												{chip}
+											</button>
+										))}
+									</div>
+
+									<div className="flex gap-2">
+										<input
+											className="flex-1 h-11 rounded-xl bg-control-bg px-4 text-sm text-gray-100 placeholder:text-gray-500 ring-1 ring-white/10 focus:ring-2 focus:ring-primary/50 focus:outline-none"
+											placeholder="직접 입력하기..."
+											value={focusInput}
+											onChange={(e) => setFocusInput(e.target.value)}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") handleSetFocus(focusInput);
+											}}
+										/>
+										<button
+											type="button"
+											onClick={() => handleSetFocus(focusInput)}
+											className="h-11 px-5 rounded-xl bg-primary text-sm font-semibold text-white hover:bg-red-600 active:scale-[0.99] transition"
+										>
+											시작하기
+										</button>
+									</div>
+								</div>
+							</section>
+						) : (
+							<section className="relative overflow-hidden rounded-lg bg-surface-dark ring-1 ring-white/10">
+								<div className="absolute -right-10 -bottom-10 opacity-10">
+									<span className="material-symbols-outlined text-[180px] text-primary">
+										eco
+									</span>
+								</div>
+								<div className="relative flex flex-col gap-4 p-6 md:flex-row md:items-center md:p-8">
+									<div className="flex flex-1 items-center gap-4">
+										<div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary/20 ring-4 ring-charcoal-dark/60">
+											<span className="material-symbols-outlined text-[28px] text-primary">
+												emoji_events
+											</span>
+										</div>
+										<div className="min-w-0">
+											<p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+												오늘의 목표 🎯
+											</p>
+											<h1 className="mt-1 text-2xl font-semibold tracking-tight text-gray-100 md:text-3xl truncate">
+												{todayFocus}
+											</h1>
+										</div>
+									</div>
+
+									<div className="flex shrink-0 items-center gap-3">
+										<button
+											type="button"
+											onClick={handleResetFocus}
+											className="h-9 px-4 rounded-xl bg-control-bg text-xs font-semibold text-gray-300 ring-1 ring-white/10 hover:bg-control-bg/80 transition"
+										>
+											목표 변경
+										</button>
+										<button
+											type="button"
+											onClick={goToCreateRoom}
+											className="h-9 px-5 rounded-xl bg-primary text-sm font-semibold text-white hover:bg-red-600 active:scale-[0.99] transition flex items-center gap-2"
+										>
+											<span className="material-symbols-outlined text-[18px]">
+												meeting_room
+											</span>
+											방 바로 입장
+										</button>
 									</div>
 								</div>
 
-								<div className="flex-1">
+								<div className="relative border-t border-white/10 px-6 pb-5 pt-4 md:px-8">
 									<div className="rounded-xl bg-charcoal-light/60 p-4 ring-1 ring-white/10">
 										<div className="flex items-end justify-between">
 											<span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
@@ -362,9 +526,35 @@ export function DashboardPage() {
 											Keep going. Small sessions stack.
 										</p>
 									</div>
+
+									{todaySessions.length > 0 ? (
+										<div className="mt-4">
+											<p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+												오늘 예정된 세션
+											</p>
+											<div className="flex flex-col">
+												{todaySessions.map((session) => (
+													<div
+														key={session.id}
+														className="flex items-center gap-2 text-sm text-slate-300 py-1"
+													>
+														<span className="text-xs text-slate-400 font-mono w-24 shrink-0">
+															{session.startTime}–{session.endTime}
+														</span>
+														<span className="flex-1 truncate">
+															{session.roomName}
+														</span>
+														<span className={sessionToneBadgeClass(session.tone)}>
+															{session.tone}
+														</span>
+													</div>
+												))}
+											</div>
+										</div>
+									) : null}
 								</div>
-							</div>
-						</section>
+							</section>
+						)}
 
 						<section>
 							<div className="mb-5 flex items-center justify-between">
