@@ -57,11 +57,18 @@ export function BabylonStudyCanvas({
 		let disposed = false;
 		let cleanupBundle: (() => void) | null = null;
 
-		const engine = new Engine(canvas, true, {
-			preserveDrawingBuffer: false,
-			stencil: true,
-			adaptToDeviceRatio: true,
-		});
+		let engine: Engine;
+		try {
+			engine = new Engine(canvas, true, {
+				preserveDrawingBuffer: false,
+				stencil: true,
+				adaptToDeviceRatio: true,
+			});
+		} catch (err) {
+			console.error("Failed to initialize Babylon.js Engine", err);
+			setHasError(true);
+			return;
+		}
 
 		const resize = () => {
 			engine.resize();
