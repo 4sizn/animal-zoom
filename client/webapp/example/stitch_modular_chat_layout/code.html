@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Editorial Modularism - Chat Threads</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-fixed": "#2f1d00",
+              "on-error-container": "#ffa8a3",
+              "surface-tint": "#ff9062",
+              "on-primary-fixed-variant": "#521a00",
+              "inverse-surface": "#fcf9f8",
+              "surface-container": "#1a1a1a",
+              "surface-container-high": "#20201f",
+              "on-primary-fixed": "#000000",
+              "on-primary": "#561b00",
+              "outline": "#767575",
+              "on-tertiary": "#593a00",
+              "surface-container-low": "#131313",
+              "primary-container": "#ff793d",
+              "surface-bright": "#2c2c2c",
+              "surface-container-lowest": "#000000",
+              "tertiary-container": "#f6aa1d",
+              "on-background": "#ffffff",
+              "on-secondary-fixed-variant": "#833c00",
+              "surface-container-highest": "#262626",
+              "tertiary": "#ffba4b",
+              "error": "#ff716c",
+              "primary-dim": "#ff7434",
+              "secondary-dim": "#ed8134",
+              "on-error": "#490006",
+              "primary-fixed": "#ff793d",
+              "on-surface": "#ffffff",
+              "on-secondary-container": "#fff6f2",
+              "on-secondary-fixed": "#582600",
+              "on-secondary": "#411a00",
+              "on-primary-container": "#431300",
+              "surface": "#0e0e0e",
+              "error-container": "#9f0519",
+              "tertiary-dim": "#e69c05",
+              "background": "#0e0e0e",
+              "tertiary-fixed-dim": "#e69c05",
+              "on-surface-variant": "#adaaaa",
+              "primary": "#ff9062",
+              "surface-variant": "#262626",
+              "inverse-on-surface": "#565555",
+              "on-tertiary-fixed-variant": "#583900",
+              "secondary-fixed-dim": "#ffb283",
+              "inverse-primary": "#a63c00",
+              "outline-variant": "#484847",
+              "tertiary-fixed": "#f6aa1d",
+              "error-dim": "#d7383b",
+              "secondary-container": "#984700",
+              "on-tertiary-container": "#4d3100",
+              "primary-fixed-dim": "#fa6314",
+              "surface-dim": "#0e0e0e",
+              "secondary-fixed": "#ffc5a4",
+              "secondary": "#f48639"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0e0e0e;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        .editorial-header {
+            font-family: 'Manrope', sans-serif;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0e0e0e; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+        
+        .panel-depth {
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 4px 24px -1px rgba(0, 0, 0, 0.4);
+        }
+        .border-kinetic {
+            border-color: rgba(72, 72, 71, 0.2);
+        }
+    </style>
+</head>
+<body class="flex h-screen w-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- Global Navigation: SideNavBar (Fixed Left) -->
+<nav class="fixed left-0 top-0 h-full z-50 flex flex-col items-center h-screen w-20 py-6 bg-surface-container-lowest border-r border-kinetic">
+<!-- Brand Identity -->
+<div class="mb-10 flex flex-col items-center gap-1">
+<span class="text-xl font-bold text-[#FF6719] editorial-header">E</span>
+<div class="w-1 h-1 rounded-full bg-[#FF6719]"></div>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex flex-col gap-4 flex-1">
+<button class="flex items-center justify-center w-12 h-12 text-gray-500 hover:text-gray-200 transition-colors group">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</button>
+<button class="relative flex items-center justify-center w-12 h-12 bg-surface-variant text-[#FF6719] rounded-xl before:absolute before:left-[-12px] before:w-[2px] before:h-6 before:bg-[#FF6719]">
+<span class="material-symbols-outlined" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</button>
+<button class="flex items-center justify-center w-12 h-12 text-gray-500 hover:text-gray-200 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="flex items-center justify-center w-12 h-12 text-gray-500 hover:text-gray-200 transition-colors">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+</div>
+<!-- Bottom Actions & Profile -->
+<div class="flex flex-col gap-6 items-center">
+<button class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20">
+<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNuKXfp278GzLrbSUO3i2eOiaVI0Spp2lHUHyiPleQWs-HZjhPJXAAeoU8Xrfj645PEDW0jA8i61y1bZdaRK-yQiYbl5ZeVOU2BezzVCD88bMfI7fovpiI7Wj4wwEil-ED5wruA7uTBbDQEddeEBJRj2YOZO7JoWaadTNYMCatIGbBZ-1YI6_K-dBCQILf7il-yGyCCmgM688-m7TqKEt47eklXl3yM_kdtldt0rh-3cAo2xcmkR5yZ5Qon80G5rO8qUezv35rSTg"/>
+</div>
+</div>
+</nav>
+<!-- Main Shell -->
+<main class="ml-20 flex flex-1 h-full overflow-hidden">
+<!-- Channel/Chat List Sidebar -->
+<aside class="w-80 h-full bg-surface-container-low flex flex-col z-40 order-1 border-r border-kinetic panel-depth">
+<!-- Header -->
+<div class="h-16 flex items-center px-6 justify-between">
+<h1 class="text-lg font-black text-[#FF6719] tracking-tighter editorial-header">Chat Threads</h1>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface" data-icon="settings">settings</span>
+</div>
+</div>
+<!-- Search Area -->
+<div class="px-4 mb-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary/40 placeholder:text-on-surface-variant/50" placeholder="Search threads..." type="text"/>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex px-4 border-b border-kinetic">
+<button class="flex-1 text-center text-xs font-semibold pb-3 text-[#FF6719] border-b-2 border-[#FF6719]">All</button>
+<button class="flex-1 text-center text-xs font-semibold pb-3 text-on-surface-variant hover:text-on-surface">Direct</button>
+<button class="flex-1 text-center text-xs font-semibold pb-3 text-on-surface-variant hover:text-on-surface">Unread</button>
+</div>
+<!-- Thread List -->
+<div class="flex-1 overflow-y-auto py-4 space-y-1">
+<div class="px-2">
+<div class="flex items-start gap-3 p-3 rounded-xl bg-surface-container cursor-pointer shadow-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="architecture">architecture</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<h3 class="text-sm font-semibold truncate text-on-surface">Modularism Weekly</h3>
+<span class="text-[10px] text-on-surface-variant">12m</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate">Marcus: The grid system feels robust...</p>
+</div>
+</div>
+</div>
+<div class="px-2">
+<div class="flex items-start gap-3 p-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer group">
+<img alt="Avatar" class="w-10 h-10 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDefKw9fE8FC18iy6HjkaT54IfITJ3iQWu-aq1VPT0F0CL2yEt54wbOtHxEcfK7H0NsTVhU2O2AXu0Jvo-UoakzkOj9KgeaeuLMvT2yGb1uTv14cSZ2_NY_jpSMvE6DYtYtjA5Adl6TF0_CRsH16YMM6mkmmjq1kKJKo6uFJ4C7lbb__4K75X9ZNXwsLvAkWjfjV2z6lAk3VS81Sd1mzNYrTVyKt8JZRkHUK8M9_r9XoZjfK9maz705FzfHjMPxSq-sKDUIjTTG4gY"/>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<h3 class="text-sm font-semibold truncate text-on-surface">Elena Sorova</h3>
+<span class="text-[10px] text-on-surface-variant">2h</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate">Sent a prototype link for the HUD</p>
+</div>
+</div>
+</div>
+<div class="px-2">
+<div class="flex items-start gap-3 p-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<h3 class="text-sm font-semibold truncate text-on-surface">Design Tokens Bot</h3>
+<span class="text-[10px] text-on-surface-variant">4h</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate">Updated: primary-accent-glow to #FF6719</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<section class="flex-1 h-full bg-surface relative flex flex-col order-2 z-30 shadow-2xl">
+<!-- Header -->
+<header class="h-16 px-8 flex items-center justify-between bg-surface/80 backdrop-blur-xl border-b border-kinetic z-30">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-md bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-sm" data-icon="architecture">architecture</span>
+</div>
+<div>
+<h2 class="text-[1.125rem] font-semibold text-on-surface font-body leading-none">Modularism Weekly</h2>
+<p class="text-[0.6875rem] text-on-surface-variant font-label mt-1">128 members online • Architectural focus</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface" data-icon="search">search</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface" data-icon="more_vert">more_vert</span>
+</div>
+</header>
+<!-- Chat Content with Slots -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Slot (Plugin Space: Calendar Widget) -->
+<div class="w-64 flex flex-col p-4 border-r border-kinetic bg-surface-container-low z-30 panel-depth">
+<div class="flex items-center justify-between mb-6">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold">Schedule</span>
+<h3 class="text-sm font-black text-on-surface editorial-header uppercase">October 2023</h3>
+</div>
+<div class="flex gap-1">
+<button class="p-1 hover:bg-surface-container rounded transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="p-1 hover:bg-surface-container rounded transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-y-2 text-center">
+<span class="text-[9px] font-bold text-on-surface-variant/40 uppercase">Mo</span>
+<span class="text-[9px] font-bold text-on-surface-variant/40 uppercase">Tu</span>
+<span class="text-[9px] font-bold text-on-surface-variant/40 uppercase">We</span>
+<span class="text-[9px] font-bold text-on-surface-variant/40 uppercase">Th</span>
+<span class="text-[9px] font-bold text-on-surface-variant/40 uppercase">Fr</span>
+<span class="text-[9px] font-bold text-on-surface-variant/40 uppercase">Sa</span>
+<span class="text-[9px] font-bold text-on-surface-variant/40 uppercase">Su</span>
+<span class="text-[11px] text-on-surface-variant/20 py-2">25</span>
+<span class="text-[11px] text-on-surface-variant/20 py-2">26</span>
+<span class="text-[11px] text-on-surface-variant/20 py-2">27</span>
+<span class="text-[11px] text-on-surface-variant/20 py-2">28</span>
+<span class="text-[11px] text-on-surface-variant/20 py-2">29</span>
+<span class="text-[11px] text-on-surface-variant/20 py-2">30</span>
+<span class="text-[11px] text-on-surface py-2">1</span>
+<span class="text-[11px] text-on-surface py-2">2</span>
+<span class="text-[11px] text-on-surface py-2">3</span>
+<span class="text-[11px] text-on-surface py-2">4</span>
+<span class="text-[11px] text-on-surface py-2">5</span>
+<span class="text-[11px] text-on-surface py-2">6</span>
+<span class="text-[11px] text-on-surface py-2">7</span>
+<span class="text-[11px] text-on-surface py-2">8</span>
+<span class="text-[11px] text-on-surface py-2">9</span>
+<span class="text-[11px] text-on-surface py-2">10</span>
+<span class="text-[11px] text-on-surface py-2">11</span>
+<span class="relative text-[11px] font-bold text-[#FF6719] py-2 flex items-center justify-center">
+                        12
+                        <span class="absolute bottom-1 w-1 h-1 rounded-full bg-[#FF6719]"></span>
+</span>
+<span class="text-[11px] text-on-surface py-2">13</span>
+<span class="text-[11px] text-on-surface py-2">14</span>
+<span class="text-[11px] text-on-surface py-2">15</span>
+</div>
+<div class="mt-8 p-3 rounded-lg bg-[#FF6719]/5 border border-[#FF6719]/20 shadow-inner">
+<p class="text-[10px] text-[#FF6719] font-bold uppercase mb-1">Upcoming</p>
+<h4 class="text-xs font-bold text-on-surface">Design Review</h4>
+<p class="text-[10px] text-on-surface-variant mt-1">3:00 PM • Modular Sync</p>
+</div>
+</div>
+<!-- Central Thread Canvas -->
+<div class="flex-1 overflow-y-auto px-8 py-8 space-y-8 bg-surface">
+<div class="flex gap-4 group">
+<img alt="User" class="w-10 h-10 rounded-lg object-cover mt-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYuvh-TaS38Odl0fFRfQM2_qj51I7I6PCTmhf_vHBoJm20KJKTdpW_N7VE_wFCpFnr0Sjk_YSx9DP3leRLCUc11I2HFNJCgxd4BW1GkX6RV0kvV55yQWWJ8sXWrJcECtOK9X61_Cq5RJCMhktM4oiREcpplBT5qGnqSvCFpJUPV5zxI4KO0mdet7R1TN8_UWjEEmklGGBoy_MnUIxiXXlZFNzKr-TfZS5lv9SX13kxb4Adk_4CGzB-xMtqljF6fQ6HigeK0hodKr8"/>
+<div class="flex-1 space-y-2">
+<div class="flex items-baseline gap-2">
+<span class="text-sm font-bold text-on-surface">Marcus Thorne</span>
+<span class="text-[10px] text-on-surface-variant font-label">12:42 PM</span>
+</div>
+<div class="max-w-2xl bg-surface-container-highest p-4 rounded-xl text-sm leading-relaxed text-on-surface shadow-sm border border-kinetic">
+                            The current implementation of the 8pt grid system within the "Editorial Modularism" framework is yielding some interesting spatial results. I suggest we lean heavier into tonal shifts for the sidebar rather than using hard lines.
+                        </div>
+<div class="flex items-center gap-3 mt-2">
+<div class="flex -space-x-2">
+<img class="w-5 h-5 rounded-full border-2 border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4FU_RbfkTmVNL7P9UAB1F4I_jCk2d8LhOqzLfbDc0_G2XXZDnm6RQVU3boIk9Xhgfy6SNuJoUsdzn3EYLektylX8iai_3lWFPp4pzlMHh2NGeUaUwF5Awtk-IZrKM-qXJKPdFeD04VBLWBiJ69sVUwpmxRKlxqo9f-ceq3qfH5deFDZXZ7BkSqb4kLpIIE2d7Q3C2Jh2TcxNA5ErgDv2JKEqiKUsJ8quXWuMj22-r7ZJ9Md1xVRdXsc3YzmIrWqeKiGizkfycdeA"/>
+<img class="w-5 h-5 rounded-full border-2 border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIRKNomXNcDQz7lBOuvpRB9kKNQmAVYeaGYaA-Vha1otN-iJYSwaiOdJPAMXEnY_RkjvsO7c0O2aVYlmnioTLEd8ZDXx7ppi3tiaUbFlfG7prlXxHFt9kyPKlGxLU90go5FCvaXCZWjs7jANN4ecb42O9MiKcPzbNcfzWIRlAHSXGHasOCIV4bVzLye4kMEUtkJ9lF3zSNpgpqvLc7qf_bqmR9N_jebPUriTpCzqxtmycOcnS0oMXgNr7ZnZfZniLo5zQXVb3umvA"/>
+</div>
+<button class="text-[11px] font-semibold text-primary hover:underline">12 replies</button>
+<span class="text-[10px] text-on-surface-variant">Last reply 5m ago</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant shrink-0 mt-1">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex items-baseline gap-2">
+<span class="text-sm font-bold text-on-surface">Elena Sorova</span>
+<span class="text-[10px] text-on-surface-variant font-label">1:15 PM</span>
+</div>
+<div class="max-w-2xl bg-surface-container-highest p-4 rounded-xl text-sm leading-relaxed text-on-surface shadow-sm border border-kinetic">
+                            Agreed, Marcus. I've updated the Figma file to reflect the #131313 vs #0E0E0E shift. It feels much more architectural. I've also pushed the new Orange glow tokens for the FAB.
+                        </div>
+</div>
+</div>
+<div class="flex gap-4">
+<img alt="User" class="w-10 h-10 rounded-lg object-cover mt-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEHDTtpXcif67v3_e5iRE85xfleDoqL--9XJYhbcCetIZWrqs4-vMp8wxquPrqThFXIAqFLs6pF32himI9wVqK3fyjL7Cp1h2BjMa_IgjXHwXm41ZvBWsvfg8fdoMZs_PcFLfJU_tRX0I8_AXDjB7bd4eA-UcQmAbAwVQOM_wG0ZFor-WgpyJqMQDUX63Q90H9jpbSd9n2zSVGWJ1PNNm6l2pB0F4LJaiRh7LJ2ffJYPQjMnqATC5dZXTFcrTi4A1g2gAF_jiQB5U"/>
+<div class="flex-1 space-y-3">
+<div class="flex items-baseline gap-2">
+<span class="text-sm font-bold text-on-surface">Julian Black</span>
+<span class="text-[10px] text-on-surface-variant font-label">2:02 PM</span>
+</div>
+<div class="bg-surface-container-highest p-2 rounded-xl max-w-sm border border-kinetic">
+<img alt="Design Work" class="rounded-lg w-full h-48 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqzFSuXLA9lVGeD9IARMZPwfavEEoxC_4oY4vt81Uo0LMFC6zjmMMBLlJ3E6fzstdAlTy8Jt-6UuQbMyiS7Fn1FKE3vBPGwCdHoXg9kvw98HdsVUMDWwSNFnZ2h3Vm3wYEbeDLsf5yXjo_aGd9zMNjBljRC6mUINeEzaZWt5Wq0HDxzn-N8i1hMFir6x9_V15kn-KxMxATcpHwVN78gB9_p4qDZ65OvI9EWLAmTc-Cbgm4QHoFomia4jSv5mXKaCDSxXLe_iOlKSE"/>
+<div class="p-2">
+<p class="text-xs text-on-surface-variant">concept_render_v02.png • 1.2MB</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Slot (Utility Bar) -->
+<div class="w-16 flex flex-col items-center py-6 gap-6 border-l border-kinetic bg-surface-container-low z-30 panel-depth">
+<button class="w-10 h-10 flex items-center justify-center text-outline-variant hover:text-primary transition-colors hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="analytics">analytics</span>
+</button>
+<!-- Dedicated Calendar Slot -->
+<button class="w-10 h-10 flex items-center justify-center text-[#FF6719] bg-primary/10 rounded-lg shadow-sm border border-primary/20">
+<span class="material-symbols-outlined text-lg" data-icon="calendar_today" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-outline-variant hover:text-on-surface transition-colors hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="info">info</span>
+</button>
+<div class="flex-1"></div>
+<button class="w-10 h-10 flex items-center justify-center text-outline-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="help">help</span>
+</button>
+</div>
+</div>
+<!-- Input Section -->
+<div class="p-8 z-40 bg-surface/50 backdrop-blur-md">
+<div class="max-w-3xl mx-auto relative">
+<div class="flex items-center gap-4 bg-surface-container-low border border-kinetic rounded-2xl p-2 pl-6 shadow-2xl panel-depth">
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder:text-on-surface-variant/40" placeholder="Start a new thread..." type="text"/>
+<div class="flex items-center gap-2 pr-2">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-lg" data-icon="attach_file">attach_file</span>
+</button>
+<button class="h-10 px-6 rounded-xl bg-gradient-to-br from-[#ff9062] to-[#ff793d] text-on-primary-fixed font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-[0_0_24px_rgba(255,103,25,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all">
+<span>Send</span>
+<span class="material-symbols-outlined text-sm" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB -->
+<button class="fixed bottom-8 right-24 w-14 h-14 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-xl shadow-primary/30 hover:scale-110 active:scale-95 transition-transform z-50">
+<span class="material-symbols-outlined text-2xl" data-icon="edit_square" style="font-variation-settings: 'FILL' 1;">edit_square</span>
+<div class="absolute inset-0 rounded-full border-t border-white/20 pointer-events-none"></div>
+</button>
+</body></html>

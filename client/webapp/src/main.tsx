@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./styles.css";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
+import { AuthLayout } from "./layouts";
 import { AssetsController } from "./core/controllers/AssetsController";
 import { StorageController } from "./core/controllers/StorageController";
 import { SystemController } from "./core/controllers/system/SystemController";
@@ -60,11 +61,11 @@ function AppRoutes() {
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/register" element={<RegisterPage />} />
 			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
-			<Route path="/dashboard" element={<DashboardPage />} />
-			<Route path="/settings" element={<SettingsPage />} />
-			<Route path="/room/study/:roomId" element={<RoomStudyPage />} />
-			<Route path="/room/join/:roomId" element={<RoomJoinPage />} />
-			<Route path="/room/create" element={<RoomCreatePage />} />
+			<Route path="/dashboard" element={<AuthLayout><DashboardPage /></AuthLayout>} />
+			<Route path="/settings" element={<AuthLayout><SettingsPage /></AuthLayout>} />
+			<Route path="/room/study/:roomId" element={<AuthLayout><RoomStudyPage /></AuthLayout>} />
+			<Route path="/room/join/:roomId" element={<AuthLayout><RoomJoinPage /></AuthLayout>} />
+			<Route path="/room/create" element={<AuthLayout><RoomCreatePage /></AuthLayout>} />
 			<Route path="*" element={<Navigate replace to="/" />} />
 		</Routes>
 	);
