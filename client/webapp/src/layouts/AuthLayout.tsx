@@ -5,6 +5,7 @@ import { useAuth } from "../auth/AuthContext";
 
 const NAV_ITEMS = [
 	{ icon: "home", path: "/dashboard", label: "Dashboard" },
+	{ icon: "calendar_month", path: "/calendar", label: "Calendar" },
 	{ icon: "settings", path: "/settings", label: "Settings" },
 	{ icon: "meeting_room", path: "/room/create", label: "Create Room" },
 ] as const;
