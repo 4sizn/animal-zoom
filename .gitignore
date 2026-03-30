@@ -11,3 +11,4 @@ test-results/live-login-success-*.html
 !test-results/live-login-success-latest.png
 !test-results/live-login-success-latest.html
 !test-results/live-login-success-latest.json
+.omc/
