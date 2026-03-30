@@ -12,3 +12,6 @@ test-results/live-login-success-*.html
 !test-results/live-login-success-latest.html
 !test-results/live-login-success-latest.json
 .omc/
+.claude/settings.local.json
+client/webapp/playwright-report/
+client/webapp/test-results/
