@@ -21,6 +21,10 @@ export async function apiRequest<T>(input: {
 		body: input.body === undefined ? undefined : JSON.stringify(input.body),
 	});
 
-	const data = (await res.json()) as T;
-	return data;
+	try {
+		const data = (await res.json()) as T;
+		return data;
+	} catch {
+		throw new Error(`서버 응답을 처리할 수 없습니다 (HTTP ${res.status})`);
+	}
 }
