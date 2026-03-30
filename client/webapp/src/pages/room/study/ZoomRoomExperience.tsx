@@ -1,6 +1,7 @@
 import type { User3DProfile, ZoomParticipant } from "@animal-zoom/share";
-import React from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { EMPTY, type Observable } from "rxjs";
+import { getSessionsByDate } from "../../calendar/data";
 import { BabylonStudyCanvas } from "./BabylonStudyCanvas";
 import { StudyRoomChatSidebar } from "./StudyRoomChatSidebar";
 
@@ -373,10 +374,18 @@ function FourParticipantLayout({
 	participants,
 	participantCount,
 	my3DProfile,
+	isStudying,
+	isPomodoroOpen,
+	onTogglePomodoro,
+	pomodoroPanel,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
 	my3DProfile: User3DProfile | null;
+	isStudying: boolean;
+	isPomodoroOpen: boolean;
+	onTogglePomodoro: () => void;
+	pomodoroPanel: React.ReactNode;
 }) {
 	const isSingleParticipant = participantCount === 1;
 
@@ -400,6 +409,7 @@ function FourParticipantLayout({
 								my3DProfile={my3DProfile}
 								alt={`${participant.animal.name}'s video feed`}
 								className="w-full h-full object-cover"
+								isStudying={isStudying}
 							/>
 							<div className="absolute bottom-4 left-4 z-10">
 								<span className="text-white text-xl font-medium drop-shadow-md">
@@ -430,6 +440,7 @@ function FourParticipantLayout({
 					))}
 				</div>
 			</main>
+			{pomodoroPanel}
 			<footer className="h-20 flex-shrink-0 grid grid-cols-3 items-center px-8 bg-[#1a1a1a] z-50 mb-2">
 				<div className="flex flex-col justify-center">
 					<h1 className="text-base font-medium text-gray-200">
@@ -466,6 +477,14 @@ function FourParticipantLayout({
 					</button>
 					<button
 						type="button"
+						onClick={onTogglePomodoro}
+						className={`w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ${isPomodoroOpen ? "bg-primary/20 text-primary" : "bg-[#3C4043] hover:bg-[#4a4e52] text-white"}`}
+						title="뽀모도로 타이머"
+					>
+						<span className="material-symbols-outlined text-[24px]">timer</span>
+					</button>
+					<button
+						type="button"
 						className="w-12 h-12 rounded-full bg-[#EA4335] hover:bg-red-600 text-white flex items-center justify-center transition-all active:scale-95 ml-1"
 						title="Leave call"
 					>
@@ -490,10 +509,18 @@ function TwelveParticipantLayout({
 	participants,
 	participantCount,
 	my3DProfile,
+	isStudying,
+	isPomodoroOpen,
+	onTogglePomodoro,
+	pomodoroPanel,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
 	my3DProfile: User3DProfile | null;
+	isStudying: boolean;
+	isPomodoroOpen: boolean;
+	onTogglePomodoro: () => void;
+	pomodoroPanel: React.ReactNode;
 }) {
 	const displayedParticipantCount =
 		participantCount === 12 ? 13 : participantCount;
@@ -515,6 +542,7 @@ function TwelveParticipantLayout({
 									`${participant.animal.name}`
 								}
 								className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
+								isStudying={isStudying}
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
 							<div className="absolute bottom-3 left-3 z-10 bg-overlay-plate backdrop-blur-[2px] px-3 py-1 rounded-md">
@@ -540,6 +568,7 @@ function TwelveParticipantLayout({
 					))}
 				</div>
 			</main>
+			{pomodoroPanel}
 			<footer className="h-20 shrink-0 bg-charcoal-dark flex items-center justify-between px-6 md:px-10 z-50">
 				<div className="w-48 hidden md:block">
 					<h2 className="text-base font-medium text-gray-200 tracking-wide">
@@ -573,6 +602,14 @@ function TwelveParticipantLayout({
 					</button>
 					<button
 						type="button"
+						onClick={onTogglePomodoro}
+						className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#181a1d] ${isPomodoroOpen ? "bg-primary/20 text-primary focus:ring-primary" : "bg-control-bg hover:bg-gray-600 text-gray-300 focus:ring-gray-500"}`}
+						title="뽀모도로 타이머"
+					>
+						<span className="material-symbols-outlined text-[20px]">timer</span>
+					</button>
+					<button
+						type="button"
 						className="w-16 h-10 rounded-full flex items-center justify-center bg-primary hover:bg-red-600 text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-[#181a1d] ml-1 shadow-md"
 					>
 						<span className="material-symbols-outlined text-[24px] filled">
@@ -602,10 +639,18 @@ function ScrollableParticipantLayout({
 	participants,
 	participantCount,
 	my3DProfile,
+	isStudying,
+	isPomodoroOpen,
+	onTogglePomodoro,
+	pomodoroPanel,
 }: {
 	participants: ZoomParticipant[];
 	participantCount: number;
 	my3DProfile: User3DProfile | null;
+	isStudying: boolean;
+	isPomodoroOpen: boolean;
+	onTogglePomodoro: () => void;
+	pomodoroPanel: React.ReactNode;
 }) {
 	return (
 		<div className="bg-[#202124] text-gray-100 font-display h-screen flex flex-col overflow-hidden transition-colors duration-300">
@@ -624,6 +669,7 @@ function ScrollableParticipantLayout({
 								my3DProfile={my3DProfile}
 								alt={`${participant.animal.name} avatar`}
 								className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+								isStudying={isStudying}
 							/>
 							<div className="name-overlay absolute inset-0 flex items-end p-4 rounded-2xl">
 								<span className="text-white text-lg font-bold tracking-wide drop-shadow-md">
@@ -648,6 +694,7 @@ function ScrollableParticipantLayout({
 					))}
 				</div>
 			</main>
+			{pomodoroPanel}
 			<footer className="relative flex-none h-20 bg-[#202124] border-t border-white/5 px-4 md:px-8 flex items-center gap-3 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
 				<div className="hidden md:flex flex-col">
 					<h1 className="text-base font-semibold text-gray-100">
@@ -673,6 +720,14 @@ function ScrollableParticipantLayout({
 						className="w-10 h-10 rounded-full flex items-center justify-center bg-[#3C4043] text-gray-200 hover:bg-[#5F6368] transition-colors"
 					>
 						<span className="material-icons-round text-xl">more_horiz</span>
+					</button>
+					<button
+						type="button"
+						onClick={onTogglePomodoro}
+						className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isPomodoroOpen ? "bg-primary/20 text-primary" : "bg-[#3C4043] text-gray-200 hover:bg-[#5F6368]"}`}
+						title="뽀모도로 타이머"
+					>
+						<span className="material-icons-round text-xl">timer</span>
 					</button>
 					<button
 						type="button"
@@ -718,6 +773,83 @@ export function ZoomRoomExperience({
 		}
 		return window.matchMedia("(min-width: 768px)").matches;
 	});
+	// ── 뽀모도로 상태 ──────────────────────────────────────────
+	type PomodoroPhase = "idle" | "focus" | "break";
+	const FOCUS_MIN = 25;
+	const BREAK_MIN = 5;
+
+	const [pomodoroPhase, setPomodoroPhase] = React.useState<PomodoroPhase>("idle");
+	const [secondsLeft, setSecondsLeft] = React.useState(FOCUS_MIN * 60);
+	const [currentTask, setCurrentTask] = React.useState<string | null>(null);
+	const [completedRounds, setCompletedRounds] = React.useState(0);
+	const [isPomodoroOpen, setIsPomodoroOpen] = React.useState(false);
+	const [focusInput, setFocusInput] = React.useState("");
+
+	const isStudying = pomodoroPhase === "focus";
+
+	// 오늘의 태스크 목록
+	const tasks = useMemo(() => {
+		const today = new Date().toISOString().slice(0, 10);
+		const sessions = getSessionsByDate(today).map((s) => s.roomName);
+		try {
+			const raw = localStorage.getItem(`today_focus_${today}`);
+			const focusTask = raw ? (JSON.parse(raw) as { text: string }).text : null;
+			const all = [...new Set([focusTask, ...sessions].filter(Boolean))] as string[];
+			return all.length > 0 ? all : ["자유 공부"];
+		} catch {
+			return sessions.length > 0 ? sessions : ["자유 공부"];
+		}
+	}, []);
+
+	// 누적 공부 시간
+	function accumulateStudyTime(minutes: number) {
+		const key = `study_accumulated_${new Date().toISOString().slice(0, 10)}`;
+		try {
+			const raw = localStorage.getItem(key);
+			const prev = raw ? (JSON.parse(raw) as { totalMin: number }).totalMin : 0;
+			localStorage.setItem(key, JSON.stringify({ totalMin: prev + minutes }));
+		} catch { /* noop */ }
+	}
+	function getTodayStudyMin(): number {
+		const key = `study_accumulated_${new Date().toISOString().slice(0, 10)}`;
+		try {
+			const raw = localStorage.getItem(key);
+			return raw ? ((JSON.parse(raw) as { totalMin: number }).totalMin ?? 0) : 0;
+		} catch { return 0; }
+	}
+	function formatSeconds(s: number): string {
+		return `${Math.floor(s / 60).toString().padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
+	}
+
+	// 타이머 tick
+	useEffect(() => {
+		if (pomodoroPhase === "idle") return;
+		const id = setInterval(() => {
+			setSecondsLeft((prev) => {
+				if (prev <= 1) {
+					if (pomodoroPhase === "focus") {
+						accumulateStudyTime(FOCUS_MIN);
+						setCompletedRounds((r) => r + 1);
+						setPomodoroPhase("break");
+						return BREAK_MIN * 60;
+					}
+					setPomodoroPhase("focus");
+					return FOCUS_MIN * 60;
+				}
+				return prev - 1;
+			});
+		}, 1000);
+		return () => clearInterval(id);
+	}, [pomodoroPhase]);
+
+	const onTogglePomodoro = React.useCallback(() => {
+		setIsPomodoroOpen((prev) => !prev);
+	}, []);
+
+	const todayStudyMin = getTodayStudyMin();
+
+	// 뽀모도로 패널 UI
+	const pomodoroPanel: React.ReactNode = null;
 
 	React.useEffect(() => {
 		if (typeof window === "undefined") {
@@ -749,6 +881,10 @@ export function ZoomRoomExperience({
 				participants={participantsFour.slice(0, participantCount)}
 				participantCount={participantCount}
 				my3DProfile={my3DProfile}
+				isStudying={isStudying}
+				isPomodoroOpen={isPomodoroOpen}
+				onTogglePomodoro={onTogglePomodoro}
+				pomodoroPanel={pomodoroPanel}
 			/>
 		);
 	} else if (participantCount <= 12) {
@@ -757,6 +893,10 @@ export function ZoomRoomExperience({
 				participants={participantsTwelve.slice(0, participantCount)}
 				participantCount={participantCount}
 				my3DProfile={my3DProfile}
+				isStudying={isStudying}
+				isPomodoroOpen={isPomodoroOpen}
+				onTogglePomodoro={onTogglePomodoro}
+				pomodoroPanel={pomodoroPanel}
 			/>
 		);
 	} else {
@@ -765,16 +905,175 @@ export function ZoomRoomExperience({
 				participants={participantsScroll.slice(0, participantCount)}
 				participantCount={participantCount}
 				my3DProfile={my3DProfile}
+				isStudying={isStudying}
+				isPomodoroOpen={isPomodoroOpen}
+				onTogglePomodoro={onTogglePomodoro}
+				pomodoroPanel={pomodoroPanel}
 			/>
 		);
 	}
 
 	return (
 		<div
-			className={`relative h-screen w-screen ${
+			className={`relative h-screen w-screen ${isDesktop && isPomodoroOpen ? "md:pl-[320px]" : ""} ${
 				isDesktop && isChatOpen ? "md:pr-[400px]" : ""
 			}`}
 		>
+			{/* 뽀모도로 사이드바 */}
+			<aside
+				className={`fixed inset-y-0 left-0 z-[100] w-[320px] bg-[#1c222d] border-r border-slate-800 flex flex-col transition-transform duration-200 ease-out ${
+					isPomodoroOpen ? "translate-x-0" : "-translate-x-full"
+				}`}
+			>
+				{/* 헤더 */}
+				<div className="px-6 py-5 flex items-center justify-between border-b border-slate-800 shrink-0">
+					<h2 className="text-lg font-bold text-white flex items-center gap-2">
+						<span className="material-symbols-outlined text-[20px] text-primary">timer</span>
+						뽀모도로
+					</h2>
+					<button
+						type="button"
+						aria-label="Close pomodoro"
+						onClick={() => setIsPomodoroOpen(false)}
+						className="w-8 h-8 rounded-full hover:bg-slate-800 transition-colors flex items-center justify-center"
+					>
+						<span className="material-symbols-outlined text-slate-400 text-[20px]">close</span>
+					</button>
+				</div>
+
+				{/* 컨텐츠 */}
+				<div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+
+					{/* 태스크 선택 */}
+					<div className="flex flex-col gap-2">
+						<label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">오늘의 태스크</label>
+						<select
+							value={currentTask ?? ""}
+							onChange={(e) => setCurrentTask(e.target.value || null)}
+							className="bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary"
+						>
+							<option value="">태스크 선택...</option>
+							{tasks.map((t) => (
+								<option key={t} value={t}>{t}</option>
+							))}
+						</select>
+						{currentTask && (
+							<p className="text-xs text-slate-400 truncate">현재: {currentTask}</p>
+						)}
+					</div>
+
+					{/* 타이머 */}
+					<div className="flex flex-col items-center gap-3 py-4">
+						<div className={`text-7xl font-mono font-bold tabular-nums ${
+							pomodoroPhase === "focus" ? "text-red-400" :
+							pomodoroPhase === "break" ? "text-green-400" :
+							"text-slate-400"
+						}`}>
+							{formatSeconds(secondsLeft)}
+						</div>
+						<div className="flex items-center gap-2">
+							<span className={`w-2 h-2 rounded-full ${
+								pomodoroPhase === "focus" ? "bg-red-400 animate-pulse" :
+								pomodoroPhase === "break" ? "bg-green-400 animate-pulse" :
+								"bg-slate-600"
+							}`} />
+							<span className="text-sm text-slate-400">
+								{pomodoroPhase === "focus" ? "집중 중" :
+								 pomodoroPhase === "break" ? "휴식 중" :
+								 "대기"}
+							</span>
+						</div>
+					</div>
+
+					{/* 컨트롤 버튼 */}
+					<div className="flex gap-2">
+						{pomodoroPhase === "idle" ? (
+							<button
+								onClick={() => {
+									if (!currentTask && tasks[0]) setCurrentTask(tasks[0]);
+									setPomodoroPhase("focus");
+									setSecondsLeft(FOCUS_MIN * 60);
+								}}
+								className="flex-1 bg-primary hover:bg-primary/80 text-white rounded-xl py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+							>
+								<span className="material-symbols-outlined text-[18px]">play_arrow</span>
+								시작
+							</button>
+						) : (
+							<>
+								<button
+									onClick={() => {
+										if (pomodoroPhase === "focus") accumulateStudyTime(Math.floor((FOCUS_MIN * 60 - secondsLeft) / 60));
+										setPomodoroPhase("idle");
+										setSecondsLeft(FOCUS_MIN * 60);
+									}}
+									className="flex-1 bg-white/10 hover:bg-white/15 text-white rounded-xl py-3 text-sm transition-colors flex items-center justify-center gap-2"
+								>
+									<span className="material-symbols-outlined text-[18px]">stop</span>
+									중단
+								</button>
+								<button
+									onClick={() => {
+										if (pomodoroPhase === "focus") {
+											accumulateStudyTime(FOCUS_MIN);
+											setCompletedRounds((r) => r + 1);
+											setPomodoroPhase("break");
+											setSecondsLeft(BREAK_MIN * 60);
+										} else {
+											setPomodoroPhase("focus");
+											setSecondsLeft(FOCUS_MIN * 60);
+										}
+									}}
+									className="flex-1 bg-primary hover:bg-primary/80 text-white rounded-xl py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+								>
+									<span className="material-symbols-outlined text-[18px]">
+										{pomodoroPhase === "focus" ? "coffee" : "play_arrow"}
+									</span>
+									{pomodoroPhase === "focus" ? "휴식" : "재시작"}
+								</button>
+							</>
+						)}
+					</div>
+
+					{/* 구분선 */}
+					<div className="border-t border-slate-800" />
+
+					{/* 세션 정보 */}
+					<div className="flex flex-col gap-3">
+						<p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">오늘의 기록</p>
+						<div className="grid grid-cols-2 gap-3">
+							<div className="bg-white/5 rounded-xl p-4 flex flex-col gap-1">
+								<span className="text-2xl font-bold text-white">{completedRounds}</span>
+								<span className="text-xs text-slate-400">완료한 뽀모도로</span>
+							</div>
+							<div className="bg-white/5 rounded-xl p-4 flex flex-col gap-1">
+								<span className="text-2xl font-bold text-white">
+									{todayStudyMin + (isStudying ? Math.floor((FOCUS_MIN * 60 - secondsLeft) / 60) : 0)}
+								</span>
+								<span className="text-xs text-slate-400">누적 공부(분)</span>
+							</div>
+						</div>
+					</div>
+
+					{/* 뽀모도로 설명 */}
+					<div className="bg-white/5 rounded-xl p-4 text-xs text-slate-400 leading-relaxed">
+						🍅 25분 집중 → 5분 휴식 반복<br/>
+						집중 세션 완료 시 공부 시간이 자동 누적됩니다.
+					</div>
+
+				</div>
+			</aside>
+			{/* 뽀모도로 열기 버튼 (사이드바 닫혔을 때) */}
+			{!isPomodoroOpen && (
+				<button
+					type="button"
+					aria-label="Open pomodoro"
+					onClick={() => setIsPomodoroOpen(true)}
+					className="fixed left-6 top-6 z-[90] w-11 h-11 rounded-full bg-slate-900/80 text-white backdrop-blur-md border border-white/10 hover:bg-slate-800 transition-colors flex items-center justify-center"
+				>
+					<span className="material-symbols-outlined text-[20px]">timer</span>
+				</button>
+			)}
 			{content}
 			<StudyRoomChatSidebar
 				roomId={roomId}
